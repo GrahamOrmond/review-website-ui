@@ -33,6 +33,11 @@
     line-height: 50px;
 }
 
+    .app-header a {
+        color: #202124;
+        text-decoration: none;
+    }
+
     .app-header .header-logo {
         font-size: 3vw;
         padding: 0px 15px;
@@ -54,8 +59,7 @@
 */
 
 .app-body {
-    min-height: calc(200%);
-    background-color: #D6D6D7;
+    
 }
 
 
@@ -99,12 +103,17 @@
     display: block;
 }
 
-.dropdown-content hr{
-    margin: 0px 5px;
-    padding: 0px;
-    background-color: #D6D6D7;
-    border: solid 1px #D6D6D7;
-}
+    .dropdown-content hr{
+        margin: 0px 5px;
+        padding: 0px;
+        background-color: #D6D6D7;
+        border: solid 1px #D6D6D7;
+    }
+
+    .dropdown-content a {
+        color: #202124;
+        text-decoration: none;
+    }
 
 .dropdown-nav {
     padding: 0px 10px;
@@ -123,12 +132,14 @@
 
 .app-search {
     width: 50vw;
+    max-width: 700px;
     padding: 10px;
     display: grid;
     justify-content: center;
 }
 
     .app-search input  {
+        max-width: 700px;
         width: 50vw;
         border: solid 1px #D6D6D7;
         border-radius: 2px;

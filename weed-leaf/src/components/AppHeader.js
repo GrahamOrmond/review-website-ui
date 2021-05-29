@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import AppDropdown from './AppDropdown';
-
+import { Link } from 'react-router-dom'
 
 class AppSearch extends Component {
     
@@ -45,7 +45,9 @@ class HeaderLogo  extends Component {
         
         return (
             <div className="header-logo">
-                WeedLeaf
+                <Link to="/">
+                    WeedLeaf
+                </Link>
             </div>
         );
     }

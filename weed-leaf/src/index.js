@@ -22,7 +22,6 @@ window.onclick = function(event) {
   console.log(target);
   if (!target.matches('.button-dropdown')
     && !target.matches('.dropdown-nav')) {
-    console.log("ran")
     var dropdowns = document.getElementsByClassName("dropdown-content");
     for (let i = 0; i < dropdowns.length; i++) {
       var openDropdown = dropdowns[i];
