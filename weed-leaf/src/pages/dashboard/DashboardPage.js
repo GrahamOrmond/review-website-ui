@@ -1,15 +1,12 @@
 
-import AppCard from '../../components/AppCard';
 import AppPost from '../../components/AppPost';
 
+import AppList from '../../components/AppList';
 
 export const DashboardPage = () => {
 
     return (
         <div className="app-content">
-            <AppCard>
-                <AppPost />
-            </AppCard>
         </div>
     )
 }

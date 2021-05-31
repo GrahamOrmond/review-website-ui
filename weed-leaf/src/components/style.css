@@ -7,6 +7,7 @@
     5. SEARCH BAR
     6. DISPLAY CARD
     7. POST
+    8. LIST
     10. EXTRAS
 */
 
@@ -274,6 +275,51 @@ svg {
     justify-content: center;
     padding: 0px 5px;
 }
+
+/* 
+    8. LIST
+*/
+
+.app-list{
+    padding: 5px 5px 10px 5px;
+}
+
+.app-list .list-title {
+    padding: 10px 0px;
+    border-bottom: solid 1px #D6D6D7;
+}
+
+.app-list .list-content {
+
+}
+
+.list-section {
+
+}
+
+    .list-section .section-title {
+
+    }
+
+    .list-section .section-title h2 {
+        display: inline;
+        padding: 0px;
+        margin: 0px;
+        border-bottom: solid #323639 1px;
+    }
+
+
+    .list-section .section-content {
+        padding: 5px 0px;
+        display: flex;  
+        flex-wrap: wrap;
+    }
+
+    .list-section .section-content div {
+        width: 50%;
+        padding-bottom: 10px;
+    }
+
 
 /* 
     10. EXTRAS

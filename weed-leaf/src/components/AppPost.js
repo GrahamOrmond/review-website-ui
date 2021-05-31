@@ -7,6 +7,7 @@ import ChatIcon from '@material-ui/icons/Chat';
 
 import AppButton from './AppButton';
 import AppDropdown from './AppDropdown';
+import AppCard from './AppCard';
 
 class PostUserInfo extends Component {
 
@@ -93,38 +94,40 @@ class AppPost extends Component {
     render () {
         
         return (
-            <div className="app-post">
-                <PostHeader showPostActions={this.showPostActions} />
-                <div className="post-body">
-                    This is the post body
-                </div>
-                <div className="post-footer">
-                    <div className="post-notification">
-                        <div className="content">
-                            <AppButton handleOnClick={this.handleRatingUp}>
-                                <ArrowUpwardIcon />
-                            </AppButton>
-                            <div className="value">
-                                <p>20</p>
+            <AppCard>
+                <div className="app-post">
+                    <PostHeader showPostActions={this.showPostActions} />
+                    <div className="post-body">
+                        This is the post body
+                    </div>
+                    <div className="post-footer">
+                        <div className="post-notification">
+                            <div className="content">
+                                <AppButton handleOnClick={this.handleRatingUp}>
+                                    <ArrowUpwardIcon />
+                                </AppButton>
+                                <div className="value">
+                                    <p>20</p>
+                                </div>
+                                <AppButton handleOnClick={this.handleRatingDown}>
+                                    <ArrowDownwardIcon />
+                                </AppButton>
                             </div>
-                            <AppButton handleOnClick={this.handleRatingDown}>
-                                <ArrowDownwardIcon />
-                            </AppButton>
+                        </div>
+                        <div className="post-notification">
+                            <div className="content">
+                                <div className="value">
+                                    <p>33</p>
+                                </div>
+                                <AppButton handleOnClick={this.handleRatingDown}>
+                                    <ChatIcon />
+                                </AppButton>
+                            </div>
+                            
                         </div>
                     </div>
-                    <div className="post-notification">
-                        <div className="content">
-                            <div className="value">
-                                <p>33</p>
-                            </div>
-                            <AppButton handleOnClick={this.handleRatingDown}>
-                                <ChatIcon />
-                            </AppButton>
-                        </div>
-                        
-                    </div>
                 </div>
-            </div>
+            </AppCard>
         );
     }
 }
