@@ -10,7 +10,6 @@ class AppSearch extends Component {
     }
 
     render () {
-        
         return (
             <div className="app-search">
                 <input></input>
@@ -24,13 +23,41 @@ class HeaderNav extends Component {
 
     constructor(props) {
         super(props);
+
+        this.linkData = {
+            "linkSections": 
+            [
+                {
+                    "title": "main",
+                    "links": [
+                        {
+                            'link': '/brands',
+                            'label': 'Brands'
+                        },
+                        {
+                            'link': '/products',
+                            'label': 'Products'
+                        },
+                    ]
+                },
+                {
+                    "title": "account",
+                    "links": [
+                        {
+                            'link': 'account/login',
+                            'label': 'Log In / Sign Up'
+                        },
+                    ]
+                },
+            ]
+        }
     }
 
     render () {
         
         return (
             <div className="header-nav">
-                <AppDropdown>
+                <AppDropdown linkData={this.linkData}>
                     <MenuIcon />
                 </AppDropdown>
             </div>

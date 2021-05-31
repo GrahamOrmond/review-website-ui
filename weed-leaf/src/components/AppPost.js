@@ -15,6 +15,21 @@ class PostUserInfo extends Component {
         super(props);
 
         this.showPostActions = props.showPostActions.bind(this);
+
+        this.linkData = {
+            "linkSections": 
+            [
+                {
+                    "title": "main",
+                    "links": [
+                        {
+                            'link': '/post/report',
+                            'label': 'Report'
+                        },
+                    ]
+                },
+            ]
+        }
     }
 
     
@@ -37,7 +52,7 @@ class PostUserInfo extends Component {
                 </div>
                 <div className="actions">
                     <div className="post-button">
-                        <AppDropdown handleOnClick={this.showPostActions}>
+                        <AppDropdown linkData={this.linkData}>
                             <MoreHorizIcon />
                         </AppDropdown>
                     </div>

@@ -6,7 +6,6 @@ class AppList extends Component {
 
     constructor(props) {
         super(props);
-        console.log(props)
         this.renderList = props.renderList.bind(this);
     }
     

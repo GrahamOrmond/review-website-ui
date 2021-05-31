@@ -36,19 +36,7 @@ class DropdownContent extends Component {
 
         return (
             <div className="dropdown-content">
-                <Link to="/brands">
-                    <DropdownNav to="/brands" text="Brands"/>
-                </Link>
-
-                <Link to="/products">
-                    <DropdownNav text="Products"/>
-                </Link>
-
-                <div className="content-seperator"></div>
-
-                <Link to="/account/login">
-                    <DropdownNav text="Log in / Sign Up"/>
-                </Link>
+                {this.props.children}
             </div>
         );
     }
@@ -59,6 +47,7 @@ class AppDropdown extends Component {
     constructor(props) {
         super(props);
         this.toggleDropDown = this.toggleDropDown.bind(this);
+        this.renderOptions = this.renderOptions.bind(this);
     }
 
     // toggles the drop down when clicked
@@ -73,6 +62,25 @@ class AppDropdown extends Component {
         }
     }
 
+    renderOptions(){
+        let renderedData = [];
+        this.props.linkData['linkSections'].forEach(function (e, index){
+
+            if(index > 0){
+                renderedData.push(<div className="content-seperator"></div>)
+            }
+
+            e['links'].forEach(i => {
+                renderedData.push(
+                    <Link to={i['link']} >
+                        <DropdownNav text={i['label']} />
+                    </Link>
+                );
+            }); 
+        });
+        return renderedData;
+    }
+
     render () {
         
         return (
@@ -80,7 +88,9 @@ class AppDropdown extends Component {
                 <AppButton handleOnClick={this.toggleDropDown}>
                     {this.props.children}
                 </AppButton>
-                <DropdownContent />
+                <DropdownContent>
+                    {this.renderOptions()}
+                </DropdownContent>
             </div>
         );
     }
