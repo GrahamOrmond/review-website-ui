@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import AppDropdown from './AppDropdown';
 import { Link } from 'react-router-dom'
+import MenuIcon from '@material-ui/icons/Menu';
 
 class AppSearch extends Component {
     
@@ -29,7 +30,9 @@ class HeaderNav extends Component {
         
         return (
             <div className="header-nav">
-                <AppDropdown />
+                <AppDropdown>
+                    <MenuIcon />
+                </AppDropdown>
             </div>
         );
     }

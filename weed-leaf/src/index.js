@@ -18,16 +18,15 @@ ReactDOM.render(
 // close any dropdown if the user clicks outside of it
 window.onclick = function(event) {
 
-  let target = event.target;
-  console.log(target);
-  if (!target.matches('.button-dropdown')
-    && !target.matches('.dropdown-nav')) {
-    var dropdowns = document.getElementsByClassName("dropdown-content");
-    for (let i = 0; i < dropdowns.length; i++) {
-      var openDropdown = dropdowns[i];
-      if (openDropdown.classList.contains('active')) {
-        openDropdown.classList.remove('active');
-      }
+  let target = event.target.closest(".app-dropdown");
+  if(target != null)
+    return;
+
+  var dropdowns = document.getElementsByClassName("dropdown-content");
+  for (let i = 0; i < dropdowns.length; i++) {
+    var openDropdown = dropdowns[i];
+    if (openDropdown.classList.contains('active')) {
+      openDropdown.classList.remove('active');
     }
   }
 }

@@ -3,12 +3,11 @@ html, body {
     height: 100%;
     padding: 0px;
     margin: 0px;
-
     font-family: Arial, sans-serif;
+    background-color: #D6D6D7;
 }
 
-.app {
+body {
+    height: calc(100% - 50px);
     margin-top: 50px;
-    min-height: calc(200%);
-    background-color: #D6D6D7;
 }

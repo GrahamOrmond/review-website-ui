@@ -2,7 +2,7 @@
 export const ProductsPage = () => {
 
     return (
-        <div className="">
+        <div className="app-content">
             Products
         </div>
     )

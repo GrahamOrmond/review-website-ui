@@ -2,7 +2,7 @@
 export const RegisterPage = () => {
 
     return (
-        <div className="">
+        <div className="app-content">
             Register
         </div>
     )

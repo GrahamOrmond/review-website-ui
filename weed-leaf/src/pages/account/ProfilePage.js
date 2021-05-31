@@ -2,7 +2,7 @@
 export const ProfilePage = () => {
 
     return (
-        <div className="">
+        <div className="app-content">
             Profile
         </div>
     )

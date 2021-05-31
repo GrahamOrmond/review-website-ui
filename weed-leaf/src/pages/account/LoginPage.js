@@ -2,7 +2,7 @@
 export const LoginPage = () => {
 
     return (
-        <div className="">
+        <div className="app-content">
             Login
         </div>
     )

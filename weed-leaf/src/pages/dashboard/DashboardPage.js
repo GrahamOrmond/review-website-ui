@@ -2,7 +2,7 @@
 export const DashboardPage = () => {
 
     return (
-        <div className="">
+        <div className="app-content">
             Dashboard
         </div>
     )

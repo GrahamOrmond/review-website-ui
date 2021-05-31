@@ -2,7 +2,7 @@
 export const BrandsPage = () => {
     
     return (
-        <div className="">
+        <div className="app-content">
             Brands
         </div>
     )

@@ -62,9 +62,9 @@ class DropdownButton extends Component {
     render () {
         
         return (
-            <button onClick={this.handleOnClick} className="button-dropdown">
-                {this.props.content}
-            </button>
+            <div onClick={this.handleOnClick} className="dropdown-button" >
+                {this.props.children}
+            </div>
         );
     }
 }
@@ -79,12 +79,12 @@ class AppDropdown extends Component {
     // toggles the drop down when clicked
     toggleDropDown(event){
         // get the drop down DOM and toggle it
-        let dropdown = event.target.parentElement
-            .querySelector(".dropdown-content");
-        if(dropdown.classList.contains('active')){ // already active
-            dropdown.classList.remove("active"); // hide
+        let dropdown = event.target.closest(".app-dropdown");
+        let dropdownContent = dropdown.querySelector(".dropdown-content");
+        if(dropdownContent.classList.contains('active')){ // already active
+            dropdownContent.classList.remove("active"); // hide
         }else{
-            dropdown.classList.add("active"); // show
+            dropdownContent.classList.add("active"); // show
         }
     }
 
@@ -94,8 +94,9 @@ class AppDropdown extends Component {
             <div className="app-dropdown">
                 <DropdownButton 
                     handleOnClick={this.toggleDropDown}
-                    content="Menu"
-                />
+                >
+                    {this.props.children}
+                </DropdownButton>
                 <DropdownContent />
             </div>
         );
