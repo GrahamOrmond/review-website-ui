@@ -5,6 +5,8 @@
     3. PAGE CONTENT
     4. BUTTONS
     5. SEARCH BAR
+    6. DISPLAY CARD
+    7. POST
     10. EXTRAS
 */
 
@@ -18,7 +20,10 @@
     justify-content: center
 }
 
-
+svg {
+    display: block;
+    margin: auto;
+}
 
 /* 
     2. HEADER
@@ -29,6 +34,7 @@
     position: fixed;
     right: 0;
     top: 0;
+    border-bottom: solid 1px #D6D6D7;
     background-color: white;
     display: flex;
     flex-wrap: nowrap;
@@ -56,6 +62,10 @@
         align-items: center;
     }
 
+    .app-header .header-nav .app-button {
+        border: solid 1px #D6D6D7;
+    }
+
 
 /*
     3. PAGE CONTENT
@@ -72,41 +82,20 @@
 */
 
 .app-button{
-    background-color: #FFF;
-    outline: none;
-    border: solid 1px #D6D6D7;
-    border-radius: 2px;
-    padding: 5px 10px;
-    cursor: pointer;
-}
-
-.app-button:hover{
-    background-color: #f5f5f5;
-}
-
-.app-button:active{
-    background-color: #ebebeb;
-}
-
-.app-dropdown {
-}
-
-.dropdown-button {
     margin: auto;
-    border: solid 1px #D6D6D7;
     border-radius: 2px;
     padding: 2px 4px;
 }
 
-.dropdown-button:hover {
+.app-button:hover {
     background-color: #f2f2f2;
 }
 
-.dropdown-button:active {
+.app-button:active {
     background-color: #e6e6e6;
 }
 
-.dropdown-button svg {
+.app-button svg {
     display: block;
     margin: auto;
 }
@@ -119,7 +108,6 @@
     background-color: white;
     border: solid 1px #D6D6D7; 
     border-right: none; 
-    right: 1px;
 }
 
 .dropdown-content.active{
@@ -151,7 +139,9 @@
     background-color: #ebebeb;
 }
 
-/* 5. SEARCH BAR */
+/* 
+    5. SEARCH BAR
+*/
 
 .app-search {
     width: 50vw;
@@ -167,6 +157,123 @@
         border: solid 1px #D6D6D7;
         border-radius: 2px;
     }
+
+
+/* 
+    6. DISPLAY CARD
+*/
+
+.app-card {
+    background-color: #FFF;
+    border: solid #b6b6b7 1px;
+    border-radius: 5px;
+    margin: 10px 0px;
+}
+
+.app-card:hover {
+    cursor: pointer;
+    border: solid #323639 1px;
+}
+
+.app-card:active {
+    background-color: #f2f2f2;
+}
+
+
+
+
+/* 
+    7. POST
+*/
+
+.app-post {
+    padding: 5px 5px 10px 5px;
+}
+
+
+.post-header {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+    .post-header .title h2 {
+        font-size: 5vw;
+    }
+
+    .post-header .post-info {
+        width: 100%;
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+    }
+
+    .post-header .post-info .user-info{
+        display: flex;
+        flex-wrap: nowrap;
+    }
+
+    .post-header .post-info .user-info div{
+        margin: auto;
+        padding: 5px;
+    }
+
+
+    .post-header .post-info .actions{
+        height: 100%;
+        display: flex;
+        align-items: center;
+    }
+
+
+.post-profile-picture { 
+    border: solid 2px #202124;
+    width: 25px;
+    height: 25px;
+    border-radius: 25px;
+    background-color: #323639;
+}
+
+.post-body {
+    margin-bottom: 10px;
+}
+
+.post-footer {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+
+.post-rating div{
+    padding-right: 5px;
+}
+
+.post-notification {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    border: solid #D6D6D7 1px;
+    border-radius: 20px;
+}
+
+.post-notification .value {
+    display: grid;
+    justify-content: center;
+    margin: auto;
+    padding: 0px;
+}
+
+
+.post-notification .value p{
+    margin: auto;
+    padding: 0px;
+}
+
+.post-notification .content {
+    display: flex;
+    justify-content: center;
+    padding: 0px 5px;
+}
 
 /* 
     10. EXTRAS

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
 
+import AppButton from './AppButton';
+
 class DropdownNav extends Component {
 
     constructor(props) {
@@ -52,23 +54,6 @@ class DropdownContent extends Component {
     }
 }
 
-class DropdownButton extends Component {
-
-    constructor(props) {
-        super(props);
-        this.handleOnClick = props.handleOnClick.bind(this);
-    }
-
-    render () {
-        
-        return (
-            <div onClick={this.handleOnClick} className="dropdown-button" >
-                {this.props.children}
-            </div>
-        );
-    }
-}
-
 class AppDropdown extends Component {
 
     constructor(props) {
@@ -92,11 +77,9 @@ class AppDropdown extends Component {
         
         return (
             <div className="app-dropdown">
-                <DropdownButton 
-                    handleOnClick={this.toggleDropDown}
-                >
+                <AppButton handleOnClick={this.toggleDropDown}>
                     {this.props.children}
-                </DropdownButton>
+                </AppButton>
                 <DropdownContent />
             </div>
         );
