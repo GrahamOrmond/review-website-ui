@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import AppList from "../../components/AppList";
+import AppProfile from "../../components/AppProfile";
 
 class BrandsPage extends Component {
 
@@ -35,10 +36,18 @@ class BrandsPage extends Component {
     }
     
     render () {
+        const { brandId } = this.props.match.params;
+        let content = "";
         
+        if(brandId == null){
+            content = <AppList renderList={this.renderBrandsList} />;
+        }else{
+            content = <AppProfile />
+        }
+
         return (
             <div className="app-content">
-                <AppList renderList={this.renderBrandsList} />
+                {content}
             </div>
         );
     }
