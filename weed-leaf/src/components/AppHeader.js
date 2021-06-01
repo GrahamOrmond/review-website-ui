@@ -38,6 +38,10 @@ class HeaderNav extends Component {
                             'link': '/products',
                             'label': 'Products'
                         },
+                        {
+                            'link': '/community',
+                            'label': 'Community'
+                        },
                     ]
                 },
                 {

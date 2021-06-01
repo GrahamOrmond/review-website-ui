@@ -25,6 +25,9 @@ import { BrandsPage } from './pages/brands/BrandsPage'
 // products
 import { ProductsPage } from './pages/products/ProductsPage'
 
+// community
+import { CommunityPage } from './pages/community/CommunityPage'
+
 function App() {
   return (
     <Router>
@@ -34,6 +37,7 @@ function App() {
           <Route exact path="/" component={DashboardPage} />
           <Route exact path="/brands/:brandId?" component={BrandsPage} />
           <Route exact path="/products/:productId?" component={ProductsPage} />
+          <Route exact path="/community/:postId?" component={CommunityPage} />
           <Route exact path="/account/" component={ProfilePage} />
           <Route exact path="/account/login" component={LoginPage} />
           <Route exact path="/account/register" component={RegisterPage} />
