@@ -9,7 +9,8 @@
     7. POST
     8. LIST
     10. FORM
-    11. EXTRAS
+    11. PRODUCT DISPLAY
+    12. EXTRAS
 */
 
 
@@ -76,7 +77,7 @@ button {
     }
 
     .app-header .header-logo {
-        font-size: 3vw;
+        font-size: 12px;
         padding: 0px 15px;
         width: 15%;
     }
@@ -202,10 +203,56 @@ button {
     border: solid #323639 1px;
 }
 
-.app-card:active {
-    background-color: #f2f2f2;
+.card-info {
+
 }
 
+.card-info h5 {
+    border: solid 1px #D6D6D7;
+    background-color: #f3f3f3;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 20px;
+    margin: 0px 5px;
+}
+
+
+.card-info h5:hover {
+    background-color: #e6e6e7;
+}
+
+.card-info h5:active {
+    background-color: #d6d6d7;
+}
+
+.card-badge {
+    display: inline-block;
+    display: flex;
+    align-items: center;
+}
+
+.badge-content {
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.card-badge .badge-image {
+    width: 100%;
+    border: solid 1px #323639;
+    border-radius: 40px;
+    width: 40px;
+    height: 40px;
+    padding: 0px;
+    align-items: center;
+}
+
+
+.card-badge .badge-label {
+    padding: 5px;
+    width: 100%;
+}
 
 
 
@@ -443,9 +490,96 @@ button {
         width: 100%;
     }
 
+/* 
+    11. PRODUCT DISPLAY
+*/
+
+.app-products-display{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.app-product {
+    background-color: #FFF;
+    border: solid #b6b6b7 1px;
+    border-radius: 5px;
+    margin: 10px 0px;
+    padding: 5px 5px 10px 5px;
+    width: 100%;
+}
+
+
+.app-product:hover {
+    cursor: pointer;
+    border: solid #323639 1px;
+}
+
+.product-header {
+}
+
+.product-brand {
+    display: flex;
+    justify-content: center;
+}
+
+.product-header div {
+    padding: 3px 0px;
+    text-align: center;
+}
+
+.product-header h4 {
+    padding: 0px;
+    margin: 0px;
+}
+
+.product-content {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.product-image{
+    background-color: #D6D6D7;
+    min-height: 200px;
+    height: 100%;
+    width: 50%;
+}
+
+.product-image img{
+    padding: 0px;
+}
+
+.product-info {
+    width: 50%;
+    min-height: 200px;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.product-info div {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+
+
+.product-footer{
+    padding: 0px;
+    padding-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+
+.product-rating {
+
+}
+
 
 /* 
-    11. EXTRAS
+    12. EXTRAS
 */
 
 .content-seperator {
