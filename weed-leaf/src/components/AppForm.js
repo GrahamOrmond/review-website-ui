@@ -46,7 +46,42 @@ class AppForm extends Component {
 
     constructor(props) {
         super(props);
+
+        this.state = {
+            'formData': props.formData
+        }
+
+        this.generateForm = this.generateForm.bind(this);
+        this.handleChange = this.handleChange.bind(this);
     }
+
+    generateForm(){
+        let data = []
+        for (const [key, input] of Object.entries(this.state['formData'])) {
+            if(input['type'] == 'select'){
+                continue;
+            }else{
+                data.push(<AppInput 
+                    label={input.label} 
+                    name={key} 
+                    type={input.type} 
+                    placeholder={input.placeholder} 
+                    value={input.value}
+                    handleChange={this.handleChange}
+                />);
+            }
+        }
+        return data;
+    }
+
+    handleChange(event){
+        let newState = this.state.formData;
+        newState[event.target.name].value = event.target.value
+        this.setState({
+            'formData': newState
+        });
+    }
+
     
     render () {
         
@@ -57,7 +92,7 @@ class AppForm extends Component {
                 </div>
 
                 <div className="form-content">
-                    {this.props.children}
+                    { this.generateForm() }
                 </div>
                 <div className="form-footer">
                    <button className="button-blue">{this.props.submitTitle}</button>

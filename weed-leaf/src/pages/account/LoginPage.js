@@ -22,62 +22,30 @@ const loginExtra = () => {
 }
 
 
+const loginForm = () => {
 
-class LoginForm extends Component {
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            'loginData': {
-                'username': '',
-                'password': ''
-            }
+    let loginForm = {
+        'email': {
+            'label': 'Email',
+            'type': 'text',
+            'placehoder': '',
+            'value': ''
+        },
+        'password': {
+            'label': 'Password',
+            'type': 'password',
+            'placehoder': '',
+            'value': ''
         }
-
-        this.updateInput = this.updateInput.bind(this);
     }
 
-    updateInput(event){
-        console.log(event.target.name)
-        console.log(event.target.value)
-
-        let newState = this.state.loginData;
-        console.log(newState)
-        newState[event.target.name] = event.target.value
-        this.setState({
-            'loginData': newState
-        });
-
-        console.log(this.state)
-    }
-
-
-    render () {
-        return (
-            <AppForm 
-                title="Login"
-                submitTitle="Log In"
-            >
-                <AppInput 
-                    label="Email" 
-                    name="username"
-                    type="text" 
-                    placeholder="" 
-                    value={this.state.loginData.username}
-                    handleChange={this.updateInput}
-                />
-                <AppInput 
-                    label="Password" 
-                    name="password"
-                    type="password" 
-                    placeholder="" 
-                    value={this.state.loginData.password}
-                    handleChange={this.updateInput}
-                />
-            </AppForm>
-        );
-    }
+    return (
+        <AppForm 
+            title="Login"
+            submitTitle="Log In"
+            formData={loginForm}
+        />
+    );
 }
 
 class LoginPage extends Component {
@@ -92,7 +60,7 @@ class LoginPage extends Component {
         return (
             <div>
                <AppCard >
-                    <LoginForm />
+                    { loginForm() }
                     { loginExtra() }
                 </AppCard> 
             </div>
