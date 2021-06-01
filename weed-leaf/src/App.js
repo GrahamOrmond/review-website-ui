@@ -16,6 +16,9 @@ import { LoginPage } from './pages/account/LoginPage'
 import { RegisterPage } from './pages/account/RegisterPage'
 import { ProfilePage } from './pages/account/ProfilePage'
 
+// about
+import { AboutPage } from './pages/about/AboutPage'
+
 // brands
 import { BrandsPage } from './pages/brands/BrandsPage'
 
@@ -34,6 +37,7 @@ function App() {
           <Route exact path="/account/" component={ProfilePage} />
           <Route exact path="/account/login" component={LoginPage} />
           <Route exact path="/account/register" component={RegisterPage} />
+          <Route exact path="/about/:page" component={AboutPage} />
           <Redirect to="/" />
         </Switch>
       </div>

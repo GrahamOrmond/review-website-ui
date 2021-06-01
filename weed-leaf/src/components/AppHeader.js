@@ -44,7 +44,7 @@ class HeaderNav extends Component {
                     "title": "account",
                     "links": [
                         {
-                            'link': 'account/login',
+                            'link': '/account/login',
                             'label': 'Log In / Sign Up'
                         },
                     ]
@@ -52,6 +52,8 @@ class HeaderNav extends Component {
             ]
         }
     }
+
+    
 
     render () {
         

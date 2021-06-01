@@ -11,7 +11,7 @@ const loginExtra = () => {
     return (
         <div className="login-extra">
             <div className="login-info">
-                <p>By continuing, you agree to our <Link to="/">User Agreement</Link> and <Link to="/">Privacy Policy</Link>.</p>
+                <p>By continuing, you agree to our <Link to="/about/user-agreement">User Agreement</Link> and <Link to="/about/privacy-policy">Privacy Policy</Link>.</p>
             </div>
             <div className="login-info">
                 <p><Link to="/account/register">Forgot your username or password?</Link></p>

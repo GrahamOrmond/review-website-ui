@@ -9,7 +9,7 @@ class AppSelect extends Component {
     render () {
         
         return (
-            <div class="form-input">
+            <div className="form-input">
                 <label>{this.props.label}</label>
                 <select></select>
             </div>
@@ -28,7 +28,7 @@ class AppInput extends Component {
     render () {
         
         return (
-            <div class="form-input">
+            <div className="form-input">
                 <label>{this.props.label}</label>
                 <input 
                     name={this.props.name}
