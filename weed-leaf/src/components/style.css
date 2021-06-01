@@ -8,7 +8,8 @@
     6. DISPLAY CARD
     7. POST
     8. LIST
-    10. EXTRAS
+    10. FORM
+    11. EXTRAS
 */
 
 
@@ -24,6 +25,32 @@
 svg {
     display: block;
     margin: auto;
+}
+
+input {
+    border: solid 1px #D6D6D7;
+    border-radius: 3px;
+    height: 25px;
+    width: calc(100% - 10px);
+    padding: 0px 5px;
+    margin: 0px;
+}
+
+input:focus {
+    outline: 1px solid #c1c1c2;
+}
+
+
+button {
+    border: none;
+    background-color: #FFF;
+    border-radius: 25px;
+    font-size: 14px;
+    padding: 10px 15px;
+}
+
+.button-blue {
+    background-color: #2196f3;
 }
 
 /* 
@@ -73,7 +100,7 @@ svg {
 */
 
 .app-content {
-    max-width: 900px;
+    max-width: 1100px;
     width: 100%;
 }
 
@@ -155,8 +182,6 @@ svg {
     .app-search input  {
         max-width: 700px;
         width: 50vw;
-        border: solid 1px #D6D6D7;
-        border-radius: 2px;
     }
 
 
@@ -169,6 +194,7 @@ svg {
     border: solid #b6b6b7 1px;
     border-radius: 5px;
     margin: 10px 0px;
+    padding: 5px 5px 10px 5px;
 }
 
 .app-card:hover {
@@ -188,7 +214,6 @@ svg {
 */
 
 .app-post {
-    padding: 5px 5px 10px 5px;
 }
 
 
@@ -281,7 +306,6 @@ svg {
 */
 
 .app-list{
-    padding: 5px 5px 10px 5px;
 }
 
 .app-list .list-title {
@@ -367,9 +391,61 @@ svg {
     background: #202124;
   }
 
+/* 
+    10. FORM
+*/
+
+.app-form {
+    padding: 5px
+}
+
+.form-header {
+    padding: 0px;
+    margin: 0px;
+}
+
+    .form-header h4 {
+        padding: 5px 0px;
+        margin: 0px;
+        font-size: 28px
+    }
+
+.form-content {
+    width: 100%;
+    padding: 10px 0px;
+}
+
+
+.form-input {
+    margin-bottom: 10px;
+}
+
+    .form-input label {
+        margin-bottom: 5px;
+        font-size: 16px;
+        display: block;
+    }
+
+    .form-input input {
+        display: block;
+    }
+
+    .form-input select {
+        
+    }
+
+    .form-footer {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .form-footer button {
+        width: 100%;
+    }
+
 
 /* 
-    10. EXTRAS
+    11. EXTRAS
 */
 
 .content-seperator {
