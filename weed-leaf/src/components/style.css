@@ -12,7 +12,8 @@
     11. PRODUCT DISPLAY
     12. PROFILE
     13. SHOWCASE
-    14. EXTRAS
+    14. FILTER
+    15. EXTRAS
 */
 
 
@@ -723,6 +724,67 @@ a {
     padding: 0px;
     margin: 0px;
 }
+
+/* 
+    15. FILTER
+*/
+
+.app-filter {
+    display: flex;
+
+}
+
+.filter-content {
+    padding: 5px;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filter-buttons{
+    display: flex;
+}
+
+.filter-view {
+    width: 100%;
+}
+
+.filter-input {
+    padding: 5px;
+    width: 100%;
+}
+
+.filter-input select {
+    width: 100%;
+    border: solid 1px;
+}
+
+.filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.filter-button {
+    margin: 5px;
+    padding: 5px 10px;
+    border: solid 1px #323639;
+    border-radius: 25px;
+
+}
+
+.filter-button:hover {
+    background-color: #D6D6D7;
+}
+
+.filter-button:active {
+    background-color: #c1c1c2;
+}
+
+.filter-button.active {
+    background-color: #c1c1c2;
+}
+
 
 /* 
     14. EXTRAS
