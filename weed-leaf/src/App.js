@@ -8,24 +8,21 @@ import {
   Redirect,
 } from 'react-router-dom'
 
-// pages
-import { DashboardPage } from './pages/dashboard/DashboardPage'
-
-// account
+// account pages
 import { LoginPage } from './pages/account/LoginPage'
 import { RegisterPage } from './pages/account/RegisterPage'
 import { ProfilePage } from './pages/account/ProfilePage'
 
-// about
+// about pages
 import { AboutPage } from './pages/about/AboutPage'
 
-// brands
+// brands pages
 import { BrandsPage } from './pages/brands/BrandsPage'
 
-// products
+// products pages
 import { ProductsPage } from './pages/products/ProductsPage'
 
-// community
+// community pages
 import { CommunityPage } from './pages/community/CommunityPage'
 
 function App() {
@@ -34,7 +31,6 @@ function App() {
       <AppHeader />
       <div className="app">
         <Switch>
-          <Route exact path="/" component={DashboardPage} />
           <Route exact path="/brands/:brandId?/:productLink?/:postsType?/:postLink?" 
             component={BrandsPage} 
           />
@@ -44,6 +40,7 @@ function App() {
           <Route exact path="/account/login" component={LoginPage} />
           <Route exact path="/account/register" component={RegisterPage} />
           <Route exact path="/about/:page" component={AboutPage} />
+          <Route exact path="/" component={CommunityPage} />
           <Redirect to="/" />
         </Switch>
       </div>

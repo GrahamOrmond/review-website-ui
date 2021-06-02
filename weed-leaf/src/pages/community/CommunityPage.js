@@ -1,4 +1,25 @@
 import React, { Component } from 'react';
+import AppFilter from '../../components/AppFilter'
+import AppPost from '../../components/AppPost'
+
+class CommunityThreads extends Component {
+
+    constructor(props) {
+        super(props);
+    }
+    
+    render () {
+        return (
+            <div>
+                <AppFilter />
+                <AppPost />
+                <AppPost />
+                <AppPost />
+                <AppPost />
+            </div>
+        );
+    }
+}
 
 class CommunityPage extends Component {
 
@@ -11,7 +32,7 @@ class CommunityPage extends Component {
         let content = "";
         
         if(postId == null){
-            content = "";
+            content = <CommunityThreads />;
         }else{
             content = ""
         }
