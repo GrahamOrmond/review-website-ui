@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import AppProfile from "../../components/AppProfile";
-import AppProductsDisplay from "../../components/AppProductsDisplay"
+import AppProductsDisplay from "../../components/AppProductsDisplay" 
+
+
+import products from './productsData';
+
 
 class ProductsPage extends Component {
 
@@ -13,7 +17,9 @@ class ProductsPage extends Component {
         let content = "";
         
         if(productId == null){
-            content = <AppProductsDisplay/>;
+            content = <AppProductsDisplay
+                products={products}
+            />;
         }else{
             content = <AppProfile />
         }

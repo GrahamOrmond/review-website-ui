@@ -54,6 +54,11 @@ button {
     background-color: #2196f3;
 }
 
+a {
+    text-decoration: none;
+    color: black;
+}
+
 /* 
     2. HEADER
 */
