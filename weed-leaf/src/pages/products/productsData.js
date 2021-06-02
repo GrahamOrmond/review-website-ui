@@ -4,7 +4,7 @@ export default
         "productId": "1",
         "type": "flower",
         "title": "Garlic Breath",
-        "brand": "CARAMEL",
+        "brand": "CARMEL",
         "rating": "5 Stars",
         "data": {
             "description": {
@@ -38,7 +38,7 @@ export default
         "productId": "2",
         "type": "flower",
         "title": "Drew's Dark Helmet",
-        "brand": "CARAMEL",
+        "brand": "CARMEL",
         "rating": "5 Stars",
         "data": {
             "description": {

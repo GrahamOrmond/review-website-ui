@@ -10,7 +10,9 @@
     8. LIST
     10. FORM
     11. PRODUCT DISPLAY
-    12. EXTRAS
+    12. PROFILE
+    13. SHOWCASE
+    14. EXTRAS
 */
 
 
@@ -582,9 +584,148 @@ a {
 
 }
 
+/* 
+    12. PROFILE
+*/
+
+.app-profile {
+    padding: 10px 5px;
+}
+
+.profile-header {
+}
+
+.profile-display {
+    display: flex;
+}
+
+.profile-display .profile-image {
+    height: 100px;
+    width: 100px;
+    border: solid;
+    border-radius: 100px;
+}
+
+.profile-display .profile-info {
+    padding-left: 5px;
+    width: calc(100% - 105px);
+}
+
+.profile-title{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    align-content: center;
+}
+
+.profile-title h4, h5 {
+    margin: 0px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+.profile-title h4 {
+    width: 100%;
+}
+
+.profile-title h5 {
+    border: solid 1px #D6D6D7;
+    background-color: #f3f3f3;
+    padding: 0px 5px;
+    cursor: pointer;
+    border-radius: 20px;
+}
+
+
+.profile-title h5:hover {
+    background-color: #e6e6e7;
+}
+
+.profile-title h5:active {
+    background-color: #d6d6d7;
+}
+
+.profile-action{
+    height: 100%;
+}
+
+.profile-follow {
+    border: solid 1px;
+    padding: 5px 10px;
+    border-radius: 25px;
+}
+
+.profile-description{
+    padding-top: 5px;
+    font-size: 14px;
+}
+
+.profile-info-section {
+    display: flex;
+    align-items: center;
+}
+
+.profile-content {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.profile-showcase {
+    width: 100%;
+    border: solid;
+    display: flex;
+    flex-wrap: wrap;
+}
+
 
 /* 
-    12. EXTRAS
+    13. SHOWCASE
+*/
+
+.app-showcase {
+    width: 100%;
+}
+
+.showcase-title {
+    padding: 5px;
+    margin: 0px 5px;
+    border-bottom: solid 1px #D6D6D7;
+}
+
+.showcase-title h4 {
+    padding: 0px;
+    margin: 0px;
+    font-size: 18px
+}
+
+.showcase-display {
+    padding: 5px 0px;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.showcase-item {
+    margin: 5px;
+    border: solid 1px;
+    border-radius: 100px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.showcase-item p {
+    padding: 0px;
+    margin: 0px;
+}
+
+/* 
+    14. EXTRAS
 */
 
 .content-seperator {
