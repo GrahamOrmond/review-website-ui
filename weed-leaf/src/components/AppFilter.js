@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import AppCard from './AppCard'
 
 class AppFilter extends Component {
 
@@ -9,34 +10,41 @@ class AppFilter extends Component {
     render () {
         
         return (
-            <div className="app-filter">
-                <div className="filter-content">
-                    
+            <AppCard>
+                <div className="app-filter">
+                    <div className="filter-content">
+                        <div className="filter-input">
+                            <select>
+                                <option id="reviews">Reviews</option>
+                                <option id="questions">questions</option>
+                                <option id="threads">Threads</option>
+                            </select>
 
-                    <div className="filter-view">
-                        <div className="filter-buttons">
-                            <div className="filter-button active">
-                                New
-                            </div>
-                            <div className="filter-button">
-                                Trending
-                            </div>
-                            <div className="filter-button">
-                                Top
+                            <select>
+                                <option id="1">1 Star</option>
+                                <option id="2">2 Stars</option>
+                                <option id="3">3 Stars</option>
+                                <option id="4">4 Stars</option>
+                                <option id="5">5 Stars</option>
+                            </select>
+                        </div> 
+
+                        <div className="filter-view">
+                            <div className="filter-buttons">
+                                <div className="filter-button active">
+                                    New
+                                </div>
+                                <div className="filter-button">
+                                    Trending
+                                </div>
+                                <div className="filter-button">
+                                    Top
+                                </div>
                             </div>
                         </div>
                     </div>
-                                
-                    <div className="filter-input">
-                        <select value="reviews">
-                            <option id="reviews">Reviews</option>
-                            <option id="questions">questions</option>
-                            <option id="threads">Threads</option>
-                        </select>
-                    </div>
-                    
                 </div>
-            </div>
+            </AppCard>
         );
     }
 }

@@ -31,7 +31,7 @@ svg {
     margin: auto;
 }
 
-input {
+input, select {
     border: solid 1px #D6D6D7;
     border-radius: 3px;
     height: 25px;
@@ -40,10 +40,9 @@ input {
     margin: 0px;
 }
 
-input:focus {
+input:focus, select:focus {
     outline: 1px solid #c1c1c2;
 }
-
 
 button {
     border: none;
@@ -590,7 +589,8 @@ a {
 */
 
 .app-profile {
-    padding: 10px 5px;
+    padding: 5px;
+    padding-top: 0px;
 }
 
 .profile-header {
@@ -753,11 +753,13 @@ a {
 .filter-input {
     padding: 5px;
     width: 100%;
+    display: flex;
+    justify-content: space-between;
 }
 
 .filter-input select {
-    width: 100%;
-    border: solid 1px;
+    margin: 5px;
+    width: 45%;
 }
 
 .filter-buttons {
@@ -768,21 +770,21 @@ a {
 .filter-button {
     margin: 5px;
     padding: 5px 10px;
-    border: solid 1px #323639;
+    border: solid 1px #D6D6D7;
     border-radius: 25px;
 
 }
 
 .filter-button:hover {
-    background-color: #D6D6D7;
+    background-color: #ebebeb;
 }
 
 .filter-button:active {
-    background-color: #c1c1c2;
+    background-color: #e2e2e3;
 }
 
 .filter-button.active {
-    background-color: #c1c1c2;
+    background-color: #e2e2e3;
 }
 
 
