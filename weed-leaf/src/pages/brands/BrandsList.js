@@ -1,10 +1,6 @@
 import { Link } from 'react-router-dom'
 import React, { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-
-import {
-    fetchBrands,
-} from './brandsSlice'
+import { useSelector } from 'react-redux'
 
 function renderList(brandsData){
     let brandSorted = [...brandsData];
@@ -64,12 +60,10 @@ export const BrandsList = () => {
     const brands = useSelector(state => state.brands.brands)
     const status = useSelector((state) => state.brands.status)
     const error = useSelector((state) => state.brands.error)
-    const dispatch = useDispatch()
+
     useEffect(() => {
-        if (status === 'idle') {
-          dispatch(fetchBrands())
-        }
-    }, [status, dispatch])
+        window.scrollTo(0, 0)
+    }, [])
     
     let content;
     if (status === 'loading') {
@@ -80,12 +74,9 @@ export const BrandsList = () => {
         content = (<div>{error}</div>)
     }
 
-    console.log(content);
-
     return (
         <div className="list-content">
             {content}
         </div>
-        
     );
 }

@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 
 import AppList from "../../components/AppList";
 import AppProfile from "../../components/AppProfile";
 
 import { BrandsList } from './BrandsList'
+import { BrandProfile } from './BrandProfile'
 
 class BrandsPage extends Component {
 
@@ -12,6 +13,8 @@ class BrandsPage extends Component {
     }
     
     render () {
+        
+
         const { brandId } = this.props.match.params;
         let content = "";
         
@@ -25,7 +28,9 @@ class BrandsPage extends Component {
                 </AppList>
             );
         }else{
-            content = <AppProfile />
+            content = (<React.Fragment>
+                <BrandProfile brandId={brandId} />
+            </React.Fragment>);
         }
 
         return (

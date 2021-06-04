@@ -14,6 +14,21 @@ class ProfileHeader extends Component {
     }
     
     render () {
+
+        let secondaryTitle;
+        if(this.props.brand !== undefined){
+            secondaryTitle = (
+                <div className="profile-info-section">
+                    <div className="profile-title">
+                        By 
+                        <Link to="/brands/Carmel">
+                            <h5>{this.props.brand.name}</h5>
+                        </Link>
+                    </div>
+                </div>
+            )
+        }
+
         
         return (
            <div className="profile-header">
@@ -24,7 +39,7 @@ class ProfileHeader extends Component {
                     <div className="profile-info">
                         <div className="profile-info-section">
                             <div className="profile-title">
-                                <h4>Garlic Breath</h4>
+                                <h4>{this.props.title}</h4>
                             </div>
                             <div className="profile-action">
                                 <div className="profile-follow">
@@ -32,19 +47,13 @@ class ProfileHeader extends Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="profile-info-section">
-                            <div className="profile-title">
-                                By 
-                                <Link to="/brands/Carmel">
-                                    <h5>CARMEL</h5>
-                                </Link>
-                            </div>
-                        </div>
+
+                        
                     </div>
                 </div>
                 <div className="profile-info-section">
                     <div className="profile-description">
-                        Bred by Thug Pug Genetics in Michigan, Garlic Breath is an Indica dominant hybrid created through crossing GMO with his notorious ""Studly"" Mendo Breath male. This strain features long dense buds covered in resin that deliver unparalleled bag appeal. This strain stays true to its name with a funky aroma of crushed garlic and coffee. The flavours are rich and earthy with a sweet, herbal taste on the exhale. Because it’s just the right thing to do, all our flower is hang dried, hand trimmed, slow cold cured, and hand packaged. We believe fresh and terpy is best, so all our flower is packaged in a nitrogen flushed pouch that features a perfect airtight seal. Non irradiated, obviously.
+                        {this.props.description}
                     </div>
                 </div>
             </div>
@@ -63,7 +72,6 @@ class ProfileThreads extends Component {
 
     renderPosts(){
         let posts = [];
-        console.log(postData);
         postData.forEach(post => {
             posts.push(<AppPost />);
         });
@@ -112,7 +120,11 @@ class AppProfile extends Component {
         return (
             <div className="app-profile">
                 <AppCard>
-                    <ProfileHeader />
+                    <ProfileHeader 
+                    title={this.props.title}
+                    description={this.props.description}
+                    rating={this.props.rating}    
+                />
                 </AppCard>
                 <AppCard>
                     <ProfileStats />

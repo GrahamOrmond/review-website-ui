@@ -18,6 +18,12 @@ export const fetchBrands = createAsyncThunk('brands/fetchBrands', async () => {
   return response.brands
 })
 
+export const selectAllBrands = state => state.brands
+
+export const selectBrandById = (state, brandId) => {
+  return state.brands.brands.find(brand => brand.brandId === brandId);
+} 
+
 // setup slice
 export const brandSlice = createSlice({
   name: 'brands',
