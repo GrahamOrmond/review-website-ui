@@ -3,36 +3,12 @@ import React, { Component } from 'react';
 import AppList from "../../components/AppList";
 import AppProfile from "../../components/AppProfile";
 
+import { BrandsList } from './BrandsList'
+
 class BrandsPage extends Component {
 
     constructor(props) {
         super(props);
-
-        this.renderBrandsList = this.renderBrandsList.bind(this);
-    }
-
-    renderBrandsList = () => {
-        const list = [
-            "Ace Valley", "Acreage Pharms", "Affirma", "AHLOT",
-            "AltaVie", "Ankr Organics", "Apothecanna", "Apothecary Labs",
-            "Artisan Batch", "Aurora Drift", "Aurora", "Axea"];
-
-        let content = []
-        list.forEach(element => {
-            content.push(<div>
-                    {element}           
-            </div>)
-        });
-        return (
-            <div className="list-section">
-                <div className="section-title">
-                    <h2>A</h2>
-                </div>
-                <div className="section-content">
-                       {content}         
-                </div>
-            </div>
-        ); 
     }
     
     render () {
@@ -40,7 +16,14 @@ class BrandsPage extends Component {
         let content = "";
         
         if(brandId == null){
-            content = <AppList renderList={this.renderBrandsList} />;
+
+            content = (
+                <AppList title="Browse Brands from A - Z">
+                    <React.Fragment>
+                        <BrandsList />
+                    </React.Fragment>
+                </AppList>
+            );
         }else{
             content = <AppProfile />
         }
