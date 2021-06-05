@@ -5,8 +5,6 @@ import AppShowcase from './AppShowcase'
 import AppPost from './AppPost'
 import AppFilter from './AppFilter';
 
-import postData from '../pages/products/postData'
-
 class ProfileHeader extends Component {
 
     constructor(props) {
@@ -68,11 +66,12 @@ class ProfileThreads extends Component {
         super(props);
 
         this.renderPosts = this.renderPosts.bind(this);
+        this.postData = [];
     }
 
     renderPosts(){
         let posts = [];
-        postData.forEach(post => {
+        this.postData.forEach(post => {
             posts.push(<AppPost />);
         });
         return posts;

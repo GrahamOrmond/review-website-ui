@@ -3,9 +3,6 @@ import AppProfile from "../../components/AppProfile";
 import AppProductsDisplay from "../../components/AppProductsDisplay" 
 
 
-import products from './productsData';
-
-
 class ProductsPage extends Component {
 
     constructor(props) {
@@ -18,7 +15,7 @@ class ProductsPage extends Component {
         
         if(productId == null){
             content = <AppProductsDisplay
-                products={products}
+                products={[]}
             />;
         }else{
             content = <AppProfile />

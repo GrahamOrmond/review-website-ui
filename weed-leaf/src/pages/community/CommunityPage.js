@@ -12,10 +12,6 @@ class CommunityThreads extends Component {
         return (
             <div>
                 <AppFilter />
-                <AppPost />
-                <AppPost />
-                <AppPost />
-                <AppPost />
             </div>
         );
     }
