@@ -25,16 +25,24 @@ import { ProductsPage } from './pages/products/ProductsPage'
 // community pages
 import { CommunityPage } from './pages/community/CommunityPage'
 
+// redux store
+import { store } from './store/store';
+import { fetchBrands } from './pages/brands/brandsSlice';
+import { fetchProducts } from './pages/products/productsSlice';
+
+store.dispatch(fetchBrands());
+store.dispatch(fetchProducts());
+
 function App() {
   return (
     <Router>
       <AppHeader />
       <div className="app">
         <Switch>
-          <Route exact path="/brands/:brandId?/:productLink?/:postsType?/:postLink?" 
+          <Route exact path="/brands/:brandId?/:postsType?/:postLink?" 
             component={BrandsPage} 
           />
-          <Route exact path="/products" component={ProductsPage} />
+          <Route exact path="/products/:brandId?/:productId?/:postsType?/:postLink?" component={ProductsPage} />
           <Route exact path="/community/" component={CommunityPage} />
           <Route exact path="/account/" component={ProfilePage} />
           <Route exact path="/account/login" component={LoginPage} />

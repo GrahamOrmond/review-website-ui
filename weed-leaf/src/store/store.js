@@ -1,11 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import brandsReducer, { fetchBrands } from '../pages/brands/brandsSlice'
+import brandsReducer from '../pages/brands/brandsSlice'
+import productsReducer from '../pages/products/productsSlice'
 
 export const store = configureStore({
   reducer: {
-    brands: brandsReducer
+    brands: brandsReducer,
+    products: productsReducer
   },
 });
-
-store.dispatch(fetchBrands());

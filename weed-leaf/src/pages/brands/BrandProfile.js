@@ -18,7 +18,6 @@ export const BrandProfile = (props) => {
         if (brand !== null) { // brand loaded
             if(brand.brandId === props.brandId) // matches id
                 return;
-            console.log("cla")
             dispatch(clearBrandView()) // clear brand if not matching
         }
         dispatch(fetchBrand(props.brandId)) // fetch brand by id

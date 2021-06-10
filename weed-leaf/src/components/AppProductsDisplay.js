@@ -188,19 +188,21 @@ class AppProduct extends Component {
     }
 
     render(){
+        const product = this.props.product
+        console.log(product)
         return (
             <div className="app-product">
-                <Link to={`/brands/${this.props.brand}/${this.props.productId}`}>
+                <Link to={`/products/${product.brandId}/${product.urlId}`}>
                     <ProductHeader 
-                        brand={this.props.brand}
-                        title={this.props.title}
-                        rating={this.props.rating}
+                        brand={product.brandName}
+                        title={product.name}
+                        rating={product.rating}
                     />
                     <ProductContent 
-                        type={this.props.type}
-                        content={this.props.data}
+                        type={product.type}
+                        content={product.data}
                     />
-                    <ProductFooter posts={this.props.posts}/>
+                    <ProductFooter posts={product.posts}/>
                 </Link>
             </div>
         );
@@ -212,26 +214,14 @@ class AppProductsDisplay extends Component {
 
     constructor(props) {
         super(props);
-
-        this.renderProducts = this.renderProducts.bind(this);
     }
 
-    renderProducts(){
-        let productsList = []
-        this.props.products.forEach(product => {
-            productsList.push(<AppProduct
-                key={product.productId}
-                data={product}
-            />);
-        });
-        return productsList;
-    }
 
     render(){
         return (
             <div className="app-products-display">
                 <AppFilter />
-                {this.renderProducts()}
+                {this.props.children}
             </div>
         );
     }
