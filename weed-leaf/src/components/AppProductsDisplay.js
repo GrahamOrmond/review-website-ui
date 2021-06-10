@@ -189,7 +189,6 @@ class AppProduct extends Component {
 
     render(){
         const product = this.props.product
-        console.log(product)
         return (
             <div className="app-product">
                 <Link to={`/products/${product.brandId}/${product.urlId}`}>

@@ -3,6 +3,7 @@ import queryString from 'query-string';
 import AppProfile from "../../components/AppProfile";
 import { AppProductsDisplay } from "../../components/AppProductsDisplay" 
 import { ProductsList } from "./ProductsList" 
+import { ProductProfile } from './ProductProfile';
 
 
 class ProductsPage extends Component {
@@ -13,10 +14,10 @@ class ProductsPage extends Component {
     
     render () {
 
-        const { brandId, productId } = this.props.match.params;
+        const { brandId, productUrlId } = this.props.match.params;
         let content = "";
         
-        if(productId == null){
+        if(productUrlId == null){
             let params = queryString.parse(this.props.location.search);
             content = (
                 <AppProductsDisplay>
@@ -27,6 +28,9 @@ class ProductsPage extends Component {
             );
         }else{
             content = (<React.Fragment>
+                <ProductProfile
+                    brandId={brandId}
+                    productUrlId={productUrlId} />
             </React.Fragment>);
         }
 
