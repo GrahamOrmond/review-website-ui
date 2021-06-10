@@ -11,15 +11,15 @@ class BrandsPage extends Component {
     constructor(props) {
         super(props);
     }
-    
+
     render () {
-        
+
 
         const { brandId } = this.props.match.params;
         let content = "";
         
         if(brandId == null){
-
+            
             content = (
                 <AppList title="Browse Brands from A - Z">
                     <React.Fragment>

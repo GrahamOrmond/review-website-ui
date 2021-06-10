@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
+import { selectBrandsListInfo } from './brandsSlice';
 
 function renderList(brandsData){
     let brandSorted = [...brandsData];
@@ -57,21 +58,18 @@ function renderList(brandsData){
 
 
 export const BrandsList = () => {
-    const brands = useSelector(state => state.brands.brands)
-    const status = useSelector((state) => state.brands.status)
-    const error = useSelector((state) => state.brands.error)
-
+    const brandsInfo = useSelector(selectBrandsListInfo);
     useEffect(() => {
         window.scrollTo(0, 0)
     }, [])
     
     let content;
-    if (status === 'loading') {
+    if (brandsInfo.status === 'loading') {
         content = (<div className="loader">Loading...</div>)
-    } else if (status === 'succeeded') {
-        content = renderList(brands);
-    } else if (status === 'error') {
-        content = (<div>{error}</div>)
+    } else if (brandsInfo.status === 'succeeded') {
+        content = renderList(brandsInfo.brands);
+    } else if (brandsInfo.status === 'error') {
+        content = (<div>{brandsInfo.error}</div>)
     }
 
     return (
