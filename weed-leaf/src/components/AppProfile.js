@@ -60,53 +60,6 @@ class ProfileHeader extends Component {
 }
 
 
-class ProfileThreads extends Component {
-
-    constructor(props) {
-        super(props);
-
-        this.renderPosts = this.renderPosts.bind(this);
-        this.postData = [];
-    }
-
-    renderPosts(){
-        let posts = [];
-        this.postData.forEach(post => {
-            posts.push(<AppPost />);
-        });
-        return posts;
-    }
-    
-    render () {
-        
-        return (
-            <div>
-                <AppFilter />
-                {this.renderPosts()}
-            </div>
-        );
-    }
-}
-
-
-class ProfileStats extends Component {
-
-    constructor(props) {
-        super(props);
-    }
-    
-    render () {
-        
-        return (
-           <div className="profile-content">
-               <AppShowcase />
-            </div>
-        );
-    }
-}
-
-
-
 
 class AppProfile extends Component {
 
@@ -122,13 +75,9 @@ class AppProfile extends Component {
                     <ProfileHeader 
                     title={this.props.title}
                     description={this.props.description}
-                    rating={this.props.rating}    
-                />
+                    rating={this.props.rating}    />
                 </AppCard>
-                <AppCard>
-                    <ProfileStats />
-                </AppCard>
-                <ProfileThreads />
+                {this.props.children}
             </div>
         );
     }

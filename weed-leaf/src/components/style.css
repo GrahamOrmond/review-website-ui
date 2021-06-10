@@ -121,6 +121,7 @@ a {
     margin: auto;
     border-radius: 2px;
     padding: 2px 4px;
+    cursor: pointer;
 }
 
 .app-button:hover {
@@ -130,6 +131,11 @@ a {
 .app-button:active {
     background-color: #e6e6e6;
 }
+
+.app-button.active{
+    background-color: #e6e6e6;
+}
+
 
 .app-button svg {
     display: block;
@@ -202,12 +208,6 @@ a {
     border: solid #b6b6b7 1px;
     border-radius: 5px;
     margin: 10px 0px;
-    padding: 5px 5px 10px 5px;
-}
-
-.app-card:hover {
-    cursor: pointer;
-    border: solid #323639 1px;
 }
 
 .card-info {
@@ -716,6 +716,21 @@ a {
     flex-wrap: wrap;
 }
 
+.showcase-action {
+    border: solid 1px #D6D6D7;
+    border-bottom: none;
+    height: 25px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    margin: 0%;
+    padding: 0%;
+}
+
+
+
+
 .showcase-item {
     margin: 5px;
     border: solid 1px;
@@ -780,21 +795,7 @@ a {
     padding: 5px 10px;
     border: solid 1px #D6D6D7;
     border-radius: 25px;
-
 }
-
-.filter-button:hover {
-    background-color: #ebebeb;
-}
-
-.filter-button:active {
-    background-color: #e2e2e3;
-}
-
-.filter-button.active {
-    background-color: #e2e2e3;
-}
-
 
 /* 
     14. EXTRAS

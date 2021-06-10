@@ -31,13 +31,13 @@ class AppFilter extends Component {
 
                         <div className="filter-view">
                             <div className="filter-buttons">
-                                <div className="filter-button active">
+                                <div className="app-button filter-button active">
                                     New
                                 </div>
-                                <div className="filter-button">
+                                <div className="app-button filter-button">
                                     Trending
                                 </div>
-                                <div className="filter-button">
+                                <div className="app-button filter-button">
                                     Top
                                 </div>
                             </div>

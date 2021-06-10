@@ -34,7 +34,7 @@ function App() {
           <Route exact path="/brands/:brandId?/:productLink?/:postsType?/:postLink?" 
             component={BrandsPage} 
           />
-          <Route exact path="/products/" component={ProductsPage} />
+          <Route exact path="/products" component={ProductsPage} />
           <Route exact path="/community/" component={CommunityPage} />
           <Route exact path="/account/" component={ProfilePage} />
           <Route exact path="/account/login" component={LoginPage} />

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
+import AppFilter from './AppFilter';
 
 
 class ProductFooter extends Component {
@@ -13,17 +14,17 @@ class ProductFooter extends Component {
             <div className="product-footer">
                 <div className="card-info">
                     <h5>
-                        {this.props.posts.reviews.count} Reviews
+                        11 Reviews
                     </h5>
                 </div>
                 <div className="card-info">
                     <h5>
-                        {this.props.posts.questions.count} Questions
+                        12 Questions
                     </h5>
                 </div>
                 <div className="card-info">
                     <h5>
-                        {this.props.posts.threads.count} Threads
+                        13 Threads
                     </h5>
                 </div>
             </div>
@@ -189,17 +190,17 @@ class AppProduct extends Component {
     render(){
         return (
             <div className="app-product">
-                <Link to={`/brands/${this.props.data.brand}/${this.props.data.productId}`}>
+                <Link to={`/brands/${this.props.brand}/${this.props.productId}`}>
                     <ProductHeader 
-                        brand={this.props.data.brand}
-                        title={this.props.data.title}
-                        rating={this.props.data.rating}
+                        brand={this.props.brand}
+                        title={this.props.title}
+                        rating={this.props.rating}
                     />
                     <ProductContent 
-                        type={this.props.data.type}
-                        content={this.props.data.data}
+                        type={this.props.type}
+                        content={this.props.data}
                     />
-                    <ProductFooter posts={this.props.data.posts}/>
+                    <ProductFooter posts={this.props.posts}/>
                 </Link>
             </div>
         );
@@ -229,10 +230,11 @@ class AppProductsDisplay extends Component {
     render(){
         return (
             <div className="app-products-display">
+                <AppFilter />
                 {this.renderProducts()}
             </div>
         );
     }
 
 }
-export default AppProductsDisplay;
+export { AppProductsDisplay, AppProduct };

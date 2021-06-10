@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import queryString from 'query-string';
 import AppProfile from "../../components/AppProfile";
-import AppProductsDisplay from "../../components/AppProductsDisplay" 
+import { AppProductsDisplay } from "../../components/AppProductsDisplay" 
 
 
 class ProductsPage extends Component {
@@ -10,16 +11,13 @@ class ProductsPage extends Component {
     }
     
     render () {
-        const { productId } = this.props.match.params;
+        let params = queryString.parse(this.props.location.search);
+        console.log(params)
         let content = "";
         
-        if(productId == null){
-            content = <AppProductsDisplay
-                products={[]}
-            />;
-        }else{
-            content = <AppProfile />
-        }
+        content = <AppProductsDisplay
+            products={[]}
+        />;
 
         return (
             <div className="app-content">
