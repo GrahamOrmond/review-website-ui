@@ -1,12 +1,18 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom'
 import AppCard from '../../components/AppCard';
 import { AppForm, AppInput } from '../../components/AppForm';
 import AppModal from "../../components/AppModal"
 
+import { loginUser } from '../oauth/oauthSlice'
+
 import './account.css'
 
-const loginExtra = () => {
+
+
+
+const LoginExtra = () => {
 
     return (
         <div className="login-extra">
@@ -22,7 +28,13 @@ const loginExtra = () => {
 }
 
 
-const loginForm = () => {
+const LoginForm = () => {
+
+    const dispatch = useDispatch()
+
+    const login = (formData) => {
+        dispatch(loginUser(formData))
+    }
 
     let loginForm = {
         'email': {
@@ -43,7 +55,9 @@ const loginForm = () => {
         <AppForm 
             title="Login"
             submitTitle="Log In"
+            method="POST"
             formData={loginForm}
+            handleSubmit={login}
         />
     );
 }
@@ -60,8 +74,8 @@ class LoginPage extends Component {
         return (
             <div>
                <AppCard >
-                    { loginForm() }
-                    { loginExtra() }
+                    <LoginForm />
+                    <LoginExtra />
                 </AppCard> 
             </div>
         );

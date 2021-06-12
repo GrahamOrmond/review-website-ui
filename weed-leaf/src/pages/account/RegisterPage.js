@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom'
 import AppCard from '../../components/AppCard';
 import { AppForm, AppInput } from '../../components/AppForm';
 import AppModal from "../../components/AppModal"
+import { registerUser } from '../oauth/oauthSlice';
 
 import './account.css'
 
-const registerExtra = () => {
+const RegisterExtra = () => {
 
     return (
         <div className="login-extra">
@@ -21,9 +23,15 @@ const registerExtra = () => {
 }
 
 
-const registerForm = () => {
+const RegisterForm = () => {
 
-    let loginForm = {
+    const dispatch = useDispatch()
+
+    const register = (formData) => {
+        dispatch(registerUser(formData))
+    }
+
+    let registerForm = {
         'email': {
             'label': 'Email',
             'type': 'text',
@@ -54,7 +62,9 @@ const registerForm = () => {
         <AppForm 
             title="Sign Up"
             submitTitle="Sign Up"
-            formData={loginForm}
+            method="POST"
+            formData={registerForm}
+            handleSubmit={register}
         />
     );
 }
@@ -70,9 +80,9 @@ class RegisterPage extends Component {
     renderLoginContent(){
         return (
             <div>
-               <AppCard >
-                    { registerForm() }
-                    { registerExtra() }
+                <AppCard >
+                    <RegisterForm/>
+                    <RegisterExtra/>
                 </AppCard> 
             </div>
         );
