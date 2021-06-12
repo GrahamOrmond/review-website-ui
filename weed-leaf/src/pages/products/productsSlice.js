@@ -20,18 +20,18 @@ const initialState = {
 }
 
 // fetch list of products
-export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
-    const response = await client.get('/api/products')
+export const fetchProducts = createAsyncThunk('products/fetchProducts', async (data, { rejectWithValue }) => {
+    const response = await client.get('/api/products', rejectWithValue)
     return response.products
 })
 
 // fetch product by id
 export const fetchProduct = createAsyncThunk('products/fetchProduct',
-async (fetchData, { getState }) => {
+async (fetchData, { getState, rejectWithValue }) => {
   const product = selectProductById(getState(), fetchData)
   if(product)
     return product
-  const response = await client.get(`/api/products/${fetchData.brandId}/${fetchData.productUrlId}`)
+  const response = await client.get(`/api/products/${fetchData.brandId}/${fetchData.productUrlId}`, { rejectWithValue })
   return response
 })
 

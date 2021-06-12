@@ -20,18 +20,18 @@ const initialState = {
 }
 
 // fetch list of brands
-export const fetchBrands = createAsyncThunk('brands/fetchBrands', async () => {
-  const response = await client.get('/api/brands')
+export const fetchBrands = createAsyncThunk('brands/fetchBrands', async (data, { rejectWithValue }) => {
+  const response = await client.get('/api/brands', rejectWithValue)
   return response.brands
 })
 
 // fetch brand by id
 export const fetchBrand = createAsyncThunk('brands/fetchBrand',
-async (brandId, { getState }) => {
+async (brandId, { getState, rejectWithValue }) => {
   const brand = selectBrandById(getState(), brandId)
   if(brand)
     return brand
-  const response = await client.get('/api/brands/' + brandId)
+  const response = await client.get('/api/brands/' + brandId, { rejectWithValue })
   return response
 })
 

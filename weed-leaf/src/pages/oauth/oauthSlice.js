@@ -13,14 +13,14 @@ const initialState = {
 }
 
 // logs in the user
-export const loginUser = createAsyncThunk('oauth/login', async (formData) => {
-    const response = await client.post('/api/account/login', formData)
+export const loginUser = createAsyncThunk('oauth/login', async (formData, { rejectWithValue }) => {
+    const response = await client.post('/api/account/login', rejectWithValue, formData)
     return response
 })
 
 // user sign up
-export const registerUser = createAsyncThunk('oauth/register', async (formData) => {
-    const response = await client.post('/api/account/register', formData )
+export const registerUser = createAsyncThunk('oauth/register', async (formData, { rejectWithValue }) => {
+    const response = await client.post('/api/account/register', rejectWithValue, formData)
     return response
 })
   

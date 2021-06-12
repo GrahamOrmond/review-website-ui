@@ -1,7 +1,8 @@
 // A tiny wrapper around fetch(), borrowed from
 // https://kentcdodds.com/blog/replace-axios-with-a-simple-custom-fetch-wrapper
 
-export async function client(endpoint, { body, ...customConfig } = {}) {
+
+export async function client(endpoint, rejectWithValue, { body, ...customConfig } = {}) {
 
     const url = `https://localhost:44303${endpoint}`
     const headers = { 
@@ -28,18 +29,18 @@ export async function client(endpoint, { body, ...customConfig } = {}) {
       if (response.ok) {
         return data
       }
-      throw new Error(response.statusText)
+      return rejectWithValue(data);
+
     } catch (err) {
       return Promise.reject(err.message ? err.message : data)
     }
   }
   
-  client.get = function (url, customConfig = {}) {
-    let results = client(url, { ...customConfig, method: 'GET' });
+  client.get = function (url, rejectWithValue = () => {}, customConfig = {}) {
+    let results = client(url, rejectWithValue, { ...customConfig, method: 'GET' });
     return results;
   }
   
-  client.post = function (url, body, customConfig = {}) {
-    return client(url, { ...customConfig, body })
+  client.post = function (url, rejectWithValue = () => {}, body, customConfig = {}) {
+    return client(url, rejectWithValue, { ...customConfig, body })
   }
-  
