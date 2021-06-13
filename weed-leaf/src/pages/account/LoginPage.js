@@ -6,6 +6,7 @@ import { AppForm, AppInput } from '../../components/AppForm';
 import AppModal from "../../components/AppModal"
 
 import { loginUser } from '../oauth/oauthSlice'
+import { getUserInfo } from './accountSlice'
 
 import './account.css'
 
@@ -34,6 +35,7 @@ const LoginForm = () => {
 
     const login = (formData) => {
         dispatch(loginUser(formData))
+        .then(console.log("complete"))
     }
 
     let loginForm = {

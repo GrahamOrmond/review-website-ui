@@ -3,27 +3,21 @@ import { Link } from 'react-router-dom'
 
 import AppButton from './AppButton';
 
-class DropdownNav extends Component {
+const DropdownNav = (props) => {
 
-    constructor(props) {
-        super(props);
-
-        this.closeDropdown = this.closeDropdown.bind(this);
-    }
-
-    closeDropdown(event){
+    const closeDropdown = (event) => {
         let dropdown = event.target.closest('.dropdown-content');;
         dropdown.classList.remove("active");
+
+        if(typeof props.handleOnClick == 'function')
+            props.handleOnClick()
     }
 
-
-    render () {
-        return (
-            <div className="dropdown-nav" onClick={this.closeDropdown}>
-                {this.props.text}
-            </div>
-        );
-    }
+    return (
+        <div className="dropdown-nav" onClick={(e) => closeDropdown(e)}>
+            {props.text}
+        </div>
+    );
 }
 
 class DropdownContent extends Component {
@@ -71,11 +65,21 @@ class AppDropdown extends Component {
             }
 
             e['links'].forEach(i => {
-                renderedData.push(
-                    <Link to={i['link']} >
-                        <DropdownNav text={i['label']} />
-                    </Link>
-                );
+                if(i['onClick'] === undefined){
+                    renderedData.push(
+                        <Link to={i['link']} >
+                            <DropdownNav text={i['label']} />
+                        </Link>
+                    );
+                }else{
+                    console.log(i['onClick'])
+                    renderedData.push(
+                        <DropdownNav 
+                            handleOnClick={i['onClick']}
+                            text={i['label']} 
+                        />
+                    );
+                }
             }); 
         });
         return renderedData;

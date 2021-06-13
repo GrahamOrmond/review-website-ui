@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import AppDropdown from './AppDropdown';
 import { Link } from 'react-router-dom'
 import MenuIcon from '@material-ui/icons/Menu';
+import { logoutUser, LogoutUser } from '../pages/oauth/oauthSlice';
+import { useDispatch } from 'react-redux';
 
 class AppSearch extends Component {
     
@@ -18,57 +20,69 @@ class AppSearch extends Component {
     }
 }
 
+const HeaderNav = (props) => {
+    const dispatch = useDispatch()
 
-class HeaderNav extends Component {
-
-    constructor(props) {
-        super(props);
-
-        this.linkData = {
-            "linkSections": 
-            [
-                {
-                    "title": "main",
-                    "links": [
-                        {
-                            'link': '/brands',
-                            'label': 'Brands'
-                        },
-                        {
-                            'link': '/products',
-                            'label': 'Products'
-                        },
-                        {
-                            'link': '/community',
-                            'label': 'Community'
-                        },
-                    ]
-                },
-                {
-                    "title": "account",
-                    "links": [
-                        {
-                            'link': '/account/login',
-                            'label': 'Log In / Sign Up'
-                        },
-                    ]
-                },
-            ]
-        }
+    const linkData = {
+        "linkSections": 
+        [
+            {
+                "title": "main",
+                "links": [
+                    {
+                        'link': '/brands',
+                        'label': 'Brands'
+                    },
+                    {
+                        'link': '/products',
+                        'label': 'Products'
+                    },
+                    {
+                        'link': '/community',
+                        'label': 'Community'
+                    },
+                ]
+            },
+        ]
     }
 
-    
-
-    render () {
-        
-        return (
-            <div className="header-nav">
-                <AppDropdown linkData={this.linkData}>
-                    <MenuIcon />
-                </AppDropdown>
-            </div>
-        );
+    const loggedInLinks = 
+    {
+        "title": "account",
+        "links": [
+            {
+                'onClick': () => dispatch(logoutUser()),
+                'link': '/account/logout',
+                'label': 'Log Out'
+            },
+        ]   
     }
+
+    const loggedOutLinks = 
+    {
+        "title": "account",
+        "links": [
+            {
+                'link': '/account/login',
+                'label': 'Log In / Sign Up'
+            },
+        ]
+    }
+
+    let links = JSON.parse(JSON.stringify(linkData))
+    if(props.isLoggedIn){
+        links.linkSections.push(loggedInLinks)
+    }else{
+        links.linkSections.push(loggedOutLinks)
+    }
+
+    return (
+        <div className="header-nav">
+            <AppDropdown linkData={links}>
+                <MenuIcon />
+            </AppDropdown>
+        </div>
+    );
 }
 
 class HeaderLogo  extends Component {
@@ -102,7 +116,7 @@ class AppHeader extends Component {
             <div className="app-header">
                 <HeaderLogo />
                 <AppSearch />
-                <HeaderNav />
+                <HeaderNav isLoggedIn={this.props.isLoggedIn}/>
             </div>
         );
     }

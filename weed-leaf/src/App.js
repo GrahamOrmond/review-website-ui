@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AppHeader from './components/AppHeader';
 import './components/style.css';
 import {
@@ -29,14 +29,23 @@ import { CommunityPage } from './pages/community/CommunityPage'
 import { store } from './store/store';
 import { fetchBrands } from './pages/brands/brandsSlice';
 import { fetchProducts } from './pages/products/productsSlice';
+import { checkLogin, isUserLoggedIn } from './pages/oauth/oauthSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 store.dispatch(fetchBrands());
 store.dispatch(fetchProducts());
 
 function App() {
+
+  const dispatch = useDispatch()
+  useEffect(() => {
+      dispatch(checkLogin())
+  }, [dispatch])
+  const isLoggedIn = useSelector(isUserLoggedIn);
+
   return (
     <Router>
-      <AppHeader />
+      <AppHeader isLoggedIn={isLoggedIn}/>
       <div className="app">
         <Switch>
           <Route exact path="/brands/:brandId?/:postsType?/:postLink?" 
