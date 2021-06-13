@@ -9,9 +9,9 @@ import {
 } from 'react-router-dom'
 
 // account pages
-import { LoginPage } from './pages/account/LoginPage'
-import { RegisterPage } from './pages/account/RegisterPage'
-import { ProfilePage } from './pages/account/ProfilePage'
+import { LoginPage } from './pages/oauth/LoginPage'
+import { RegisterPage } from './pages/oauth/RegisterPage'
+import { ProfilePage } from './pages/users/ProfilePage'
 
 // about pages
 import { AboutPage } from './pages/about/AboutPage'
@@ -54,8 +54,9 @@ function App() {
           <Route exact path="/products/:brandId?/:productUrlId?/:postsType?/:postLink?" component={ProductsPage} />
           <Route exact path="/community/" component={CommunityPage} />
           <Route exact path="/account/" component={ProfilePage} />
-          <Route exact path="/account/login" component={LoginPage} />
-          <Route exact path="/account/register" component={RegisterPage} />
+          <Route exact path="/user/:userId?" component={ProfilePage} />
+          <Route exact path="/login" component={LoginPage} />
+          <Route exact path="/register" component={RegisterPage} />
           <Route exact path="/about/:page" component={AboutPage} />
           <Route exact path="/" component={CommunityPage} />
           <Redirect to="/" />

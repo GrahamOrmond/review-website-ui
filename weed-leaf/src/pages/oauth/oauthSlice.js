@@ -40,6 +40,10 @@ export const registerUser = createAsyncThunk('oauth/register', async (formData, 
 export const isUserLoggedIn = (state) => {
     return state.oauth.isLoggedIn
 }
+
+export const getOauthToken = (state) => {
+    return state.oauth.token
+}
   
 // setup slice
 export const oauthSlice = createSlice({

@@ -5,13 +5,10 @@ import AppCard from '../../components/AppCard';
 import { AppForm, AppInput } from '../../components/AppForm';
 import AppModal from "../../components/AppModal"
 
-import { loginUser } from '../oauth/oauthSlice'
-import { getUserInfo } from './accountSlice'
+import { loginUser } from './oauthSlice'
+import { fetchCurrentUserInfo } from '../users/usersSlice'
 
-import './account.css'
-
-
-
+import './oauth.css'
 
 const LoginExtra = () => {
 
@@ -21,8 +18,8 @@ const LoginExtra = () => {
                 <p>By continuing, you agree to our <Link to="/about/user-agreement">User Agreement</Link> and <Link to="/about/privacy-policy">Privacy Policy</Link>.</p>
             </div>
             <div className="login-info">
-                <p><Link to="/account/register">Forgot your username or password?</Link></p>
-                <p><Link to="/account/register">Sign Up Here</Link></p>
+                <p><Link to="/register">Forgot your username or password?</Link></p>
+                <p><Link to="/register">Sign Up Here</Link></p>
             </div>
         </div>
     );
@@ -35,7 +32,15 @@ const LoginForm = () => {
 
     const login = (formData) => {
         dispatch(loginUser(formData))
-        .then(console.log("complete"))
+        .then((value) => {
+            const status = value.meta.requestStatus
+            if(status == "rejected")
+                console.log("failed")
+            else if (status == "fulfilled")
+                dispatch(fetchCurrentUserInfo(""))
+            else
+                console.log(status)
+        })
     }
 
     let loginForm = {

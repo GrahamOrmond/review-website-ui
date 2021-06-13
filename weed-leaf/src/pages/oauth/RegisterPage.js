@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom'
 import AppCard from '../../components/AppCard';
 import { AppForm, AppInput } from '../../components/AppForm';
 import AppModal from "../../components/AppModal"
-import { registerUser } from '../oauth/oauthSlice';
+import { registerUser } from './oauthSlice';
 
-import './account.css'
+import './oauth.css'
 
 const RegisterExtra = () => {
 

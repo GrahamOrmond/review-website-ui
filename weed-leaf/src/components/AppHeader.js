@@ -51,8 +51,12 @@ const HeaderNav = (props) => {
         "title": "account",
         "links": [
             {
+                'link': '/user/',
+                'label': 'Profile'
+            },
+            {
                 'onClick': () => dispatch(logoutUser()),
-                'link': '/account/logout',
+                'link': '/logout',
                 'label': 'Log Out'
             },
         ]   
@@ -63,7 +67,7 @@ const HeaderNav = (props) => {
         "title": "account",
         "links": [
             {
-                'link': '/account/login',
+                'link': '/login',
                 'label': 'Log In / Sign Up'
             },
         ]

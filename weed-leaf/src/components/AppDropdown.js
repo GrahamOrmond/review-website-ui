@@ -72,7 +72,6 @@ class AppDropdown extends Component {
                         </Link>
                     );
                 }else{
-                    console.log(i['onClick'])
                     renderedData.push(
                         <DropdownNav 
                             handleOnClick={i['onClick']}
