@@ -3,6 +3,8 @@ import FormatItalicIcon from '@material-ui/icons/FormatItalic';
 import ListIcon from '@material-ui/icons/List';
 import LinkIcon from '@material-ui/icons/Link';
 import AppCard from './AppCard';
+import { useDispatch } from 'react-redux';
+import { createPost } from '../pages/posts/postsSlice';
 
 
 
@@ -59,24 +61,34 @@ const EditToolbar = (props) => {
 
 export const AppTextEditor = (props) => {
 
+    const dispatch = useDispatch();
 
     const handleFormatChange = (command, value) => {
         document.execCommand(command, false, value);
     }
 
     const handleSaveDraft = () => {
-        console.log("save")
+        let content = document.getElementById("edit_content");
+        let formData = {
+            content: "Post Content",
+            Title: "Hello World Title",
+            Type: "THREAD",
+            Status: "DRAFT",
+            ProductId: null,
+            BrandId: null,
+        }
+        dispatch(createPost(formData))
     }
 
     const handlePostThread = () => {
-        console.log("post")
+        let content = document.getElementById("edit_content");
     }
 
     return (
         <AppCard >
              <div className="app-text-editor" >
                 <EditToolbar handleFormatChange={handleFormatChange}/>
-                <div className="edit-content" contentEditable="true">
+                <div id="edit_content" className="edit-content" contentEditable="true">
 
                 </div>
                 <EditSumbit

@@ -15,19 +15,18 @@ const initialState = {
     error: null
 }
 
-
 // logs in the user
 export const checkLogin = createAsyncThunk('oauth/checkLogin', async (data, { rejectWithValue }) => {
     const token = window.localStorage.getItem('session');
     if(token === undefined || token === null)
         rejectWithValue("No Token");
-    return;
+    return JSON.parse(token);
 })
 
 // logs in the user
 export const loginUser = createAsyncThunk('oauth/login', async (formData, { rejectWithValue }) => {
     const response = await client.post('/api/account/login', rejectWithValue, formData)
-    window.localStorage.setItem('session', response);
+    window.localStorage.setItem('session', JSON.stringify(response));
     return response
 })
 
@@ -86,6 +85,7 @@ export const oauthSlice = createSlice({
         },
         [checkLogin.fulfilled]: (state, action) => {
             state.isLoggedIn = true;
+            state.token = action.payload;
         },
         [checkLogin.rejected]: (state, action) => {
             state.isLoggedIn = false;

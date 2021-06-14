@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import AppFilter from '../../components/AppFilter'
-import { SubmitPost } from './SubmitPost';
+import { SubmitPost } from '../posts/SubmitPost';
 
 class CommunityThreads extends Component {
 
