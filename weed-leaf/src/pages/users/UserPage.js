@@ -1,9 +1,9 @@
 
-export const ProfilePage = () => {
+export const UserPage = () => {
 
     return (
         <div className="app-content">
-            Profile
+            User Profile Page
         </div>
     )
 }

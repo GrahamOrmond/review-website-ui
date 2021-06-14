@@ -7,9 +7,7 @@ import AppPost from '../../components/AppPost'
 
 const renderThread = (threadInfo) => {
     return (
-        <AppPost 
-            post={threadInfo}
-        />
+        <AppPost post={threadInfo}/>
     )
 }
 
@@ -43,7 +41,7 @@ export const CommunityPage = props =>  {
 
     return (
         <div className="app-content">
-                {content}
+            {content}
         </div>
     );
 }

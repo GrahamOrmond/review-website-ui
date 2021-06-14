@@ -11,7 +11,7 @@ import {
 // account pages
 import { LoginPage } from './pages/oauth/LoginPage'
 import { RegisterPage } from './pages/oauth/RegisterPage'
-import { ProfilePage } from './pages/users/ProfilePage'
+import { UserPage } from './pages/users/UserPage'
 
 // about pages
 import { AboutPage } from './pages/about/AboutPage'
@@ -50,13 +50,13 @@ function App() {
       <AppHeader isLoggedIn={isLoggedIn}/>
       <div className="app">
         <Switch>
-          <Route exact path="/brands/:brandId?/:postsType?/:postLink?" 
-            component={BrandsPage} 
-          />
-          <Route exact path="/products/:brandId?/:productUrlId?/:postsType?/:postLink?" component={ProductsPage} />
-          <Route exact path="/community/:action?" component={CommunityPage} />
-          <Route exact path="/account/" component={ProfilePage} />
-          <Route exact path="/user/:userId?" component={ProfilePage} />
+          <Route exact path="/brands/:brandId?/:postsType?/:displayName?/:postLink?"
+            component={BrandsPage} />
+          <Route exact path="/products/:brandId?/:productUrlId?/:postsType?/:displayName?/:postLink?" 
+            component={ProductsPage} />
+          <Route exact path="/community/:action?/:displayName?/:postLink?" component={CommunityPage} />
+          <Route exact path="/account/" component={UserPage} />
+          <Route exact path="/user/:displayName?" component={UserPage} />
           <Route exact path="/login" component={LoginPage} />
           <Route exact path="/register" component={RegisterPage} />
           <Route exact path="/about/:page" component={AboutPage} />
