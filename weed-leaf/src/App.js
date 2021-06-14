@@ -31,9 +31,11 @@ import { fetchBrands } from './pages/brands/brandsSlice';
 import { fetchProducts } from './pages/products/productsSlice';
 import { checkLogin, isUserLoggedIn } from './pages/oauth/oauthSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { fetchPosts } from './pages/posts/postsSlice';
 
 store.dispatch(fetchBrands());
 store.dispatch(fetchProducts());
+store.dispatch(fetchPosts());
 
 function App() {
 

@@ -44,10 +44,10 @@ class PostUserInfo extends Component {
 
                     </div>
                     <div className="user-name">
-                        Gmoney
+                        {this.props.displayName}
                     </div>
                     <div className="post-date">
-                        13h
+                        {this.props.date}
                     </div>
                 </div>
                 <div className="actions">
@@ -75,9 +75,12 @@ class PostHeader extends Component {
         
         return (
             <div className="post-header">
-                <PostUserInfo showPostActions={this.showPostActions} />
+                <PostUserInfo 
+                    date={this.props.date}
+                    displayName={this.props.displayName}
+                    showPostActions={this.showPostActions} />
                 <div className="title">
-                    <h2>Carmel MAC 1 @ 20.07% THC and packaged 04-07-2021 with 4.26% total terpenes (grabbed this on sale 20% off) </h2>
+                    <h2>{this.props.title}</h2>
                 </div>
             </div>
         );
@@ -107,13 +110,19 @@ class AppPost extends Component {
     }
 
     render () {
-        
+
+        const post = this.props.post
+        console.log(post)
         return (
             <AppCard>
                 <div className="app-post">
-                    <PostHeader showPostActions={this.showPostActions} />
+                    <PostHeader 
+                        title={post.title}
+                        displayName={post.displayName}
+                        date={post.dateUpdated}
+                        showPostActions={this.showPostActions} />
                     <div className="post-body">
-                        This is the post body
+                        {post.content}
                     </div>
                     <div className="post-footer">
                         <div className="post-notification">
@@ -122,7 +131,7 @@ class AppPost extends Component {
                                     <ArrowUpwardIcon />
                                 </AppButton>
                                 <div className="value">
-                                    <p>20</p>
+                                    <p>{post.upCount - post.downCount}</p>
                                 </div>
                                 <AppButton handleOnClick={this.handleRatingDown}>
                                     <ArrowDownwardIcon />
@@ -132,7 +141,7 @@ class AppPost extends Component {
                         <div className="post-notification">
                             <div className="content">
                                 <div className="value">
-                                    <p>33</p>
+                                    <p>0</p>
                                 </div>
                                 <AppButton handleOnClick={this.handleRatingDown}>
                                     <ChatIcon />

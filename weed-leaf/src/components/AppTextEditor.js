@@ -70,7 +70,7 @@ export const AppTextEditor = (props) => {
     const handleSaveDraft = () => {
         let content = document.getElementById("edit_content");
         let formData = {
-            content: "Post Content",
+            content: content.innerHTML,
             Title: "Hello World Title",
             Type: "THREAD",
             Status: "DRAFT",
@@ -82,6 +82,15 @@ export const AppTextEditor = (props) => {
 
     const handlePostThread = () => {
         let content = document.getElementById("edit_content");
+        let formData = {
+            content: content.innerHTML,
+            Title: "Hello World Title",
+            Type: "THREAD",
+            Status: "PUBLIC",
+            ProductId: null,
+            BrandId: null,
+        }
+        dispatch(createPost(formData))
     }
 
     return (
