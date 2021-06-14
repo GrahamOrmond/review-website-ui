@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import AppFilter from '../../components/AppFilter'
-import AppPost from '../../components/AppPost'
+import { SubmitPost } from './SubmitPost';
 
 class CommunityThreads extends Component {
 
@@ -24,10 +24,11 @@ class CommunityPage extends Component {
     }
     
     render () {
-        const { postId } = this.props.match.params;
+        const { action } = this.props.match.params;
         let content = "";
-        
-        if(postId == null){
+        if(action == "submit"){
+            content = <SubmitPost />
+        }else if(action == null){
             content = <CommunityThreads />;
         }else{
             content = ""

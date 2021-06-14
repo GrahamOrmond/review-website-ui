@@ -13,7 +13,8 @@
     12. PROFILE
     13. SHOWCASE
     14. FILTER
-    15. EXTRAS
+    15. TEXT EDITOR
+    16. EXTRAS
 */
 
 
@@ -208,6 +209,7 @@ a {
     border: solid #b6b6b7 1px;
     border-radius: 5px;
     margin: 10px 0px;
+    overflow: hidden;
 }
 
 .card-info {
@@ -798,7 +800,90 @@ a {
 }
 
 /* 
-    14. EXTRAS
+    15. TEXT EDITOR
+*/
+
+.app-text-editor {
+    height: 400px;
+    background-color: #FFF;
+    border-radius: 5px;
+}
+
+.edit-toolbar {
+    overflow: hidden;
+    height: 40px;
+    border-bottom: solid #b6b6b7 1px;
+}
+
+.toolbar-buttons-content{
+    height: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: left;
+    align-items: center;
+}
+
+.toolbar-button {
+    height: 100%;
+    border-right: solid #b6b6b7 1px;
+    cursor: pointer;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    padding: 0px 5px;
+}
+
+.toolbar-button:hover {
+    background-color: #f2f2f2;
+}
+
+.toolbar-button:active {
+    background-color: #e6e6e6;
+}
+
+.edit-content {
+    padding: 5px;
+    overflow: auto;
+    height: calc(100% - 90px);
+}
+
+.edit-content:focus {
+    outline: solid #6d6d6e 1px;
+}
+
+.edit-submit {
+    border-top: solid #b6b6b7 1px;
+    height: 50px;
+    display: flex;
+}
+
+.edit-submit-content{
+    display: initial;
+}
+
+.edit-submit-actions{
+    float: right;
+    display: flex;
+}
+
+.edit-submit-button-content{
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit-submit-button{
+    margin: 5px;
+    padding: 5px 10px;
+    border: solid 1px #D6D6D7;
+    border-radius: 25px;
+}
+
+
+/* 
+    16. EXTRAS
 */
 
 .content-seperator {
@@ -806,3 +891,4 @@ a {
     background-color: #D6D6D7;
     margin: 0px 10px;
 }
+
