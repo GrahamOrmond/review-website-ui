@@ -38,11 +38,6 @@ export const ProductProfile = (props) => {
             rating={product.rating}
             description={product.description}
         >
-            <AppShowcase
-                title="Products"
-                actionTitle="View"
-                actionLink={"/products?brands=" + product.name}
-                />
             <AppThreadDisplay />
         </AppProfile>
         )

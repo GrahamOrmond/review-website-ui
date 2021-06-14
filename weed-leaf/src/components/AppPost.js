@@ -120,9 +120,9 @@ class AppPost extends Component {
 
         let postUrl = `/community/user/${displayName}/${postUrlId}`;
         if(post.product.productId != null)
-            postUrl = `/products/${post.brand.brandId}/${post.product.urlId}/${postType}/${displayName}/${postUrlId}`
+            postUrl = `/products/${post.brand.brandId}/${post.product.urlId}/${postType}s/${displayName}/${postUrlId}`
         else if (post.brand.brandId != null)
-            postUrl = `/brands/${post.brand.brandId}/${postType}/${displayName}/${postUrlId}`
+            postUrl = `/brands/${post.brand.brandId}/${postType}s/${displayName}/${postUrlId}`
 
         return (
             <Link to={postUrl}>
