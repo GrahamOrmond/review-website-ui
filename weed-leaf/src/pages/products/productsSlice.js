@@ -109,7 +109,7 @@ export const productSlice = createSlice({
                 status: 'loading',
                 error: null
             }
-            setProductPost(state, action.meta.arg.type, setPayload)
+            state.productView.product[action.meta.arg.type] = setPayload
         },
         [fetchProductPosts.fulfilled]: (state, action) => {
             let setPayload = {
@@ -117,7 +117,7 @@ export const productSlice = createSlice({
                 status: 'succeeded',
                 error: null
             }
-            setProductPost(state, action.meta.arg.type, setPayload)
+            state.productView.product[action.meta.arg.type] = setPayload
         },
         [fetchProductPosts.rejected]: (state, action) => {
             let setPayload = {
@@ -125,24 +125,10 @@ export const productSlice = createSlice({
                 status: 'failed',
                 error: null
             }
-            setProductPost(state, action.meta.arg.type, setPayload)
+            state.productView.product[action.meta.arg.type] = setPayload
         },
     }
 })
-
-  const setProductPost = (state, type, payload) => {
-    switch(type){
-        case "questions":
-            state.productView.product.questions = payload
-        case "threads":
-            state.productView.product.threads = payload
-            break;
-        case "reviews":
-        default:
-            state.productView.product.reviews = payload
-    }
-  }
-
 
   export const { 
     clearProductView,

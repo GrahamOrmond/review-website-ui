@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import queryString from 'query-string';
 import AppProfile from "../../components/AppProfile";
-import { AppProductsDisplay } from "../../components/AppProductsDisplay" 
+import { AppProductsDisplay } from "../../components/AppProduct" 
 import { ProductsList } from "./ProductsList" 
 import { ProductProfile } from './ProductProfile';
 import { PostDisplay } from '../posts/PostDisplay';
@@ -11,10 +11,12 @@ export const ProductsPage = (props) => {
     const { 
         brandId, 
         productUrlId, 
-        postsType, 
         displayName, 
         postLink 
     } = props.match.params;
+    const type = props.match.params.postsType
+    const postsType = type === undefined? "reviews" : type.toLowerCase();
+    let urlString = queryString.parse(props.location.search);
     
 
     if(brandId && productUrlId){ 
@@ -42,22 +44,14 @@ export const ProductsPage = (props) => {
                 <React.Fragment>
                     <ProductProfile
                         brandId={brandId}
-                        productUrlId={productUrlId} />
+                        productUrlId={productUrlId}
+                        postsType={postsType}
+                        displayName={displayName}
+                    />
                 </React.Fragment>
             </div>
         )
     }
-
-    let getByBrandId = brandId;
-    let params = queryString.parse(props.location.search);
-    console.log(params)
-    return (
-        <div className="app-content">
-            <AppProductsDisplay>
-                <React.Fragment>
-                    <ProductsList />
-                </React.Fragment>
-            </AppProductsDisplay>
-        </div>
-    )
+    
+    return (<ProductsList />)
 }

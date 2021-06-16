@@ -2,34 +2,27 @@ import { Link } from 'react-router-dom'
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { selectProductsListInfo } from './productsSlice';
-import { AppProduct } from '../../components/AppProductsDisplay'
-
-function renderList(products){
-    return products.map(product => {
-        return (<AppProduct 
-            product={product}>
-        </AppProduct>)
-    })
-}
-
+import { AppProduct } from '../../components/AppProduct'
+import AppFilter from '../../components/AppFilter';
 export const ProductsList = () => {
-    const productsInfo = useSelector(selectProductsListInfo);
     useEffect(() => {
         window.scrollTo(0, 0)
     }, [])
-    
-    let content;
-    if (productsInfo.status === 'loading') {
-        content = (<div className="loader">Loading...</div>)
-    } else if (productsInfo.status === 'succeeded') {
-        content = renderList(productsInfo.products);
-    } else if (productsInfo.status === 'error') {
-        content = (<div>{productsInfo.error}</div>)
+    const productsInfo = useSelector(selectProductsListInfo);
+    const renderList = () => {
+        return productsInfo.products.map(product => {
+            return (<AppProduct 
+                product={product}>
+            </AppProduct>)
+        })
     }
 
     return (
-        <div className="list-content">
-            {content}
+        <div className="app-content">
+            <div className="app-products-display">
+                <AppFilter />
+                {renderList()}
+            </div>
         </div>
     );
 }

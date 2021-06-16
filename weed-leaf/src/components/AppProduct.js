@@ -208,22 +208,4 @@ class AppProduct extends Component {
     }
 }
 
-
-class AppProductsDisplay extends Component {
-
-    constructor(props) {
-        super(props);
-    }
-
-
-    render(){
-        return (
-            <div className="app-products-display">
-                <AppFilter />
-                {this.props.children}
-            </div>
-        );
-    }
-
-}
-export { AppProductsDisplay, AppProduct };
+export {  AppProduct };

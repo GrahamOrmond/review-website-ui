@@ -3,22 +3,23 @@ import AppPost from './AppPost';
 
 const AppThreadDisplay = (props) => {
 
-    const renderPosts = (posts) => {
-        let postsList = []
-        posts.forEach(post => {
-            postsList.push(<AppPost post={post} />);
-        });
-        return postsList;
-    }
-    
-    let content = ""
-    if(props.reviews != null && props.reviews.posts != null){
-        content = renderPosts(props.reviews.posts)
+    const renderPosts = () => {
+        return props.posts.map(post => (
+            <AppPost post={post} />
+        ))
     }
 
+    let content = ""
+    if(props.posts != null){
+        content = renderPosts()
+    }
+    
     return (
         <div>
-            <AppFilter />
+            <AppFilter
+                postType={props.postType}
+                urlBase={props.urlBase}
+            />
             {content}
         </div>
     );
