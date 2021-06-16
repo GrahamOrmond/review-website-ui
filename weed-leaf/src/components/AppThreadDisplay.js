@@ -1,32 +1,26 @@
-import React, { Component } from 'react';
 import AppFilter from './AppFilter';
 import AppPost from './AppPost';
 
-class AppThreadDisplay extends Component {
+const AppThreadDisplay = (props) => {
 
-    constructor(props) {
-        super(props);
-
-        this.renderPosts = this.renderPosts.bind(this);
-        this.postData = [];
-    }
-
-    renderPosts(){
-        let posts = [];
-        this.postData.forEach(post => {
-            posts.push(<AppPost />);
+    const renderPosts = (posts) => {
+        let postsList = []
+        posts.forEach(post => {
+            postsList.push(<AppPost post={post} />);
         });
-        return posts;
+        return postsList;
     }
     
-    render () {
-        
-        return (
-            <div>
-                <AppFilter />
-                {this.renderPosts()}
-            </div>
-        );
+    let content = ""
+    if(props.reviews != null && props.reviews.posts != null){
+        content = renderPosts(props.reviews.posts)
     }
+
+    return (
+        <div>
+            <AppFilter />
+            {content}
+        </div>
+    );
 }
 export default AppThreadDisplay;

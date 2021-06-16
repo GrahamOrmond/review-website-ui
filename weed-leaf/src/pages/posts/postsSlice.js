@@ -34,7 +34,10 @@ export const createPost = createAsyncThunk('posts/createPosts', async (formData,
 
 // fetch post
 export const fetchPosts = createAsyncThunk('posts/fetchPosts', async (formData, { rejectWithValue }) => {
-    const response = await client.get('/api/posts', rejectWithValue)
+    let url = '/api/posts'
+    if(formData)
+        url += `?${new URLSearchParams(formData).toString()}`;
+    const response = await client.get(url, rejectWithValue)
     return response.posts
 })
 
