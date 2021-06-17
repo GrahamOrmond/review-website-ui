@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
 
+const ValidateEmail = (email) => {
+    if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+        .test(email))
+        return (true)
+    return (false)
+}
+
 class AppSelect extends Component {
 
     constructor(props) {
@@ -37,6 +44,7 @@ class AppInput extends Component {
                     value={this.props.value} 
                     placeholder={this.props.placeholder} 
                 />
+                <label className="input-error">{this.props.error}</label>
             </div>
         );
     }
@@ -48,7 +56,8 @@ class AppForm extends Component {
         super(props);
 
         this.state = {
-            'formData': props.formData
+            'formData': props.formData,
+            'formError': ''
         }
 
         this.generateForm = this.generateForm.bind(this);
@@ -71,6 +80,7 @@ class AppForm extends Component {
                     placeholder={input.placeholder} 
                     value={input.value}
                     handleChange={this.handleChange}
+                    error={input.error}
                 />);
             }
         }
@@ -85,16 +95,46 @@ class AppForm extends Component {
         });
     }
 
-    submitForm(event){
+    async submitForm(event){
         event.preventDefault();
         
-        let formData = {};
+        let submitData = {};
+        let formData = {...this.state.formData}, throwError = false;
+
         for (let i = 0 ; i < event.target.elements.length; i ++){
             let element = event.target.elements[i];
-            if(element.nodeName.toLowerCase() != "button")
-                formData[element.name] = element.value;
+            if(element.nodeName.toLowerCase() == "button")
+                continue
+
+            submitData[element.name] = element.value;
+            
+            if(formData[element.name].required && !element.value)
+            {
+                throwError = true
+                formData[element.name].error = `${formData[element.name].label} is required`
+                continue
+            }
+            else if(formData[element.name].type == "email"
+                && !ValidateEmail(element.value))
+            {
+                throwError = true
+                formData[element.name].error = 'Invalid email address'
+                continue
+            }
+            formData[element.name].error = ``
         }
-        this.handleSubmit(formData);
+        this.setState({
+            'formData': formData
+        })
+        if(throwError)
+            return
+
+        const error = await this.handleSubmit(submitData);
+        console.log(error)
+        this.setState({
+            'formError': error
+        })
+
     }
 
     
@@ -108,6 +148,9 @@ class AppForm extends Component {
 
                 <div className="form-content">
                     { this.generateForm() }
+                    <div className="form-error">
+                        {this.state.formError}
+                    </div>
                 </div>
                 <div className="form-footer">
                    <button type="submit"

@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import AppCard from '../../components/AppCard';
 import { AppForm, AppInput } from '../../components/AppForm';
 import AppModal from "../../components/AppModal"
-import { registerUser } from './oauthSlice';
+import { loginUser, registerUser } from './oauthSlice';
 
 import './oauth.css'
+import { fetchCurrentUserInfo } from '../users/usersSlice';
 
 const RegisterExtra = () => {
 
@@ -26,34 +27,59 @@ const RegisterExtra = () => {
 const RegisterForm = () => {
 
     const dispatch = useDispatch()
+    const history = useHistory()
 
     const register = (formData) => {
-        dispatch(registerUser(formData))
+        return dispatch(registerUser(formData))
+        .then((res) => {
+            const status = res.meta.requestStatus
+            console.log(res)
+            if(status == "rejected")
+                return res.payload.message
+            else if (status == "fulfilled")
+            {
+                let loginData = {
+                    'email': formData.email,
+                    'password': formData.password
+                }
+                dispatch(loginUser(loginData))
+                .then((res) => {
+                    dispatch(fetchCurrentUserInfo(""))
+                    .then(history.push('/'))
+                })
+            }
+            else
+                return "Internal Error"
+        })
     }
 
     let registerForm = {
         'email': {
             'label': 'Email',
-            'type': 'text',
+            'type': 'email',
             'placehoder': '',
+            'required': true,
             'value': ''
         },
         'username': {
             'label': 'Username',
             'type': 'text',
             'placehoder': '',
+            'required': true,
             'value': ''
         },
         'password': {
             'label': 'Password',
             'type': 'password',
             'placehoder': '',
+            'required': true,
             'value': ''
         },
         'confirmPassword': {
             'label': 'Confirm Password',
             'type': 'password',
             'placehoder': '',
+            'required': true,
             'value': ''
         }
     }

@@ -150,6 +150,7 @@ a {
     min-width: 200px;
     background-color: white;
     border: solid 1px #D6D6D7; 
+    right: 0px;
     border-right: none; 
 }
 
@@ -428,7 +429,6 @@ a {
     position: block;
     width: 100%;
     max-width: 1000px;
-    max-height: 80vh;
     overflow: auto;
 }
 
@@ -506,6 +506,18 @@ a {
     .form-footer button {
         width: 100%;
     }
+
+.input-error {
+    padding: 5px 0px;
+    color: red;
+    font-size: 16px;
+}
+
+.form-error {
+    color: red;
+    font-size: 16px;
+    text-align: center;
+}
 
 /* 
     11. PRODUCT DISPLAY

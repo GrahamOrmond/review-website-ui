@@ -1,6 +1,6 @@
 import React, { Component, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import AppCard from '../../components/AppCard';
 import { AppForm, AppInput } from '../../components/AppForm';
 import AppModal from "../../components/AppModal"
@@ -29,31 +29,35 @@ const LoginExtra = () => {
 const LoginForm = () => {
 
     const dispatch = useDispatch()
+    const history = useHistory()
 
-    const login = (formData) => {
-        dispatch(loginUser(formData))
-        .then((value) => {
-            const status = value.meta.requestStatus
+    const handleLogin = (formData) => {
+        return dispatch(loginUser(formData))
+        .then((res) => {
+            const status = res.meta.requestStatus
             if(status == "rejected")
-                console.log("failed")
+                return "Invalid Login"
             else if (status == "fulfilled")
                 dispatch(fetchCurrentUserInfo(""))
+                .then(history.push('/'))
             else
-                console.log(status)
+                return "Internal Error"
         })
     }
 
     let loginForm = {
         'email': {
             'label': 'Email',
-            'type': 'text',
+            'type': 'email',
             'placehoder': '',
+            'required': true,
             'value': ''
         },
         'password': {
             'label': 'Password',
             'type': 'password',
             'placehoder': '',
+            'required': true,
             'value': ''
         }
     }
@@ -64,7 +68,7 @@ const LoginForm = () => {
             submitTitle="Log In"
             method="POST"
             formData={loginForm}
-            handleSubmit={login}
+            handleSubmit={handleLogin}
         />
     );
 }
