@@ -37,29 +37,32 @@ const AppSelect = (props) => {
     );
 }
 
-class AppInput extends Component {
-
-    constructor(props) {
-        super(props);
-
-        this.handleChange = props.handleChange.bind(this);
-    }
+const AppInput = (props) => {
     
-    render () {
-        return (
-            <div className="form-input">
-                <label>{this.props.label}</label>
-                <input 
-                    name={this.props.name}
-                    onChange={this.handleChange}
-                    type={this.props.type}
-                    value={this.props.value} 
-                    placeholder={this.props.placeholder} 
-                />
-                <label className="input-error">{this.props.error}</label>
-            </div>
-        );
-    }
+    return (
+        <div className="form-input">
+            <label>{props.label}</label>
+            <input 
+                name={props.name}
+                onChange={props.handleChange}
+                type={props.type}
+                value={props.value} 
+                placeholder={props.placeholder} 
+            />
+            <label className="input-error">{props.error}</label>
+        </div>
+    );
+}
+
+const AppHidddenInput = (props) => {
+    
+    return (
+        <input 
+                name={props.name}
+                type="hidden"
+                value={props.value}
+            />
+    );
 }
 
 class AppForm extends Component {
@@ -91,8 +94,12 @@ class AppForm extends Component {
             }else if(input.type == "textEditor")
             {
                 data.push(<AppTextEditor name={key}/>)
-            }
-            else{
+            }else if (input.type == "hidden"){
+                data.push(<AppHidddenInput 
+                    name={key} 
+                    value={input.value}
+                />)
+            }else{
                 data.push(<AppInput 
                     label={input.label} 
                     name={key} 
@@ -130,7 +137,7 @@ class AppForm extends Component {
                 continue
             }
             
-            if(element.hidden){
+            if(element.hidden && element.value == "textEditor"){
                 let content = document.getElementById("edit_content");
                 submitData[element.name] = content.innerHTML
             }else{
@@ -157,6 +164,9 @@ class AppForm extends Component {
         this.setState({
             'formData': formData
         })
+
+        console.log(submitData)
+        console.log(throwError)
         if(throwError)
             return
 
@@ -203,4 +213,4 @@ class AppForm extends Component {
         );
     }
 }
-export { AppForm, AppInput, AppSelect };
+export { AppForm };

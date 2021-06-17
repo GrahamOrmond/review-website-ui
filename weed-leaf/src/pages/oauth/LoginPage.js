@@ -2,7 +2,7 @@ import React, { Component, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom'
 import AppCard from '../../components/AppCard';
-import { AppForm, AppInput } from '../../components/AppForm';
+import { AppForm } from '../../components/AppForm';
 import AppModal from "../../components/AppModal"
 
 import { loginUser } from './oauthSlice'
@@ -32,14 +32,15 @@ const LoginForm = () => {
     const history = useHistory()
 
     const handleLogin = (formData) => {
-        return dispatch(loginUser(formData))
+        dispatch(loginUser(formData))
         .then((res) => {
             const status = res.meta.requestStatus
             if(status == "rejected")
                 return "Invalid Login"
-            else if (status == "fulfilled")
+            else if (status == "fulfilled"){
                 dispatch(fetchCurrentUserInfo(""))
                 .then(history.push('/'))
+            }
             else
                 return "Internal Error"
         })
@@ -62,13 +63,21 @@ const LoginForm = () => {
         }
     }
 
+    const submitButtons = {
+        "post": {
+            label: "Login",
+            handleSubmit: handleLogin
+        }
+    }
+
+
     return (
         <AppForm 
             title="Login"
             submitTitle="Log In"
             method="POST"
             formData={loginForm}
-            handleSubmit={handleLogin}
+            submitButtons={submitButtons}
         />
     );
 }

@@ -16,14 +16,23 @@ export const SubmitPostPage = (props) => {
     } = props.match.params
     const type = props.match.params.postType
     const postType = type? type.toLowerCase() : "review"  
+    
     if(!location)
         history.push("/community/submit")
 
+    let baseUrl = `/${location}`
+    if(brandId)
+        baseUrl += `/${brandId}`
+    if(productUrl)
+        baseUrl += `/${productUrl}`
+
+    console.log(baseUrl)
     const handleSubmitPost = (postParams) => {
+        console.log(postParams)
         dispatch(createPost(postParams))
         .then(res => {
             if(res.meta.requestStatus == "fulfilled")
-                history.push("/community")
+                history.push(baseUrl)
         })
     }
 
@@ -32,16 +41,24 @@ export const SubmitPostPage = (props) => {
         dispatch(createPost(postParams))
         .then(res => {
             if(res.meta.requestStatus == "fulfilled")
-                history.push("/community")
+                history.push(baseUrl)
         })
     }
 
     const handleReviewTypeChange = (element) => {
         const selectedOption = element.options[element.selectedIndex].id
-        history.push("/community/submit/" + selectedOption)
+        history.push(`${baseUrl}/submit/${selectedOption}`)
     }
 
     const formData = {
+        "brandId": {
+            'type': 'hidden',
+            'value': brandId,
+        },
+        "productUrlId": {
+            'type': 'hidden',
+            'value': productUrl,
+        },
         "type": {
             'label': 'Post Type',
             'type': 'select',
@@ -88,6 +105,7 @@ export const SubmitPostPage = (props) => {
             'required': true,
             'value': ''
         }
+        
     }
 
     const content = {
@@ -95,7 +113,7 @@ export const SubmitPostPage = (props) => {
         'type': 'textEditor',
         'placeholder': '',
         'required': true,
-        'value': ''
+        'value': 'textEditor'
     }
 
     const postParams = {

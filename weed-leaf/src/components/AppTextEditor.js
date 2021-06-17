@@ -65,7 +65,7 @@ export const AppTextEditor = (props) => {
     return (
         <div className="app-text-editor" >
             <EditToolbar handleFormatChange={handleFormatChange}/>
-            <input name={props.name} hidden />
+            <input name={props.name} hidden value="textEditor" />
             <div id="edit_content" className="edit-content" contentEditable="true">
 
             </div>

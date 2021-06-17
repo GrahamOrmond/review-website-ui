@@ -51,7 +51,7 @@ export const usersSlice = createSlice({
         [fetchCurrentUserInfo.rejected]: (state, action) => {
             state.currentUser.status = 'failed'
             state.currentUser.user = null
-            state.currentUser.error = action.payload.message
+            state.currentUser.error = ''
         },
     }
 })
