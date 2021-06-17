@@ -24,6 +24,20 @@ export const AppFilter = (props) => {
         return (<option id={optionValue}>{option}</option>)
     })
 
+
+    let reviewOptions;
+    if(postType == "reviews")
+        reviewOptions = (
+            <select>
+                <option id="1">1 Star</option>
+                <option id="2">2 Stars</option>
+                <option id="3">3 Stars</option>
+                <option id="4">4 Stars</option>
+                <option id="5">5 Stars</option>
+            </select>
+        )
+
+
     return (
         <AppCard>
             <div className="app-filter">
@@ -33,13 +47,7 @@ export const AppFilter = (props) => {
                             {postOptions}
                         </select>
 
-                        <select>
-                            <option id="1">1 Star</option>
-                            <option id="2">2 Stars</option>
-                            <option id="3">3 Stars</option>
-                            <option id="4">4 Stars</option>
-                            <option id="5">5 Stars</option>
-                        </select>
+                        {reviewOptions}
                     </div> 
 
                     <div className="filter-view">

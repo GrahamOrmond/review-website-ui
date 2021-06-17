@@ -19,6 +19,13 @@ const initialState = {
     }
 }
 
+const postState = {
+    posts: null,
+    status: 'idle',
+    error: null
+}
+
+
 // fetch list of products
 export const fetchProducts = createAsyncThunk('products/fetchProducts', async (data, { rejectWithValue }) => {
     const response = await client.get('/api/products', rejectWithValue)
@@ -87,11 +94,6 @@ export const productSlice = createSlice({
         },
         [fetchProduct.fulfilled]: (state, action) => {
             let product = {...action.payload}
-            const postState = {
-                posts: null,
-                status: 'idle',
-                error: null
-            }
             product.reviews = postState
             product.questions = postState
             product.threads = postState
@@ -104,12 +106,7 @@ export const productSlice = createSlice({
             state.productView.error = action.error.message
         },
         [fetchProductPosts.pending]: (state, action) => {
-            let setPayload = {
-                posts: null,
-                status: 'loading',
-                error: null
-            }
-            state.productView.product[action.meta.arg.type] = setPayload
+            state.productView.product[action.meta.arg.type].status = 'loading'
         },
         [fetchProductPosts.fulfilled]: (state, action) => {
             let setPayload = {
@@ -120,12 +117,8 @@ export const productSlice = createSlice({
             state.productView.product[action.meta.arg.type] = setPayload
         },
         [fetchProductPosts.rejected]: (state, action) => {
-            let setPayload = {
-                posts: null,
-                status: 'failed',
-                error: null
-            }
-            state.productView.product[action.meta.arg.type] = setPayload
+            state.productView.product[action.meta.arg.type].status = 'failed'
+            state.productView.product[action.meta.arg.type].error = action.error.message
         },
     }
 })
