@@ -8,7 +8,11 @@ import { getOauthToken } from '../oauth/oauthSlice'
 
 // setup inital state
 const initialState = {
-    currentUser: null,
+    currentUser: {
+        user: null,
+        status: "idle",
+        error: null
+    },
 }
 
 // user sign up
@@ -20,8 +24,13 @@ export const fetchCurrentUserInfo = createAsyncThunk('users/fetchCurrent', async
     }
     const response = await client
         .post('/api/profile/', rejectWithValue, formData, customConfig)
+    
     return response
 })
+
+export const selectCurrentUser = (state) => {
+    return state.users.currentUser;
+}
 
 
 // setup slice
@@ -32,13 +41,17 @@ export const usersSlice = createSlice({
     },
     extraReducers: {
         [fetchCurrentUserInfo.pending]: (state, action) => {
-            state.currentUser = null
+            state.currentUser.status = 'loading'
+            state.currentUser.error = null
         },
         [fetchCurrentUserInfo.fulfilled]: (state, action) => {
-            state.currentUser = action.payload
+            state.currentUser.status = 'succeeded'
+            state.currentUser.user = action.payload
         },
         [fetchCurrentUserInfo.rejected]: (state, action) => {
-            state.currentUser = null
+            state.currentUser.status = 'failed'
+            state.currentUser.user = null
+            state.currentUser.error = action.payload.message
         },
     }
 })

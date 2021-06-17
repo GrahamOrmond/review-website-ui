@@ -18,8 +18,8 @@ const initialState = {
 // logs in the user
 export const checkLogin = createAsyncThunk('oauth/checkLogin', async (data, { rejectWithValue }) => {
     const token = window.localStorage.getItem('session');
-    if(token === undefined || token === null)
-        rejectWithValue("No Token");
+    if(!token)
+        return rejectWithValue("No Token");
     return JSON.parse(token);
 })
 
@@ -89,6 +89,7 @@ export const oauthSlice = createSlice({
         },
         [checkLogin.rejected]: (state, action) => {
             state.isLoggedIn = false;
+            state.token = null
         },
     }
 })

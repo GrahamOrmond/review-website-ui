@@ -32,6 +32,7 @@ import { fetchProducts } from './pages/products/productsSlice';
 import { checkLogin, isUserLoggedIn } from './pages/oauth/oauthSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchPosts } from './pages/posts/postsSlice';
+import { fetchCurrentUserInfo } from './pages/users/usersSlice';
 
 store.dispatch(fetchBrands());
 store.dispatch(fetchProducts());
@@ -42,6 +43,11 @@ function App() {
   const dispatch = useDispatch()
   useEffect(() => {
       dispatch(checkLogin())
+      .then(res => {
+        if(res.meta.requestStatus == "fulfilled"){
+          dispatch(fetchCurrentUserInfo(""))
+        }
+      })
   }, [dispatch])
   const isLoggedIn = useSelector(isUserLoggedIn);
 
