@@ -33,6 +33,7 @@ import { checkLogin, isUserLoggedIn } from './pages/oauth/oauthSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchPosts } from './pages/posts/postsSlice';
 import { fetchCurrentUserInfo } from './pages/users/usersSlice';
+import { SubmitPostPage } from './pages/posts/SubmitPostPage';
 
 store.dispatch(fetchBrands());
 store.dispatch(fetchProducts());
@@ -56,11 +57,12 @@ function App() {
       <AppHeader isLoggedIn={isLoggedIn}/>
       <div className="app">
         <Switch>
+        <Route exact path="/:location?/:brandId?/:productUrl?/submit/:postType?/" component={SubmitPostPage} />
           <Route exact path="/brands/:brandId?/:postsType?/:displayName?/:postLink?"
             component={BrandsPage} />
           <Route exact path="/products/:brandId?/:productUrlId?/:postsType?/:displayName?/:postLink?" 
             component={ProductsPage} />
-          <Route exact path="/community/:action?/:displayName?/:postLink?" component={CommunityPage} />
+          <Route exact path="/community/:type?/:displayName?/:postLink?" component={CommunityPage} />
           <Route exact path="/account/" component={UserPage} />
           <Route exact path="/user/:displayName?" component={UserPage} />
           <Route exact path="/login" component={LoginPage} />

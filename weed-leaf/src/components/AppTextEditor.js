@@ -2,9 +2,6 @@ import FormatBoldIcon from '@material-ui/icons/FormatBold';
 import FormatItalicIcon from '@material-ui/icons/FormatItalic';
 import ListIcon from '@material-ui/icons/List';
 import LinkIcon from '@material-ui/icons/Link';
-import AppCard from './AppCard';
-import { useDispatch } from 'react-redux';
-import { createPost } from '../pages/posts/postsSlice';
 
 
 
@@ -61,50 +58,17 @@ const EditToolbar = (props) => {
 
 export const AppTextEditor = (props) => {
 
-    const dispatch = useDispatch();
-
     const handleFormatChange = (command, value) => {
         document.execCommand(command, false, value);
     }
 
-    const handleSaveDraft = () => {
-        let content = document.getElementById("edit_content");
-        let formData = {
-            content: content.innerHTML,
-            Title: "Hello World Title",
-            Type: "THREAD",
-            Status: "DRAFT",
-            ProductId: null,
-            BrandId: null,
-        }
-        dispatch(createPost(formData))
-    }
-
-    const handlePostThread = () => {
-        let content = document.getElementById("edit_content");
-        let formData = {
-            content: content.innerHTML,
-            Title: "Hello World Title",
-            Type: "THREAD",
-            Status: "PUBLIC",
-            ProductId: null,
-            BrandId: null,
-        }
-        dispatch(createPost(formData))
-    }
-
     return (
-        <AppCard >
-             <div className="app-text-editor" >
-                <EditToolbar handleFormatChange={handleFormatChange}/>
-                <div id="edit_content" className="edit-content" contentEditable="true">
+        <div className="app-text-editor" >
+            <EditToolbar handleFormatChange={handleFormatChange}/>
+            <input name={props.name} hidden />
+            <div id="edit_content" className="edit-content" contentEditable="true">
 
-                </div>
-                <EditSumbit
-                    handleSaveDraft={handleSaveDraft}
-                    handlePostThread={handlePostThread}
-                />
             </div>
-        </AppCard>
+        </div>
     )
 }

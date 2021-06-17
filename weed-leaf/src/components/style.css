@@ -819,6 +819,7 @@ a {
     height: 400px;
     background-color: #FFF;
     border-radius: 5px;
+    border: solid #b6b6b7 1px;
 }
 
 .edit-toolbar {

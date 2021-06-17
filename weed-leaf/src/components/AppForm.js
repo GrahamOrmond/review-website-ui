@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { AppTextEditor } from './AppTextEditor';
 
 const ValidateEmail = (email) => {
     if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -7,21 +8,33 @@ const ValidateEmail = (email) => {
     return (false)
 }
 
-class AppSelect extends Component {
+const AppSelect = (props) => {
+    
+    const renderOptions = () => {
+        return props.options.map(option => {
+            let selected = props.selectedValue == option.id? true : false
+            return (
+                <option id={option.id} selected={selected}>
+                    {option.label}
+                </option>
+            )
+        })
+    }
 
-    constructor(props) {
-        super(props);
+    const handleOnChange = (event) => {
+        if(props.handleOnChange){
+            props.handleOnChange(event.target)
+        }
     }
     
-    render () {
-        
-        return (
-            <div className="form-input">
-                <label>{this.props.label}</label>
-                <select></select>
-            </div>
-        );
-    }
+    return (
+        <div className="form-input">
+            <label>{props.label}</label>
+            <select name={props.name} onChange={handleOnChange}>
+                { renderOptions() }
+            </select>
+        </div>
+    );
 }
 
 class AppInput extends Component {
@@ -33,7 +46,6 @@ class AppInput extends Component {
     }
     
     render () {
-        
         return (
             <div className="form-input">
                 <label>{this.props.label}</label>
@@ -63,16 +75,24 @@ class AppForm extends Component {
         this.generateForm = this.generateForm.bind(this);
         this.handleChange = this.handleChange.bind(this);
 
-        this.handleSubmit =  this.props.handleSubmit.bind(this);
         this.submitForm = this.submitForm.bind(this);
     }
 
     generateForm(){
         let data = []
         for (const [key, input] of Object.entries(this.state['formData'])) {
-            if(input['type'] == 'select'){
-                continue;
-            }else{
+            if(input.type == 'select'){
+                data.push(<AppSelect 
+                    name={key}
+                    selectedValue={input.value}
+                    options={input.options}
+                    handleOnChange={input.handleOnChange}
+                />);
+            }else if(input.type == "textEditor")
+            {
+                data.push(<AppTextEditor name={key}/>)
+            }
+            else{
                 data.push(<AppInput 
                     label={input.label} 
                     name={key} 
@@ -97,18 +117,28 @@ class AppForm extends Component {
 
     async submitForm(event){
         event.preventDefault();
-        
         let submitData = {};
         let formData = {...this.state.formData}, throwError = false;
-
+        const formAction = event.nativeEvent.submitter.name;
         for (let i = 0 ; i < event.target.elements.length; i ++){
             let element = event.target.elements[i];
             if(element.nodeName.toLowerCase() == "button")
                 continue
-
-            submitData[element.name] = element.value;
+            if(element.nodeName.toLowerCase() == "select"){
+                const selectedOption = element.options[element.selectedIndex].id
+                submitData[element.name] = selectedOption;
+                continue
+            }
             
-            if(formData[element.name].required && !element.value)
+            if(element.hidden){
+                let content = document.getElementById("edit_content");
+                submitData[element.name] = content.innerHTML
+            }else{
+                submitData[element.name] = element.value;
+            }
+                
+            
+            if(formData[element.name].required && !submitData[element.name])
             {
                 throwError = true
                 formData[element.name].error = `${formData[element.name].label} is required`
@@ -123,22 +153,36 @@ class AppForm extends Component {
             }
             formData[element.name].error = ``
         }
+
         this.setState({
             'formData': formData
         })
         if(throwError)
             return
 
-        const error = await this.handleSubmit(submitData);
-        console.log(error)
+        const error = this.props.submitButtons[formAction]
+            .handleSubmit(submitData)
         this.setState({
             'formError': error
         })
 
     }
+    
 
     
     render () {
+
+        const submitButtons = () => {
+            let buttons = []
+            for (const [key, button] of Object.entries(this.props.submitButtons)) {
+                buttons.push(
+                    <button type="submit" className="button-blue" name={key} value={key}>
+                       {button.label}
+                    </button>
+                )
+            }
+            return buttons;
+        }
         
         return (
             <form className="app-form" onSubmit={this.submitForm} method={this.props.method}>
@@ -153,10 +197,7 @@ class AppForm extends Component {
                     </div>
                 </div>
                 <div className="form-footer">
-                   <button type="submit"
-                        className="button-blue">
-                       {this.props.submitTitle}
-                       </button>
+                   {submitButtons()}
                 </div>
             </form>
         );

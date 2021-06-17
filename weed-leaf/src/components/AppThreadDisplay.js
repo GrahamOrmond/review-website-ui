@@ -1,5 +1,6 @@
 import AppFilter from './AppFilter';
 import AppPost from './AppPost';
+import { AppPostCreate } from './AppPostCreate';
 
 const AppThreadDisplay = (props) => {
 
@@ -16,6 +17,9 @@ const AppThreadDisplay = (props) => {
     
     return (
         <div>
+            <AppPostCreate
+                urlBase={props.urlBase}
+            />
             <AppFilter
                 postType={props.postType}
                 urlBase={props.urlBase}
