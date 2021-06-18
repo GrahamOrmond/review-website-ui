@@ -62,6 +62,17 @@ a {
     color: black;
 }
 
+.thread-end {
+    display: flex;
+    justify-content: center;
+}
+
+.thread-end h3{
+    font-size: 16px;
+    color: #404041;
+}
+
+
 /* 
     2. HEADER
 */

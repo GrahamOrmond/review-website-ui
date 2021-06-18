@@ -164,9 +164,7 @@ class AppForm extends Component {
         this.setState({
             'formData': formData
         })
-
-        console.log(submitData)
-        console.log(throwError)
+        
         if(throwError)
             return
 

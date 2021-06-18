@@ -100,7 +100,6 @@ class AppPost extends Component {
     }
 
     showPostActions(){
-        console.log("post actions")
     }
 
     handleRatingUp(){

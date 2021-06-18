@@ -14,6 +14,8 @@ const AppThreadDisplay = (props) => {
     if(props.posts != null){
         content = renderPosts()
     }
+
+    let progress = "End Of Content";
     
     return (
         <div>
@@ -25,6 +27,9 @@ const AppThreadDisplay = (props) => {
                 urlBase={props.urlBase}
             />
             {content}
+            <div className="thread-end">
+                <h3>{progress}</h3>
+            </div>
         </div>
     );
 }

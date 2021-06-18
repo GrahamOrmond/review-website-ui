@@ -33,7 +33,6 @@ const RegisterForm = () => {
         dispatch(registerUser(formData))
         .then((res) => {
             const status = res.meta.requestStatus
-            console.log(res)
             if(status == "rejected")
                 return res.payload.message
             else if (status == "fulfilled")

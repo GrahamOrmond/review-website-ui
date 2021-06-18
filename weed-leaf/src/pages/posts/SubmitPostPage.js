@@ -26,9 +26,7 @@ export const SubmitPostPage = (props) => {
     if(productUrl)
         baseUrl += `/${productUrl}`
 
-    console.log(baseUrl)
     const handleSubmitPost = (postParams) => {
-        console.log(postParams)
         dispatch(createPost(postParams))
         .then(res => {
             if(res.meta.requestStatus == "fulfilled")

@@ -1,10 +1,18 @@
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import AppThreadDisplay from "../../components/AppThreadDisplay";
-import { selectPostsListInfo } from "../posts/postsSlice";
+import { fetchPosts, selectPostsListInfo } from "../posts/postsSlice";
 
 export const CommunityThreads = (props) =>  {
 
     const postsList = useSelector(selectPostsListInfo);
+    const dispatch = useDispatch();
+    useEffect(() => {
+        if(postsList.status == 'idle'){
+            dispatch(fetchPosts())
+        }
+    }, [dispatch])
+
     return (
         <div className="app-content">
             <AppThreadDisplay

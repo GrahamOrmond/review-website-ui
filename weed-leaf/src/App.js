@@ -36,8 +36,6 @@ import { fetchCurrentUserInfo } from './pages/users/usersSlice';
 import { SubmitPostPage } from './pages/posts/SubmitPostPage';
 
 store.dispatch(fetchBrands());
-store.dispatch(fetchProducts());
-store.dispatch(fetchPosts());
 
 function App() {
 

@@ -16,7 +16,6 @@ export const BrandProfile = (props) => {
 
     let brandProfile = useSelector(selectBrandView);
     let brand = brandProfile.brand
-    console.log(postsType)
     useEffect(() => {
         if (brand !== null) { // brand loaded
             if(brand.brandId === props.brandId) // matches id
