@@ -15,12 +15,16 @@ const initialState = {
     error: null
 }
 
-// logs in the user
+// checks user login
 export const checkLogin = createAsyncThunk('oauth/checkLogin', async (data, { rejectWithValue }) => {
-    const token = window.localStorage.getItem('session');
-    if(!token)
+    const tokenString = window.localStorage.getItem('session');
+    if(!tokenString)
         return rejectWithValue("No Token");
-    return JSON.parse(token);
+
+    const token = JSON.parse(tokenString);
+    if(new Date().getTime() > new Date(token.expiration).getTime())
+        return rejectWithValue("Token Expired");
+    return token;
 })
 
 // logs in the user
@@ -79,6 +83,8 @@ export const oauthSlice = createSlice({
         },
         [registerUser.rejected]: (state, action) => {
             state.status = 'failed'
+            state.isLoggedIn = false
+            state.token = null
             state.error = action.error.message
         },
         [checkLogin.pending]: (state, action) => {
