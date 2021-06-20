@@ -57,6 +57,9 @@ export const selectBrandView = (state) => {
   return state.brands.brandView
 }
 
+export const selectAllBrands = (state) => {
+  return state.brands.brandsList.brands
+}
 
 export const selectBrandById = (state, brandId) => {
   return state.brands.brandsList.brands

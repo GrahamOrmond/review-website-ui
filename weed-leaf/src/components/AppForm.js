@@ -71,7 +71,6 @@ class AppForm extends Component {
         super(props);
 
         this.state = {
-            'formData': props.formData,
             'formError': ''
         }
 
@@ -83,7 +82,7 @@ class AppForm extends Component {
 
     generateForm(){
         let data = []
-        for (const [key, input] of Object.entries(this.state['formData'])) {
+        for (const [key, input] of Object.entries(this.props.formData)) {
             if(input.type == 'select'){
                 data.push(<AppSelect 
                     name={key}
@@ -115,7 +114,7 @@ class AppForm extends Component {
     }
 
     handleChange(event){
-        let newState = this.state.formData;
+        let newState = this.props.formData;
         newState[event.target.name].value = event.target.value
         this.setState({
             'formData': newState
@@ -125,7 +124,7 @@ class AppForm extends Component {
     async submitForm(event){
         event.preventDefault();
         let submitData = {};
-        let formData = {...this.state.formData}, throwError = false;
+        let formData = {...this.props.formData}, throwError = false;
         const formAction = event.nativeEvent.submitter.name;
         for (let i = 0 ; i < event.target.elements.length; i ++){
             let element = event.target.elements[i];
@@ -193,7 +192,11 @@ class AppForm extends Component {
         }
         
         return (
-            <form className="app-form" onSubmit={this.submitForm} method={this.props.method}>
+            <form id={this.props.id}
+                className="app-form" 
+                onSubmit={this.submitForm} 
+                method={this.props.method}
+            >
                 <div className="form-header">
                     <h4>{this.props.title}</h4>
                 </div>
