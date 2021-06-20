@@ -49,6 +49,11 @@ async (fetchData, { getState, rejectWithValue }) => {
   return response
 })
 
+export const getBrandProducts = async (brandId) => {
+  const response = await client.get('/api/products?brandId=' + brandId)
+  return response;
+};
+
 export const selectBrandsListInfo = (state) => {
   return state.brands.brandsList;
 }

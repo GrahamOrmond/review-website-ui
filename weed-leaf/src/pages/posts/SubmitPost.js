@@ -1,48 +1,35 @@
 import { useHistory } from "react-router-dom"
-import { AppTextEditor } from "../../components/AppTextEditor"
 import AppCard from "../../components/AppCard"
 import { AppForm } from "../../components/AppForm"
 import { useDispatch, useSelector } from "react-redux"
 import { createPost } from "./postsSlice"
-import { selectAllBrands } from "../brands/brandsSlice"
-import { client } from "../../api/client"
+import { getBrandProducts, selectAllBrands } from "../brands/brandsSlice"
+import { sortListByName } from "../../helpers/generalHelper"
+import { postProperties } from "./PostProperties"
 
-const sortList = (list) => {
-    let sortedList = [...list];
-    sortedList.sort(function(a, b){
-        var nameA=a.name.toLowerCase(), nameB=b.name.toLowerCase();
-        if (nameA < nameB) //sort string ascending
-            return -1;
-        if (nameA > nameB)
-            return 1;
-        return 0; //default return value (no sorting)
-    });
-    return sortedList;
-}
 
 const generateBrandOptions = (brandsList) => {
-    let brandSorted = sortList(brandsList)
-    return brandSorted.map(brand => {
-        return {
-            id: brand.brandId,
+    let brandSorted = sortListByName(brandsList, "name")
+    let options = {}
+    brandSorted.forEach(brand => {
+        options[brand.brandId] = {
             label: brand.name
         }
-    })
+    });
+    return options
 };
 
 const generateProductOptions = (productsList) => {
-    let productsSorted = sortList(productsList)
-    return productsSorted.map(product => {
-        return {
-            id: product.urlId,
+    console.log(productsList)
+    let productsSorted = sortListByName(productsList, "name")
+    let options = {}
+    console.log(productsSorted)
+    productsSorted.forEach(product => {
+        options[product.urlId] = {
             label: product.name
         }
-    })
-};
-
-const getBrandProducts = async (brandId) => {
-    const response = await client.get('/api/products?brandId=' + brandId)
-    return response;
+    });
+    return options
 };
 
 const renderProductOptions = async (brandId) => {
@@ -59,37 +46,29 @@ const renderProductOptions = async (brandId) => {
     selectOption.text = '-- Select --';
     productSelectBox.add(selectOption);
 
-    productOptions.forEach(option => {
+    for (const [key, option] of Object.entries(productOptions)) {
         let optionDom = document.createElement("option");
-        optionDom.id = option.id;
+        optionDom.id = key;
         optionDom.text = option.label;
         productSelectBox.add(optionDom);
-    });
+    }
 }
 
 
-export const SubmitPostPage = (props) => {
+export const SubmitPost = (props) => {
 
     const history = useHistory();
     const dispatch = useDispatch();
+
     const {
-        location,
+        baseUrl,
         brandId,
         productUrl,
-    } = props.match.params
-    const type = props.match.params.postType
-    const postType = type? type.toLowerCase() : "review"  
-    
-    if(!location)
-        history.push("/community/submit")
-
-    let baseUrl = `/${location}`
-    if(brandId)
-        baseUrl += `/${brandId}`
-    if(productUrl)
-        baseUrl += `/${productUrl}`
+        postType,
+    } = props
 
     const handleSubmitPost = (postParams) => {
+        console.log(postParams)
         dispatch(createPost(postParams))
         .then(res => {
             if(res.meta.requestStatus == "fulfilled")
@@ -122,12 +101,46 @@ export const SubmitPostPage = (props) => {
         if(selectedOption){
             history.push(`/products/${brandId}/${selectedOption}/submit/${postType}`)
         }else{
-            history.push(`/products/${brandId}/submit/${postType}`)
+            history.push(`/brands/${brandId}/submit/${postType}`)
         }
     }
 
     const brandsList = useSelector(selectAllBrands)
     let formData = {
+        "type": {
+            'label': 'Post Type',
+            'type': 'select',
+            'options': {
+                "review": {
+                    'label': "Review"
+                },
+                "question": {
+                    'label': "Question"
+                },
+                "thread": {
+                    'label': "Thread"
+                },
+            },
+            'placeholder': '',
+            'required': true,
+            'value': postType,
+            handleOnChange: handleReviewTypeChange
+        },
+        "status": {
+            'label': 'Post Status',
+            'type': 'select',
+            'options': {
+                'public': {
+                    'label': "Public"
+                },
+                'private': {
+                    'label': "Private"
+                }
+            },
+            'placeholder': '',
+            'required': true,
+            'value': 'public',
+        },
         "brandId": {
             'label': 'Brand',
             'type': 'select',
@@ -144,45 +157,6 @@ export const SubmitPostPage = (props) => {
             'value': productUrl,
             handleOnChange: handleProductChange
         },
-        "type": {
-            'label': 'Post Type',
-            'type': 'select',
-            'options': [
-                {
-                    id: "review",
-                    label: "Review"
-                },
-                {
-                    id: "question",
-                    label: "Question"
-                },
-                {
-                    id: "thread",
-                    label: "Thread"
-                }
-            ],
-            'placeholder': '',
-            'required': true,
-            'value': postType,
-            handleOnChange: handleReviewTypeChange
-        },
-        "status": {
-            'label': 'Post Status',
-            'type': 'select',
-            'options': [
-                {
-                    id: "public",
-                    label: "Public"
-                },
-                {
-                    id: "private",
-                    label: "Private"
-                },
-            ],
-            'placeholder': '',
-            'required': true,
-            'value': 'public',
-        },
         "title": {
             'label': 'Title',
             'type': 'text',
@@ -193,19 +167,18 @@ export const SubmitPostPage = (props) => {
         
     }
 
+    if(postType == "review"){
+        for (const [key, value] of Object.entries(postProperties())) {
+            formData[key] = value
+        }
+    }
+    
     const content = {
         'label': 'Post',
         'type': 'textEditor',
         'placeholder': '',
         'required': true,
         'value': 'textEditor'
-    }
-
-    const postParams = {
-        
-    }
-    for (const [key, value] of Object.entries(postParams)) {
-        formData[key] = value
     }
     formData.content = content
 

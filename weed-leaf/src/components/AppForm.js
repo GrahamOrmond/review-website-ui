@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { AppTextEditor } from './AppTextEditor';
 
 const ValidateEmail = (email) => {
@@ -8,18 +8,21 @@ const ValidateEmail = (email) => {
     return (false)
 }
 
-const AppSelect = (props) => {
+const renderSelectOptions = (options, selectedValue) => {
     
-    const renderOptions = () => {
-        return props.options.map(option => {
-            let selected = props.selectedValue == option.id? true : false
-            return (
-                <option id={option.id} selected={selected}>
-                    {option.label}
-                </option>
-            )
-        })
+    let data = []
+    for (const [key, option] of Object.entries(options)) {
+        let selected = selectedValue == key? true : false
+        data.push(
+            <option id={key} selected={selected}>
+                {option.label}
+            </option>
+        )
     }
+    return data
+}
+
+const AppSelect = (props) => {
 
     const handleOnChange = (event) => {
         if(props.handleOnChange){
@@ -31,7 +34,7 @@ const AppSelect = (props) => {
         <div className="form-input">
             <label>{props.label}</label>
             <select name={props.name} onChange={handleOnChange}>
-                { renderOptions() }
+                { renderSelectOptions(props.options, props.selectedValue) }
             </select>
         </div>
     );
@@ -62,6 +65,97 @@ const AppHidddenInput = (props) => {
                 type="hidden"
                 value={props.value}
             />
+    );
+}
+
+const AppDynamicSelect = (props) => {
+
+    const [ dynamicOptions, setOptions ] = useState({...props.options});
+    const [ dynamicInputs, setInputs ] = useState({});
+
+    const handleAddInput = (event) => {
+        let selectBox = event.target
+        const selectedOption = selectBox.options[selectBox.selectedIndex].id
+        if(selectedOption != ''){
+            let input = dynamicOptions[selectedOption]
+            let inputs = {...dynamicInputs}
+            inputs[selectedOption] = input
+            setInputs(inputs)
+
+            delete dynamicOptions[selectedOption]
+            selectBox.value = ''
+        }
+    }
+
+    const handleInputChange = (event) => {
+        let inputs = {...dynamicInputs}
+        inputs[event.target.name].value = event.target.value
+        setInputs(inputs)
+    }
+
+    const handleRemoveInput = (inputName) => {
+        let inputs = {...dynamicInputs}
+        delete inputs[inputName]; 
+        setInputs(inputs)
+
+        let option = props.options[inputName]
+        let options = {...dynamicOptions}
+        options[inputName] = option
+        setOptions(options)
+    }
+
+    const renderInputs = () => {
+        const inputs = {...dynamicInputs}
+        let data = []
+        for (const [key, input] of Object.entries(inputs)) {
+            data.push(
+                <AppDynamicInput 
+                    label={input.label} 
+                    name={key} 
+                    type={input.type} 
+                    placeholder={input.placeholder} 
+                    value={input.value}
+                    handleChange={handleInputChange}
+                    handleRemove={handleRemoveInput}
+                />
+            )
+        }
+        return data
+    }
+
+    return (
+        <div>
+            <div className="form-input">
+                <label>{props.label}</label>
+                <select onChange={handleAddInput}>
+                    { renderSelectOptions(dynamicOptions, '') }
+                </select>
+            </div>
+            { renderInputs() }
+        </div>
+        
+    );
+}
+
+const AppDynamicInput = (props) => {
+    
+    return (
+        <div className="form-input">
+            <label>{props.label}</label>
+            <div className="input-dynamic">
+                <input 
+                    name={props.name}
+                    onChange={props.handleChange}
+                    type={props.type}
+                    value={props.value} 
+                    placeholder={props.placeholder} 
+                />
+                <div className="remove-input" onClick={ () => props.handleRemove(props.name)}>
+                    
+                </div>
+            </div>
+            
+        </div>
     );
 }
 
@@ -98,7 +192,13 @@ class AppForm extends Component {
                     name={key} 
                     value={input.value}
                 />)
-            }else{
+            }else if (input.type == "properties") {
+                data.push(<AppDynamicSelect
+                    label={input.label}
+                    options={input.options}
+                    handleOnChange={this.handleDynamicSelect}
+                />)
+            } else {
                 data.push(<AppInput 
                     label={input.label} 
                     name={key} 
@@ -142,7 +242,9 @@ class AppForm extends Component {
             }else{
                 submitData[element.name] = element.value;
             }
-                
+
+            if(!formData[element.name])
+                continue 
             
             if(formData[element.name].required && !submitData[element.name])
             {

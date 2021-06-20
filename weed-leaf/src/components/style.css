@@ -509,6 +509,25 @@ a {
         
     }
 
+    .form-input .input-dynamic {
+        display: flex;
+    }
+
+    .form-input .input-dynamic .remove-input {
+        border: solid 1px #D6D6D7;
+        width: 25%
+    }
+
+    .form-input .input-dynamic .remove-input:hover {
+        background-color: #e6e6e6;
+    }
+
+    .form-input .input-dynamic .remove-input:active {
+        background-color: #e6e6e6;
+    }
+
+    
+
     .form-footer {
         display: flex;
         justify-content: flex-end;

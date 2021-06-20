@@ -2,18 +2,11 @@ import { Link } from 'react-router-dom'
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { selectBrandsListInfo } from './brandsSlice';
+import { sortListByName } from '../../helpers/generalHelper';
 
 function renderList(brandsData){
-    let brandSorted = [...brandsData];
-    brandSorted.sort(function(a, b){
-        var nameA=a.name.toLowerCase(), nameB=b.name.toLowerCase();
-        if (nameA < nameB) //sort string ascending
-            return -1;
-        if (nameA > nameB)
-            return 1;
-        return 0; //default return value (no sorting)
-    });
 
+    let brandSorted = sortListByName(brandsData, "name")
 
     let previousLetter;
     let brandContent = [], brandSection, sectionContent = [];
