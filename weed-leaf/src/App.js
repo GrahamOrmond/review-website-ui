@@ -44,7 +44,7 @@ function App() {
       dispatch(checkLogin())
       .then(res => {
         if(res.meta.requestStatus == "fulfilled"){
-          dispatch(fetchCurrentUserInfo(""))
+          dispatch(fetchCurrentUserInfo())
         }
       })
   }, [dispatch])
@@ -62,7 +62,7 @@ function App() {
             component={ProductsPage} />
           <Route exact path="/community/:type?/:displayName?/:postLink?" component={CommunityPage} />
           <Route exact path="/account/" component={UserPage} />
-          <Route exact path="/user/:displayName?" component={UserPage} />
+          <Route exact path="/user/:displayName?/:postType?" component={UserPage} />
           <Route exact path="/login" component={LoginPage} />
           <Route exact path="/register" component={RegisterPage} />
           <Route exact path="/about/:page" component={AboutPage} />
