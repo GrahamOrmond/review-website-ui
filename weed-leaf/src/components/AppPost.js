@@ -89,6 +89,33 @@ class PostHeader extends Component {
     }
 }
 
+const PostProperties = (props) => {
+
+    const renderProperties = (properties) => {
+
+        return properties.map(property => {
+            return (
+                <div class="post-property">
+                    <div>
+                        {property.property}
+                    </div>
+                    <div>
+                    {property.value}
+                    </div>
+                </div>
+            )
+        })
+    }
+
+    return (
+        <div className="post-properties">
+            <h3>{props.title}</h3>
+            {renderProperties(props.properties)}
+        </div>
+    )
+}
+
+
 class AppPost extends Component {
 
     constructor(props) {
@@ -123,6 +150,17 @@ class AppPost extends Component {
         else if (post.brand.brandId != null)
             postUrl = `/brands/${post.brand.brandId}/${postType}s/${displayName}/${postUrlId}`
 
+
+        let propertiesContent;
+        if(post.productProperties){
+            propertiesContent = (
+                <PostProperties 
+                    title="Properties"
+                    properties={post.productProperties}
+                />
+            )
+        }
+
         return (
             <Link to={postUrl}>
                 <AppCard>
@@ -133,6 +171,7 @@ class AppPost extends Component {
                             date={post.dateUpdated}
                             showPostActions={this.showPostActions} />
                         <div className="post-body">
+                            {propertiesContent}
                             {post.content}
                         </div>
                         <div className="post-footer">

@@ -228,7 +228,7 @@ class AppForm extends Component {
         const formAction = event.nativeEvent.submitter.name;
         for (let i = 0 ; i < event.target.elements.length; i ++){
             let element = event.target.elements[i];
-            if(element.nodeName.toLowerCase() == "button")
+            if(element.nodeName.toLowerCase() == "button" || element.name === '')
                 continue
             if(element.nodeName.toLowerCase() == "select"){
                 const selectedOption = element.options[element.selectedIndex].id
@@ -261,11 +261,6 @@ class AppForm extends Component {
             }
             formData[element.name].error = ``
         }
-
-        this.setState({
-            'formData': formData
-        })
-        
         if(throwError)
             return
 

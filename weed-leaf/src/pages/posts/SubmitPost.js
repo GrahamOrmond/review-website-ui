@@ -20,10 +20,8 @@ const generateBrandOptions = (brandsList) => {
 };
 
 const generateProductOptions = (productsList) => {
-    console.log(productsList)
     let productsSorted = sortListByName(productsList, "name")
     let options = {}
-    console.log(productsSorted)
     productsSorted.forEach(product => {
         options[product.urlId] = {
             label: product.name
@@ -68,7 +66,21 @@ export const SubmitPost = (props) => {
     } = props
 
     const handleSubmitPost = (postParams) => {
-        console.log(postParams)
+        const postDto = ["content", "title", "type", 
+        "status", "productUrlId", "brandId", "rating"];
+        let properties = [] 
+        let effects = [] 
+        for (const [key, param] of Object.entries(postParams)) {
+            if(!postDto.includes(key)){
+                properties.push({
+                    'property': key,
+                    'value': param
+                })
+                delete postParams[key]
+            }
+        }
+        postParams.ProductProperties = properties
+        postParams.ProductEffects = []
         dispatch(createPost(postParams))
         .then(res => {
             if(res.meta.requestStatus == "fulfilled")

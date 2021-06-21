@@ -369,6 +369,20 @@ a {
     padding: 0px 5px;
 }
 
+.post-properties {
+    width: 50%;
+}
+
+.post-properties h3 {
+    margin: 0px;
+    padding: 0px;
+}
+
+.post-property{
+    display: flex;
+    justify-content: space-between;
+}
+
 /* 
     8. LIST
 */
