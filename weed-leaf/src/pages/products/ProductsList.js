@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchProducts, selectProductsListInfo } from './productsSlice';
 import { AppProduct } from '../../components/AppProduct'
-import AppFilter from '../../components/AppFilter';
+import { AppProductFilter } from '../../components/AppFilter';
 import { isSearchParamsEqual } from '../../helpers/generalHelper';
 
 export const ProductsList = (props) => {
@@ -35,7 +35,7 @@ export const ProductsList = (props) => {
     return (
         <div className="app-content">
             <div className="app-products-display">
-                <AppFilter />
+                <AppProductFilter />
                 {renderList()}
             </div>
         </div>

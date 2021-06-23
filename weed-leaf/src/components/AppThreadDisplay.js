@@ -1,8 +1,12 @@
-import AppFilter from './AppFilter';
+import { useSelector } from 'react-redux';
+import { isUserLoggedIn } from '../pages/oauth/oauthSlice';
+import { AppPostFilter } from './AppFilter';
 import AppPost from './AppPost';
 import { AppPostCreate } from './AppPostCreate';
 
 const AppThreadDisplay = (props) => {
+
+    const isLoggedIn = useSelector(isUserLoggedIn);
 
     const renderPosts = () => {
         return props.posts.map(post => (
@@ -16,13 +20,20 @@ const AppThreadDisplay = (props) => {
     }
 
     let progress = "End Of Content";
-    
-    return (
-        <div>
+
+    let createContent;
+    if(isLoggedIn){
+        createContent = (
             <AppPostCreate
                 urlBase={props.urlBase}
             />
-            <AppFilter
+        )
+    }
+    
+    return (
+        <div>
+            {createContent}
+            <AppPostFilter
                 postType={props.postType}
                 urlBase={props.urlBase}
             />

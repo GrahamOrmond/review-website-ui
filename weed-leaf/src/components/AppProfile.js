@@ -1,9 +1,6 @@
 import { Link } from 'react-router-dom'
 import React, { Component } from 'react';
 import AppCard from './AppCard'
-import AppShowcase from './AppShowcase'
-import AppPost from './AppPost'
-import AppFilter from './AppFilter';
 
 class ProfileHeader extends Component {
 

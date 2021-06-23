@@ -14,14 +14,14 @@ export const sortListByName = (list, key) => {
 }
 
 // checks two search param objects to see if they are equal
-export const isSearchParamsEqual = (params, data) => {
-    for (const [key, value] of Object.entries(params)) {
-        if (data[key] !== value)
+export const isSearchParamsEqual = (params1, params2) => {
+    for (const [key, value] of Object.entries(params1)) {
+        if (params2[key] !== value)
             return false
     }
 
-    for (const [key, value] of Object.entries(data)) {
-        if (params[key] !== value)
+    for (const [key, value] of Object.entries(params2)) {
+        if (params1[key] !== value)
             return false
     }
     return true
