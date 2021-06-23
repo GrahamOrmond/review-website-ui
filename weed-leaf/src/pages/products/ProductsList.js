@@ -4,20 +4,25 @@ import { useDispatch, useSelector } from 'react-redux'
 import { fetchProducts, selectProductsListInfo } from './productsSlice';
 import { AppProduct } from '../../components/AppProduct'
 import AppFilter from '../../components/AppFilter';
-export const ProductsList = () => {
+import { isSearchParamsEqual } from '../../helpers/generalHelper';
+
+export const ProductsList = (props) => {
+
     useEffect(() => {
         window.scrollTo(0, 0)
     }, [])
     
+    let fetchData = {}
+    if(props.brands)
+        fetchData.brands = props.brands
+
     const productsInfo = useSelector(selectProductsListInfo);
     const dispatch = useDispatch();
     useEffect(() => {
-        if(productsInfo.status == 'idle'){
-            dispatch(fetchProducts())
+        if(productsInfo.status == 'idle' || !isSearchParamsEqual(productsInfo.params, fetchData)){
+            dispatch(fetchProducts(fetchData))
         }
-    }, [dispatch])
-
-
+    }, [fetchData, dispatch])
 
     const renderList = () => {
         return productsInfo.products.map(product => {

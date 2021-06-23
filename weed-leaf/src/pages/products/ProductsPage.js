@@ -16,9 +16,7 @@ export const ProductsPage = (props) => {
     } = props.match.params;
     const type = props.match.params.postsType
     const postsType = type === undefined? "reviews" : type.toLowerCase();
-    let urlString = queryString.parse(props.location.search);
     
-
     if(brandId && productUrlId){ 
 
         if(postLink){
@@ -52,6 +50,8 @@ export const ProductsPage = (props) => {
             </div>
         )
     }
-    
-    return (<ProductsList />)
+    let urlString = queryString.parse(props.location.search);
+    return (<ProductsList 
+        brands={urlString.brands}
+    />)
 }

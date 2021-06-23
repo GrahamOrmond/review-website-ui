@@ -13,6 +13,7 @@ const initialState = {
         error: null
     },
     productsList: {
+        params: {},
         products: [],
         status: 'idle',
         error: null
@@ -27,8 +28,9 @@ const postState = {
 
 
 // fetch list of products
-export const fetchProducts = createAsyncThunk('products/fetchProducts', async (data, { rejectWithValue }) => {
-    const response = await client.get('/api/products', rejectWithValue)
+export const fetchProducts = createAsyncThunk('products/fetchProducts', async (fetchData, { rejectWithValue }) => {
+    let url = `/api/products?${new URLSearchParams(fetchData).toString()}`;
+    const response = await client.get(url, rejectWithValue)
     return response.products
 })
 
@@ -83,6 +85,7 @@ export const productSlice = createSlice({
         },
         [fetchProducts.fulfilled]: (state, action) => {
             state.productsList.status = 'succeeded'
+            state.productsList.params = action.meta.arg? action.meta.arg : {};
             state.productsList.products = action.payload;
         },
         [fetchProducts.rejected]: (state, action) => {
