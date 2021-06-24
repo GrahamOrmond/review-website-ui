@@ -15,7 +15,8 @@
     13. SHOWCASE
     14. FILTER
     15. TEXT EDITOR
-    16. EXTRAS
+    16. POST CREATE
+    17. EXTRAS
 */
 
 
@@ -868,7 +869,7 @@ a {
 }
 
 .filter-content {
-    padding: 5px;
+    padding: 10px;
     width: 100%;
     display: flex;
     flex-wrap: wrap;
@@ -884,24 +885,24 @@ a {
 }
 
 .filter-input {
-    padding: 5px;
     width: 100%;
     display: flex;
     justify-content: space-between;
 }
 
 .filter-input select {
-    margin: 5px;
     width: 45%;
 }
 
 .filter-buttons {
     display: flex;
     flex-wrap: wrap;
+    padding-top: 10px;
 }
 
 .filter-button {
-    margin: 5px;
+    margin: 0px;
+    margin-right: 5px;
     padding: 5px 10px;
     border: solid 1px #D6D6D7;
     border-radius: 25px;
@@ -990,9 +991,30 @@ a {
     border-radius: 25px;
 }
 
+/* 
+    16. POST CREATE
+*/
+
+.app-post-create {
+    padding: 10px;
+}
+
+.post-create-header {
+}
+
+.post-create-header h3 {
+    margin: 0px;
+    padding: 0px;
+    font-size: 16px;
+}
+
+.post-create-content{
+    padding-top: 5px;
+}
+
 
 /* 
-    16. EXTRAS
+    17. EXTRAS
 */
 
 .content-seperator {
