@@ -1,9 +1,49 @@
 import React, { Component, useEffect } from 'react';
-import AppDropdown from './AppDropdown';
-import { Link } from 'react-router-dom'
+import { AppDropdown } from './AppDropdown';
+import { Link, withRouter } from 'react-router-dom'
 import MenuIcon from '@material-ui/icons/Menu';
 import { logoutUser, LogoutUser } from '../pages/oauth/oauthSlice';
 import { useDispatch } from 'react-redux';
+
+const HeaderNavLinks = (props) => {
+
+    const links = [
+        {
+            'link': '/brands',
+            'label': 'Brands'
+        },
+        {
+            'link': '/products',
+            'label': 'Products'
+        },
+        {
+            'link': '/community',
+            'label': 'Community'
+        }
+    ]
+
+    const renderLinks = () => {
+        return links.map(link => {
+            let className = "header-link"
+            if(props.activeLink.includes(link.link))
+                className += " active"
+            return (
+                <Link to={link.link} >
+                    <div className={className}>
+                        <p>{link.label}</p>
+                    </div>
+                </Link>
+            )
+        })
+    }
+
+    return (
+        <div className="header-nav-links">
+            {renderLinks()}
+        </div>
+    )
+}
+
 
 class AppSearch extends Component {
     
@@ -14,7 +54,7 @@ class AppSearch extends Component {
     render () {
         return (
             <div className="app-search">
-                <input></input>
+                <input placeholder="Search..."></input>
             </div>
         );
     }
@@ -28,6 +68,7 @@ const HeaderNav = (props) => {
         [
             {
                 "title": "main",
+                "mobileOnly": true,
                 "links": [
                     {
                         'link': '/brands',
@@ -82,9 +123,19 @@ const HeaderNav = (props) => {
 
     return (
         <div className="header-nav">
-            <AppDropdown linkData={links}>
-                <MenuIcon />
-            </AppDropdown>
+            <div className="header-nav-buttons">
+                <HeaderNavLinks  
+                activeLink={props.activeLink}
+                linkData={links}/>
+            </div>
+            <div className="header-search">
+                <AppSearch />
+            </div>
+            <div className="header-dropdown">
+                <AppDropdown linkData={links}>
+                    <MenuIcon />
+                </AppDropdown>
+            </div>
         </div>
     );
 }
@@ -115,14 +166,17 @@ class AppHeader extends Component {
     }
 
     render () {
-        
+        let pathname = this.props.location.pathname;
+        if(pathname == "/")
+            pathname = "/community"
         return (
             <div className="app-header">
                 <HeaderLogo />
-                <AppSearch />
-                <HeaderNav isLoggedIn={this.props.isLoggedIn}/>
+                <HeaderNav 
+                activeLink={pathname}
+                isLoggedIn={this.props.isLoggedIn}/>
             </div>
         );
     }
 }
-export default AppHeader;
+export default withRouter(AppHeader);

@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import AppHeader from './components/AppHeader';
 import './components/style.css';
 import {
   BrowserRouter as Router,
@@ -7,6 +6,9 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom'
+
+// header
+import AppHeader from './components/AppHeader';
 
 // account pages
 import { LoginPage } from './pages/oauth/LoginPage'
@@ -49,7 +51,7 @@ function App() {
       })
   }, [dispatch])
   const isLoggedIn = useSelector(isUserLoggedIn);
-
+  
   return (
     <Router>
       <AppHeader isLoggedIn={isLoggedIn}/>

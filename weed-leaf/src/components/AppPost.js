@@ -6,7 +6,7 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ChatIcon from '@material-ui/icons/Chat';
 
 import AppButton from './AppButton';
-import AppDropdown from './AppDropdown';
+import { AppDropdown } from './AppDropdown';
 import AppCard from './AppCard';
 
 import { Link } from 'react-router-dom'

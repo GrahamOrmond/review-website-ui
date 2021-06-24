@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
+import { closeAllDropDownMenus } from '../helpers/generalHelper';
 
 import AppButton from './AppButton';
 
@@ -8,44 +9,40 @@ const DropdownNav = (props) => {
     const closeDropdown = (event) => {
         let dropdown = event.target.closest('.dropdown-content');;
         dropdown.classList.remove("active");
+        props.handleOnClick()
+    }
 
-        if(typeof props.handleOnClick == 'function')
-            props.handleOnClick()
+    const className = props.mobileOnly? "dropdown-nav mobile-nav" : "dropdown-nav"
+    if(props.handleOnClick){
+        return (
+            <div className={className} onClick={(e) => closeDropdown(e)}>
+                {props.text}
+            </div>
+        )
     }
 
     return (
-        <div className="dropdown-nav" onClick={(e) => closeDropdown(e)}>
-            {props.text}
+        <Link to={props.link} onClick={(e) => closeAllDropDownMenus(e)}>
+            <div className={className}>
+                {props.text}
+            </div>
+        </Link>
+    )
+}
+
+const DropdownContent = (props) => {
+
+    return (
+        <div className="dropdown-content">
+            {props.children}
         </div>
     );
 }
 
-class DropdownContent extends Component {
-
-    constructor(props) {
-        super(props);
-    }
-
-    render () {
-
-        return (
-            <div className="dropdown-content">
-                {this.props.children}
-            </div>
-        );
-    }
-}
-
-class AppDropdown extends Component {
-
-    constructor(props) {
-        super(props);
-        this.toggleDropDown = this.toggleDropDown.bind(this);
-        this.renderOptions = this.renderOptions.bind(this);
-    }
+export const AppDropdown = (props) => {
 
     // toggles the drop down when clicked
-    toggleDropDown(event){
+    const toggleDropDown = (event) => {
         // get the drop down DOM and toggle it
         let dropdown = event.target.closest(".app-dropdown");
         let dropdownContent = dropdown.querySelector(".dropdown-content");
@@ -56,46 +53,31 @@ class AppDropdown extends Component {
         }
     }
 
-    renderOptions(){
-        let renderedData = [];
-        this.props.linkData['linkSections'].forEach(function (e, index){
-
-            if(index > 0){
-                renderedData.push(<div className="content-seperator"></div>)
-            }
-
-            e['links'].forEach(i => {
-                if(i['onClick'] === undefined){
-                    renderedData.push(
-                        <Link to={i['link']} >
-                            <DropdownNav text={i['label']} />
-                        </Link>
-                    );
-                }else{
-                    renderedData.push(
-                        <DropdownNav 
-                            handleOnClick={i['onClick']}
-                            text={i['label']} 
+    const renderOptions = () => {
+        let data = []
+        props.linkData.linkSections.forEach(section => {
+            section.links.forEach(link => {
+                data.push(
+                    <DropdownNav 
+                            mobileOnly={section.mobileOnly}
+                            handleOnClick={link.onClick}
+                            text={link.label} 
+                            link={link.link}
                         />
-                    );
-                }
-            }); 
-        });
-        return renderedData;
+                )
+            })
+        })
+       return data
     }
 
-    render () {
-        
-        return (
-            <div className="app-dropdown">
-                <AppButton handleOnClick={this.toggleDropDown}>
-                    {this.props.children}
-                </AppButton>
-                <DropdownContent>
-                    {this.renderOptions()}
-                </DropdownContent>
-            </div>
-        );
-    }
+    return (
+        <div className="app-dropdown">
+            <AppButton handleOnClick={toggleDropDown}>
+                {props.children}
+            </AppButton>
+            <DropdownContent>
+                {renderOptions()}
+            </DropdownContent>
+        </div>
+    );
 }
-export default AppDropdown;

@@ -26,3 +26,20 @@ export const isSearchParamsEqual = (params1, params2) => {
     }
     return true
 }
+
+
+export const closeAllDropDownMenus = (event) => {
+    const target = event.target
+    if(target.closest(".app-dropdown")
+        && !target.classList.contains("dropdown-nav")){
+        return;
+    }
+        
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    for (let i = 0; i < dropdowns.length; i++) {
+        var openDropdown = dropdowns[i];
+        if (openDropdown.classList.contains('active')) {
+        openDropdown.classList.remove('active');
+        }
+    }
+}

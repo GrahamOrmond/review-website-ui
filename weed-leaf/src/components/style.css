@@ -8,6 +8,7 @@
     6. DISPLAY CARD
     7. POST
     8. LIST
+    9. MODAL
     10. FORM
     11. PRODUCT DISPLAY
     12. PROFILE
@@ -99,21 +100,73 @@ a {
         font-size: 12px;
         padding: 0px 15px;
         width: 15%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     .app-header .header-nav {
-        width: 15%;
-        padding: 0px 15px;
-        flex-wrap: nowrap;
+        width: 75%;
+        padding: 0px;
         display: flex;
-        justify-content: flex-end;
+        flex-wrap: nowrap;
         align-items: center;
+        justify-content: space-between;
     }
 
     .app-header .header-nav .app-button {
         border: solid 1px #D6D6D7;
     }
 
+    .header-nav-buttons {
+        display: none;
+        width: 50%;
+    }
+
+    .header-search{
+        width: 80%;
+    }
+
+    .header-dropdown{
+        width: 20%;
+        padding-right: 10px;
+        display: flex;
+        justify-content: flex-end;
+        align-items:flex-end;
+    }
+
+    .header-nav-links{
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        width: 100%;
+    }
+
+    .header-link{
+        padding: 0px 10px;
+        
+    }
+
+    .header-link:hover p  {
+        color: #202124;
+        border-bottom: solid 1px #202124;
+    }
+
+    .header-link p {
+        padding: 0px 5px;
+        margin: 0px;
+        display: inline-block;
+        line-height: 20px;
+        font-weight: 500;
+    }
+
+    .header-link.active p {
+        border-radius: 1px;
+        font-weight: 550;
+        border-bottom: solid 2px #202124;
+    }
+
+    
 
 /*
     3. PAGE CONTENT
@@ -199,16 +252,15 @@ a {
 */
 
 .app-search {
-    width: 50vw;
-    max-width: 700px;
-    padding: 10px;
-    display: grid;
+    padding: 10px 0px;
+    display: flex;
     justify-content: center;
 }
 
     .app-search input  {
         max-width: 700px;
-        width: 50vw;
+        width: 100%;
+        padding: 0px 5px;
     }
 
 
@@ -946,6 +998,82 @@ a {
 .content-seperator {
     height: 1px;
     background-color: #D6D6D7;
-    margin: 0px 10px;
+    margin: 0px 10*px;
 }
 
+
+
+/* phones */
+@media (min-width: 576px) {
+
+    .app{
+        background-color: blue;
+    }
+    
+}
+
+/* tablets */
+@media (min-width: 768px) {
+
+    .app{
+        background-color: green;
+    }
+
+    /* 
+        2. HEADER
+    */
+
+    .header-search{
+        width: 50%;
+    }
+
+    .header-dropdown{
+        width: 10%;
+    }
+    
+    .header-nav-buttons{
+        display: flex;
+    }
+
+    .app-header .header-logo {
+        width: 5%;
+        font-size: 12px;
+    }
+
+    .app-header .header-nav {
+        width: 95%;
+    }
+
+    /* 
+        4. BUTTONS
+    */
+
+    .mobile-nav {
+        display: none;
+    }
+
+}
+
+/* laptops */
+@media (min-width: 992px) {
+
+    .app{
+        background-color: red;
+    }
+
+    /* 
+        2. HEADER
+    */
+
+    .app-header .header-logo {
+        font-size: 16px;
+    }
+}
+
+/* large devices */
+@media (min-width: 1200px) {
+
+    .app{
+        background-color: orange;
+    }
+}
