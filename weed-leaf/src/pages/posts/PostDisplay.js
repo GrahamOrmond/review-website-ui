@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import AppCard from "../../components/AppCard"
-import AppPost from "../../components/AppPost"
+import { AppPost }  from "../../components/AppPost"
 import { clearPostView, fetchPost, selectPostView } from "./postsSlice"
 
 

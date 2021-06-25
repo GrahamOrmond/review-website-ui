@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom'
 import AppCard from '../../components/AppCard';
@@ -46,6 +46,10 @@ const LoginForm = () => {
         })
     }
 
+    const updateFormData = (newState) => {
+        setFormData(newState)
+    }
+
     let loginForm = {
         'email': {
             'label': 'Email',
@@ -69,6 +73,7 @@ const LoginForm = () => {
             handleSubmit: handleLogin
         }
     }
+    const [ formData, setFormData ] = useState(loginForm)
 
 
     return (
@@ -76,8 +81,9 @@ const LoginForm = () => {
             title="Login"
             submitTitle="Log In"
             method="POST"
-            formData={loginForm}
+            formData={formData}
             submitButtons={submitButtons}
+            updateFormData={updateFormData}
         />
     );
 }

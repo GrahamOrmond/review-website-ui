@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { isUserLoggedIn } from '../pages/oauth/oauthSlice';
 import { AppPostFilter } from './AppFilter';
-import AppPost from './AppPost';
+import { AppPost } from './AppPost';
 import { AppPostCreate } from './AppPostCreate';
 
 const AppThreadDisplay = (props) => {

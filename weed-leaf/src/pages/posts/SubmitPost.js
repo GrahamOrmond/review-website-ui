@@ -1,3 +1,4 @@
+import React, { useRef, useState } from 'react';
 import { useHistory } from "react-router-dom"
 import AppCard from "../../components/AppCard"
 import { AppForm } from "../../components/AppForm"
@@ -6,7 +7,6 @@ import { createPost } from "./postsSlice"
 import { getBrandProducts, selectAllBrands } from "../brands/brandsSlice"
 import { sortListByName } from "../../helpers/generalHelper"
 import { postProperties } from "./PostProperties"
-
 
 const generateBrandOptions = (brandsList) => {
     let brandSorted = sortListByName(brandsList, "name")
@@ -52,6 +52,16 @@ const renderProductOptions = async (brandId) => {
     }
 }
 
+const determineBaseUrl = (brandId, productUrlId) => {
+
+    if(productUrlId){
+        return `/products/${brandId}/${productUrlId}`
+    }else if (brandId){
+        return `/brands/${brandId}`
+    }else {
+        return '/community'
+    }
+}
 
 export const SubmitPost = (props) => {
 
@@ -59,12 +69,27 @@ export const SubmitPost = (props) => {
     const dispatch = useDispatch();
 
     const {
-        baseUrl,
         brandId,
         productUrl,
         postType,
     } = props
 
+    const updateFormData = (newState) => {
+        const type = newState.type.value
+        if(type != "review"){
+            newState['rating'].type = "hidden"
+            newState['properties'] = "hidden"
+        }else{
+            newState['rating'].type = "select"
+            newState['properties'] = "properties"
+            for (const [key, value] of Object.entries(postProperties())) {
+                newState[key] = value
+            }
+        }
+        setFormData(newState)
+    }
+
+    
     const handleSubmitPost = (postParams) => {
         const postDto = ["content", "title", "type", 
         "status", "productUrlId", "brandId", "rating"];
@@ -84,7 +109,7 @@ export const SubmitPost = (props) => {
         dispatch(createPost(postParams))
         .then(res => {
             if(res.meta.requestStatus == "fulfilled")
-                history.push(baseUrl)
+                history.push(determineBaseUrl(postParams.brandId, postParams.productUrlId))
         })
     }
 
@@ -93,32 +118,35 @@ export const SubmitPost = (props) => {
         dispatch(createPost(postParams))
         .then(res => {
             if(res.meta.requestStatus == "fulfilled")
-                history.push(baseUrl)
+            history.push(determineBaseUrl(postParams.brandId, postParams.productUrlId))
         })
     }
 
-    const handleReviewTypeChange = (element) => {
-        const selectedOption = element.options[element.selectedIndex].id
-        history.push(`${baseUrl}/submit/${selectedOption}`)
+    const handleReviewTypeChange = (formData, selectedOption) => {
+        const brand = formData.brandId.value
+        const product = formData.productUrlId.value
+        history.push(`${determineBaseUrl(brand, product)}/submit/${selectedOption}`)
     }
 
-    const handleBrandChange = async (element) => {
-        const selectedOption = element.options[element.selectedIndex].id
-        history.push(`/brands/${selectedOption}/submit/${postType}`)
+    const handleBrandChange = async (formData, selectedOption) => {
+        const selectedType = formData.type.value
+        history.push(`/brands/${selectedOption}/submit/${selectedType}`)
         await renderProductOptions(selectedOption);
     }
 
-    const handleProductChange = (element) => {
-        const selectedOption = element.options[element.selectedIndex].id
+    const handleProductChange = (formData, selectedOption) => {
+        const selectedBrand = formData.brandId.value
+        const selectedType = formData.type.value
+
         if(selectedOption){
-            history.push(`/products/${brandId}/${selectedOption}/submit/${postType}`)
+            history.push(`/products/${selectedBrand}/${selectedOption}/submit/${selectedType}`)
         }else{
-            history.push(`/brands/${brandId}/submit/${postType}`)
+            history.push(`/brands/${selectedBrand}/submit/${selectedType}`)
         }
     }
 
     const brandsList = useSelector(selectAllBrands)
-    let formData = {
+    let formDataTemplate = {
         "type": {
             'label': 'Post Type',
             'type': 'select',
@@ -178,10 +206,10 @@ export const SubmitPost = (props) => {
         }
         
     }
-
+    
     if(postType == "review"){
         for (const [key, value] of Object.entries(postProperties())) {
-            formData[key] = value
+            formDataTemplate[key] = value
         }
     }
     
@@ -192,8 +220,7 @@ export const SubmitPost = (props) => {
         'required': true,
         'value': 'textEditor'
     }
-    formData.content = content
-
+    formDataTemplate.content = content
     const submitButtons = {
         "save": {
             label: "Save Draft",
@@ -204,7 +231,8 @@ export const SubmitPost = (props) => {
             handleSubmit: handleSubmitPost
         }
     }
-    
+    const [ formData, setFormData ] = useState(formDataTemplate)
+
     return (
         <div className="app-content">
             <AppCard >
@@ -215,6 +243,7 @@ export const SubmitPost = (props) => {
                     method="POST"
                     formData={formData}
                     submitButtons={submitButtons}
+                    updateFormData={updateFormData}
                 />
             </AppCard>
             

@@ -335,6 +335,8 @@ a {
 */
 
 .app-post {
+    padding: 5px;
+    padding-bottom: 10px;
 }
 
 
@@ -344,7 +346,9 @@ a {
 }
 
     .post-header .title h2 {
-        font-size: 5vw;
+        padding: 0px 0px;
+        margin: 0px;
+        font-size: 20px;
     }
 
     .post-header .post-info {
@@ -357,13 +361,26 @@ a {
     .post-header .post-info .user-info{
         display: flex;
         flex-wrap: nowrap;
+        align-items: center;
     }
 
-    .post-header .post-info .user-info div{
-        margin: auto;
-        padding: 5px;
+    .post-header .post-info .user-info h2{
+        margin: 0px;
+        font-size: 12px;
+        line-height: 18px;
     }
 
+    .post-header .post-info .user-info h2:hover{
+        border-bottom: solid 1px #323639;
+    }
+
+    .post-header .post-info .user-info p{
+        margin: 0px;
+        font-size: 12px;
+        color: #323639;
+        padding: 0px 5px;
+        line-height: 18px;
+    }
 
     .post-header .post-info .actions{
         height: 100%;
@@ -371,17 +388,11 @@ a {
         align-items: center;
     }
 
-
-.post-profile-picture { 
-    border: solid 2px #202124;
-    width: 25px;
-    height: 25px;
-    border-radius: 25px;
-    background-color: #323639;
-}
-
 .post-body {
-    margin-bottom: 10px;
+    font-size: 15px;
+    margin: 5px 0px;
+    max-height: 115px;
+    overflow: hidden;
 }
 
 .post-footer {
@@ -1025,7 +1036,7 @@ a {
 
 
 
-/* phones */
+/* phones or larger */
 @media (min-width: 576px) {
 
     .app{
@@ -1034,7 +1045,7 @@ a {
     
 }
 
-/* tablets */
+/* tablets or larger */
 @media (min-width: 768px) {
 
     .app{
@@ -1076,7 +1087,7 @@ a {
 
 }
 
-/* laptops */
+/* laptops or larger */
 @media (min-width: 992px) {
 
     .app{

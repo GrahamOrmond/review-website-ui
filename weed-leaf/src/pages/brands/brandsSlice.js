@@ -50,7 +50,7 @@ async (fetchData, { getState, rejectWithValue }) => {
 })
 
 export const getBrandProducts = async (brandId) => {
-  const response = await client.get('/api/products?brandId=' + brandId)
+  const response = await client.get('/api/products?brands=' + brandId)
   return response;
 };
 

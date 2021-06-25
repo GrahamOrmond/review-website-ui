@@ -11,82 +11,170 @@ import AppCard from './AppCard';
 
 import { Link } from 'react-router-dom'
 
-class PostUserInfo extends Component {
+const PostUserInfo = (props) => {
 
-    constructor(props) {
-        super(props);
-
-        this.showPostActions = props.showPostActions.bind(this);
-
-        this.linkData = {
-            "linkSections": 
-            [
-                {
-                    "title": "main",
-                    "links": [
-                        {
-                            'link': '/post/report',
-                            'label': 'Report'
-                        },
-                    ]
-                },
-            ]
-        }
+    const linkData = {
+        "linkSections": 
+        [
+            {
+                "title": "main",
+                "links": [
+                    {
+                        'link': '/post/report',
+                        'label': 'Report'
+                    },
+                ]
+            },
+        ]
     }
 
-    
 
+    const determinePostTime = () => {
+        const date = new Date(`${props.date}Z`);
+        const timeNow = new Date();
 
-    render () {
-        
-        return (
-            <div className="post-info">
-                <div className="user-info">
-                    <div className="post-profile-picture">
+        let timeBetween = timeNow.getTime() - date.getTime()
+        let minutes = timeBetween / 60000; // 1 min == 60000 milliseconds
+        if(minutes < 1){ // less than minute ago
+            return `less than a minute ago`
+        }
 
-                    </div>
-                    <div className="user-name">
-                        {this.props.displayName}
-                    </div>
-                    <div className="post-date">
-                        {this.props.date}
-                    </div>
+        let hours = minutes/60
+        let days = hours/24
+        let months = days/30
+        let years = days/365
+
+        let count, message
+        if(years >= 1){
+            count = Math.round(years)
+            message = `${count} year`
+        }else if (months >= 1){
+            count = Math.round(months)
+            message = `${count} month`
+        }else if (days >= 1){
+            count = Math.round(days)
+            message = `${count} day`
+        }else if (hours >= 1){
+            count = Math.round(hours)
+            message = `${count} hour`
+        }else {
+            count = Math.round(minutes)
+            message = `${count} minute`
+        }
+
+        if(count > 1){
+            message += "s"
+        }
+        message += " ago"
+        return message
+    }
+
+    return (
+        <div className="post-info">
+            <div className="user-info">
+                <div>
+                    <Link to={`/user/${props.displayName}`}>
+                        <h2>
+                            {props.displayName}
+                        </h2>
+                    </Link>
                 </div>
-                <div className="actions">
-                    <div className="post-button">
-                        <AppDropdown linkData={this.linkData}>
-                            <MoreHorizIcon />
-                        </AppDropdown>
-                    </div>
+                <div>
+                    <p>
+                        {determinePostTime()}
+                    </p>
                 </div>
             </div>
-        );
-    }
+            <div className="actions">
+                <div className="post-button">
+                    <AppDropdown linkData={linkData}>
+                        <MoreHorizIcon />
+                    </AppDropdown>
+                </div>
+            </div>
+        </div>
+    )
 }
 
 
-class PostHeader extends Component {
 
-    constructor(props) {
-        super(props);
+const PostHeader = (props) => {
 
-        this.showPostActions = props.showPostActions.bind(this);
+    return (
+        <div className="post-header">
+            <PostUserInfo 
+                displayName={props.displayName}
+                date={props.date}
+            />
+            <div className="title">
+                <h2>{props.title}</h2>
+            </div>
+        </div>
+    )
+}
+
+const PostBody = (props) => {
+
+    let propertiesContent;
+    if(props.properties){
+        propertiesContent = (
+            <PostProperties 
+                title="Properties"
+                properties={props.productProperties}
+            />
+        )
     }
 
-    render () {
-        
-        return (
-            <div className="post-header">
-                <PostUserInfo 
-                    date={this.props.date}
-                    displayName={this.props.displayName}
-                    showPostActions={this.showPostActions} />
-                <div className="title">
-                    <h2>{this.props.title}</h2>
+    return (
+        <div className="post-body">
+            {propertiesContent}
+            {props.content}
+        </div>
+    )
+}
+
+const PostFooter = (props) => {
+    
+    const handleRatingDown = () => {
+
+    }
+
+    const handleRatingUp = () => {
+
+    }
+
+    const handleViewComments = () => {
+
+    }
+
+    return (
+        <div className="post-footer">
+            <div className="post-notification">
+                <div className="content">
+                    <AppButton handleOnClick={handleRatingUp}>
+                        <ArrowUpwardIcon />
+                    </AppButton>
+                    <div className="value">
+                        <p>{props.upCount - props.downCount}</p>
+                    </div>
+                    <AppButton handleOnClick={handleRatingDown}>
+                        <ArrowDownwardIcon />
+                    </AppButton>
                 </div>
             </div>
-        );
-    }
+            <div className="post-notification">
+                <div className="content">
+                    <div className="value">
+                        <p>{props.commentCount}</p>
+                    </div>
+                    <AppButton handleOnClick={handleViewComments}>
+                        <ChatIcon />
+                    </AppButton>
+                </div>
+                
+            </div>
+        </div>
+    )
 }
 
 const PostProperties = (props) => {
@@ -116,94 +204,47 @@ const PostProperties = (props) => {
 }
 
 
-class AppPost extends Component {
+export const AppPost = (props) => {
 
-    constructor(props) {
-        super(props);
-
-        this.showPostActions = this.showPostActions.bind(this);
-        this.handleRatingUp = this.handleRatingUp.bind(this);
-        this.handleRatingDown = this.handleRatingDown.bind(this);
-    }
-
-    showPostActions(){
-    }
-
-    handleRatingUp(){
-
-    }
-
-    handleRatingDown(){
-        
-    }
-
-    render () {
-
-        const post = this.props.post
-        const displayName = post.displayName.toLowerCase()
-        const postUrlId = post.urlId.toLowerCase()
-        const postType = post.type.toLowerCase()
-
-        let postUrl = `/community/user/${displayName}/${postUrlId}`;
-        if(post.product.productId != null)
-            postUrl = `/products/${post.brand.brandId}/${post.product.urlId}/${postType}s/${displayName}/${postUrlId}`
-        else if (post.brand.brandId != null)
-            postUrl = `/brands/${post.brand.brandId}/${postType}s/${displayName}/${postUrlId}`
-
-
-        let propertiesContent;
-        if(post.productProperties){
-            propertiesContent = (
-                <PostProperties 
-                    title="Properties"
-                    properties={post.productProperties}
-                />
-            )
-        }
-
+    if(!props.post){
         return (
-            <Link to={postUrl}>
-                <AppCard>
-                    <div className="app-post">
-                        <PostHeader 
-                            title={post.title}
-                            displayName={post.displayName}
-                            date={post.dateUpdated}
-                            showPostActions={this.showPostActions} />
-                        <div className="post-body">
-                            {propertiesContent}
-                            {post.content}
-                        </div>
-                        <div className="post-footer">
-                            <div className="post-notification">
-                                <div className="content">
-                                    <AppButton handleOnClick={this.handleRatingUp}>
-                                        <ArrowUpwardIcon />
-                                    </AppButton>
-                                    <div className="value">
-                                        <p>{post.upCount - post.downCount}</p>
-                                    </div>
-                                    <AppButton handleOnClick={this.handleRatingDown}>
-                                        <ArrowDownwardIcon />
-                                    </AppButton>
-                                </div>
-                            </div>
-                            <div className="post-notification">
-                                <div className="content">
-                                    <div className="value">
-                                        <p>0</p>
-                                    </div>
-                                    <AppButton handleOnClick={this.handleRatingDown}>
-                                        <ChatIcon />
-                                    </AppButton>
-                                </div>
-                                
-                            </div>
-                        </div>
-                    </div>
-                </AppCard>
-            </Link>
-        );
+            <div>
+
+            </div>
+        )
     }
+
+    const post = props.post
+    const displayName = post.displayName.toLowerCase()
+    const postUrlId = post.urlId.toLowerCase()
+    const postType = post.type.toLowerCase()
+
+    let postUrl = `/community/user/${displayName}/${postUrlId}`;
+    if(post.product.productId != null)
+        postUrl = `/products/${post.brand.brandId}/${post.product.urlId}/${postType}s/${displayName}/${postUrlId}`
+    else if (post.brand.brandId != null)
+        postUrl = `/brands/${post.brand.brandId}/${postType}s/${displayName}/${postUrlId}`
+
+    return (
+        <Link to={postUrl}>
+            <AppCard>
+                <div className="app-post">
+                    <PostHeader 
+                        title={post.title}
+                        displayName={post.displayName}
+                        date={post.dateUpdated}
+                        />
+                    <PostBody 
+                        properties={post.productProperties}
+                        content={post.content}
+                    />
+                    <PostFooter 
+                        upCount={post.upCount}
+                        downCount={post.downCount}
+                        commentCount={0}
+                    />
+                </div>
+            </AppCard>
+        </Link>
+    )
 }
-export default AppPost;
