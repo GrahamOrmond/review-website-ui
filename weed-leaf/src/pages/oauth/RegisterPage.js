@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom'
 import AppCard from '../../components/AppCard';
@@ -52,6 +52,10 @@ const RegisterForm = () => {
         })
     }
 
+    const updateFormData = (newState) => {
+        setFormData(newState)
+    }
+
     let registerForm = {
         'email': {
             'label': 'Email',
@@ -82,6 +86,7 @@ const RegisterForm = () => {
             'value': ''
         }
     }
+    const [ formData, setFormData ] = useState(registerForm)
 
     const submitButtons = {
         "post": {
@@ -95,8 +100,9 @@ const RegisterForm = () => {
             title="Sign Up"
             submitTitle="Sign Up"
             method="POST"
-            formData={registerForm}
+            formData={formData}
             submitButtons={submitButtons}
+            updateFormData={updateFormData}
         />
     );
 }

@@ -1,5 +1,8 @@
 import React, { Component, useState } from 'react';
+import AppButton from './AppButton';
 import { AppTextEditor } from './AppTextEditor';
+
+import CloseIcon from '@material-ui/icons/Close';
 
 const ValidateEmail = (email) => {
     if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -24,19 +27,54 @@ const renderSelectOptions = (options, selectedValue) => {
 
 export const AppFileInput = (props) => {
 
-    let files = [
+    const acceptedFiles = "image/*,video/*"
 
-    ]
+    const handleAddFile = (e) => {
+        const selectedFile = e.target.files[0];
+        e.target.value = ''
+        props.handleOnChange(e.target.name, selectedFile)
+    }
+
+    const handleRemoveFile = (e, file) => {
+        const fileInput = e.target.closest('.form-input').querySelector("input")
+        e.target.value = ''
+        props.handleOnChange(fileInput.name, file, true)
+    }
+
+    const handleViewImage = (file) => {
+        window.open(URL.createObjectURL(file),'Image','');
+    }
+
+    const renderFiles = () => {
+        return props.files.map(file => {
+            return (
+                <div className="form-file">
+                    <div className="name">
+                        <p onClick={(e) => handleViewImage(e, file)}>{file.name}</p>
+                    </div>
+                    <div className="action">
+                        <AppButton handleOnClick={(e) => handleRemoveFile(e, file)}>
+                            <CloseIcon />
+                        </AppButton>
+                    </div>
+                </div>
+            )
+        })
+    }
 
     return (
         <div className="form-input">
             <label>{props.label}</label>
             <input 
                 name={props.name}
-                onChange={(e) => props.handleOnChange(e)}
+                onChange={(e) => handleAddFile(e)}
                 type="file"
+                accept={acceptedFiles}
             />
             <label className="input-error">{props.error}</label>
+            <div className="form-files-list">
+                { renderFiles() }
+            </div>
         </div>
     );
 }
@@ -178,12 +216,14 @@ export const AppForm = (props) => {
     const [ formErrors, setFormErrors ] = useState([])
 
     // handles file input change
-    const handleFileChange = (e) => {
-        const selectedFile = e.target.files[0];
-        e.target.value = ""
-
+    const handleFileChange = (fileList, file, removeFile = false) => {
         let newState = {...formData};
-        newState[e.target.name].files.push(selectedFile)
+        if(removeFile){
+            const fileIndex = newState[fileList].files.indexOf(file);
+            newState[fileList].files.splice(fileIndex, 1);
+        }else{
+            newState[fileList].files.push(file)
+        }
         props.updateFormData(newState)
     }
 

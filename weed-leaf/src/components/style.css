@@ -627,6 +627,45 @@ a {
     text-align: center;
 }
 
+.form-files-list {
+
+}
+
+.form-file{
+    margin: 5px 0px;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    background-color:  #ebebeb;
+}
+
+.form-file .name{
+    max-width: 90%;
+}
+
+.form-file .name p{
+    margin: 0px;
+    padding: 0px 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.form-file .name p:hover{
+    color:#2196f3;
+}
+
+.form-file .name p:active{
+    color:#7ac0f8
+
+}
+
+.form-file .action {
+
+}
+
 /* 
     11. PRODUCT DISPLAY
 */

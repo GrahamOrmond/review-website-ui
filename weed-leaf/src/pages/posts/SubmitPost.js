@@ -203,8 +203,13 @@ export const SubmitPost = (props) => {
             'placeholder': '',
             'required': true,
             'value': ''
+        },
+        "images": {
+            'label': 'Media',
+            'type': 'file',
+            'placeholder': '',
+            'files': []
         }
-        
     }
     
     if(postType == "review"){
@@ -231,6 +236,7 @@ export const SubmitPost = (props) => {
             handleSubmit: handleSubmitPost
         }
     }
+
     const [ formData, setFormData ] = useState(formDataTemplate)
 
     return (
