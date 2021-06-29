@@ -27,11 +27,31 @@ const renderSelectOptions = (options, selectedValue) => {
 
 export const AppFileInput = (props) => {
 
-    const acceptedFiles = "image/*,video/*"
+    const acceptedFiles = [
+        "image/*", "video/*"
+    ]
+
+    const handleFileValidation = (file) => {
+        for (let i = 0; i < acceptedFiles.length; i++) {
+            const acceptedInfo = acceptedFiles[i].split("/")
+            const fileInfo  = file.type.split("/")
+            if(fileInfo[0] == acceptedInfo[0]){
+                if(acceptedInfo[1] == '*' 
+                    || fileInfo[1] == acceptedInfo[1]){
+                        return true;
+                    }
+            }
+        }
+        return false
+    }
 
     const handleAddFile = (e) => {
         const selectedFile = e.target.files[0];
-        e.target.value = ''
+        e.target.value = '';
+        const isFileValid = handleFileValidation(selectedFile)
+        if(!isFileValid){
+            return
+        }
         props.handleOnChange(e.target.name, selectedFile)
     }
 
@@ -69,7 +89,6 @@ export const AppFileInput = (props) => {
                 name={props.name}
                 onChange={(e) => handleAddFile(e)}
                 type="file"
-                accept={acceptedFiles}
             />
             <label className="input-error">{props.error}</label>
             <div className="form-files-list">
@@ -318,7 +337,7 @@ export const AppForm = (props) => {
         let data = {...formData}, throwError = false;
         let submitData = {};
         for (let i = 0 ; i < event.target.elements.length; i ++){
-            let element = event.target.elements[i];
+            const element = event.target.elements[i];
             // skip inputs
             if(element.nodeName.toLowerCase() == "button" || element.name === ''){
                 continue
@@ -329,6 +348,12 @@ export const AppForm = (props) => {
                 const selectedOption = element.options[element.selectedIndex]
                 if(selectedOption)
                     submitData[element.name] = selectedOption.id;
+                continue
+            }
+
+            // media files
+            if(element.type == "file"){
+                submitData[element.name] = formData[element.name].files
                 continue
             }
 

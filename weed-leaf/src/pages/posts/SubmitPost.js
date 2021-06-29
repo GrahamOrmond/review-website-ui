@@ -92,7 +92,7 @@ export const SubmitPost = (props) => {
     
     const handleSubmitPost = (postParams) => {
         const postDto = ["content", "title", "type", 
-        "status", "productUrlId", "brandId", "rating"];
+        "status", "productUrlId", "brandId", "rating", "mediaFiles"];
         let properties = [] 
         let effects = [] 
         for (const [key, param] of Object.entries(postParams)) {
@@ -104,8 +104,8 @@ export const SubmitPost = (props) => {
                 delete postParams[key]
             }
         }
-        postParams.ProductProperties = properties
-        postParams.ProductEffects = []
+        postParams.productProperties = properties
+        postParams.productEffects = []
         dispatch(createPost(postParams))
         .then(res => {
             if(res.meta.requestStatus == "fulfilled")
@@ -204,7 +204,7 @@ export const SubmitPost = (props) => {
             'required': true,
             'value': ''
         },
-        "images": {
+        "mediaFiles": {
             'label': 'Media',
             'type': 'file',
             'placeholder': '',

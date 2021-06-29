@@ -27,8 +27,17 @@ export const createPost = createAsyncThunk('posts/createPosts', async (formData,
     customConfig.headers = {
         'Authorization': `Bearer ${token.token}`
     }
+
+    // create form data
+    let body = new FormData()
+    formData.mediaFiles.forEach(file => {
+        body.append('PostFiles', file, file.name)
+    });
+    delete formData.mediaFiles
+    body.append('PostData', JSON.stringify(formData))
+
     const response = await client
-        .post('/api/posts/', rejectWithValue, formData, customConfig)
+        .post('/api/posts/', rejectWithValue, body, customConfig)
     return response
 })
 

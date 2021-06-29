@@ -3,23 +3,27 @@
 
 
 export async function client(endpoint, rejectWithValue, { body, ...customConfig } = {}) {
-
     const url = `https://localhost:44303${endpoint}`
-    const headers = { 
-      'Content-Type': 'application/json'
+    const headers = { }
+
+    let formData;
+    if (body) {
+      if(body instanceof FormData){
+        formData = body
+      }else{
+        headers['Content-Type'] = 'application/json'
+        formData = JSON.stringify(body)
+      }
     }
-  
+    
     const config = {
-      method: body ? 'POST' : 'GET',
+      method: formData ? 'POST' : 'GET',
       ...customConfig,
       headers: {
         ...headers,
         ...customConfig.headers,
       },
-    }
-  
-    if (body) {
-      config.body = JSON.stringify(body)
+      body: formData
     }
   
     let data
@@ -41,6 +45,7 @@ export async function client(endpoint, rejectWithValue, { body, ...customConfig 
     return results;
   }
   
-  client.post = function (url, rejectWithValue = () => {}, body, customConfig = {}) {
+  client.post = async function (url, rejectWithValue = () => {}, body, customConfig = {}) {
     return client(url, rejectWithValue, { ...customConfig, body })
   }
+  
