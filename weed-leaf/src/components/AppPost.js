@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
@@ -115,6 +115,8 @@ const PostHeader = (props) => {
 
 const PostBody = (props) => {
 
+    const [mediaFiles, setMediaFiles] = useState([])
+
     let propertiesContent;
     if(props.properties){
         propertiesContent = (
@@ -125,8 +127,51 @@ const PostBody = (props) => {
         )
     }
 
+
+    const renderMediaFiles = () => {
+        let images = [...props.mediaFiles]
+        if(images.length > 1){
+            images.sort(function(a,b){
+                return new Date(a.dateUploaded).getTime() - new Date(b.dateUploaded).getTime();
+            });
+        }
+    
+        // return the images
+        const maxHeight = 300, maxWidth = 600
+        return images.map(m => {
+            let width = m.width
+            let height = m.height
+
+            // handle image resizing here
+            if(height > maxHeight){
+                width = width/(height/maxHeight)
+                height = maxHeight
+            }
+            if(width > maxWidth){
+                height = height/(width/maxWidth)
+                width = maxWidth
+            }
+
+            return (
+                <img src={"https://localhost:44303/uploads/" + m.fileId}
+                    height={height}
+                    width={width}
+                    className={"images-display"}
+                />
+            )
+        })
+    }
+
+    useEffect(() => {
+        setMediaFiles(renderMediaFiles())
+    }, [])
+
     return (
         <div className="post-body">
+            <div className="post-body-images">
+                {mediaFiles}
+            </div>
+           
             {propertiesContent}
             {props.content}
         </div>
@@ -235,6 +280,7 @@ export const AppPost = (props) => {
                         date={post.dateUpdated}
                         />
                     <PostBody 
+                        mediaFiles={post.mediaFiles}
                         properties={post.productProperties}
                         content={post.content}
                     />

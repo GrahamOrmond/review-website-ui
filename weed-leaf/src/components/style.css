@@ -391,16 +391,29 @@ a {
 .post-body {
     font-size: 15px;
     margin: 5px 0px;
-    max-height: 115px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     overflow: hidden;
+}
+
+.post-body-images {
+    overflow: hidden;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.images-display{
+    max-width: 350px;
+    max-height: 300px;
 }
 
 .post-footer {
     display: flex;
     justify-content: space-between;
 }
-
-
 
 .post-rating div{
     padding-right: 5px;
@@ -1139,6 +1152,11 @@ a {
 
     .app-header .header-logo {
         font-size: 16px;
+    }
+
+    .images-display{
+        max-width: 600px;
+        max-height: 300px;
     }
 }
 
