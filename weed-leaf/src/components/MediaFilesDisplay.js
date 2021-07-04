@@ -11,6 +11,8 @@ export const MediaFilesDisplay = (props) => {
     })
 
     const handleViewImage = (event) => {
+        if(event.target.closest("a"))
+            return
         window.open(event.target.src);
     }
 

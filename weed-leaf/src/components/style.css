@@ -460,11 +460,11 @@ a {
 .images-display{
     max-width: 350px;
     max-height: 300px;
-    position: relative;
     cursor: pointer;
 }
 
 .image-nav-display{
+    pointer-events: none;
     position: relative;
     width: 100%;
 }
@@ -512,6 +512,8 @@ a {
 }
 
 .image-nav .nav-buttons .img-button{
+    pointer-events: all;
+    cursor: pointer;
     margin: 10px;
     padding: 5px;
     border-radius: 100px;
@@ -520,6 +522,7 @@ a {
     justify-content: space-between;
     place-items: center;
     border: solid 1px rgb(32, 33, 36, 0.5);
+    z-index: 99;
 }
 
 .image-nav .nav-buttons .img-button:hover{
@@ -1211,19 +1214,11 @@ a {
 
 /* phones or larger */
 @media (min-width: 576px) {
-
-    .app{
-        background-color: blue;
-    }
     
 }
 
 /* tablets or larger */
 @media (min-width: 768px) {
-
-    .app{
-        background-color: green;
-    }
 
     /* 
         2. HEADER
@@ -1263,10 +1258,6 @@ a {
 /* laptops or larger */
 @media (min-width: 992px) {
 
-    .app{
-        background-color: red;
-    }
-
     /* 
         2. HEADER
     */
@@ -1284,7 +1275,4 @@ a {
 /* large devices */
 @media (min-width: 1200px) {
 
-    .app{
-        background-color: orange;
-    }
 }
