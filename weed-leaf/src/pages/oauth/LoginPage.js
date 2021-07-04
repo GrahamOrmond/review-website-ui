@@ -1,7 +1,7 @@
 import React, { Component, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom'
-import AppCard from '../../components/AppCard';
+import { AppCard } from '../../components/AppCard';
 import { AppForm } from '../../components/AppForm';
 import AppModal from "../../components/AppModal"
 

@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { useHistory } from "react-router-dom"
-import AppCard from "../../components/AppCard"
+import { AppCard } from "../../components/AppCard"
 import { AppForm } from "../../components/AppForm"
 import { useDispatch, useSelector } from "react-redux"
 import { createPost } from "./postsSlice"

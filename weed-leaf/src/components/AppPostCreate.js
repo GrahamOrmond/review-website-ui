@@ -1,5 +1,5 @@
 import { useHistory } from "react-router-dom"
-import AppCard from "./AppCard"
+import { AppCard } from "./AppCard"
 
 export const AppPostCreate = (props) =>
 {

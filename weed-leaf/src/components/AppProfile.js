@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import React, { Component } from 'react';
-import AppCard from './AppCard'
+import { AppCard } from './AppCard'
 
 class ProfileHeader extends Component {
 

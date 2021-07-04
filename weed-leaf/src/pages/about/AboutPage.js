@@ -1,4 +1,4 @@
-import AppCard from "../../components/AppCard";
+import { AppCard } from "../../components/AppCard";
 
 export const AboutPage = ({ match }) => {
     const { page } = match.params;

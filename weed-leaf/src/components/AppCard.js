@@ -1,18 +1,19 @@
-import React, { Component } from 'react';
+import { Link } from 'react-router-dom'
 
-class AppCard extends Component {
+export const AppCard = (props) => {
+    
+    const cardContent = (
+        <div className="app-card">
+            {props.children}
+        </div>
+    )
 
-    constructor(props) {
-        super(props);
-    }
-
-    render () {
-        
+    if(props.url){ // url included
         return (
-            <div className="app-card">
-                {this.props.children}
-            </div>
-        );
+            <Link to={props.url}>
+                {cardContent}
+            </Link>
+        )
     }
+    return cardContent
 }
-export default AppCard;

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { useHistory } from 'react-router-dom';
-import AppCard from './AppCard'
+import { AppCard } from './AppCard'
 
 
 export const AppPostFilter = (props) => {

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
-import AppCard from './AppCard';
-import { AppProduct } from './AppProduct';
+import { AppCard } from './AppCard';
 
 
 class ShowcaseItem extends Component {

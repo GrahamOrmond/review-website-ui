@@ -1,12 +1,10 @@
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import AppCard from "../../components/AppCard"
 import { AppPost }  from "../../components/AppPost"
 import { clearPostView, fetchPost, selectPostView } from "./postsSlice"
 
 
 export const PostDisplay = (props) => {
-
     const dispatch = useDispatch()
 
     let postDisplay = useSelector(selectPostView);
@@ -21,10 +19,8 @@ export const PostDisplay = (props) => {
                 return;
             dispatch(clearPostView()) // clear post if not matching
         }
-        
         dispatch(fetchPost(props.fetchData)) // fetch post by params 
     }, [post, dispatch])
-
     if(post == null){
         return (
             <div>
@@ -33,10 +29,16 @@ export const PostDisplay = (props) => {
         )
     }
     return (
-        <AppCard>
-            <AppPost post={post}>
+        <div>
+            <AppPost 
+                display="full"
+                post={post}>
             </AppPost>
-        </AppCard>
+
+
+
+        </div>
+        
     )
 
 }

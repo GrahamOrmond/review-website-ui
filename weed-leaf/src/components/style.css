@@ -444,6 +444,7 @@ a {
 }
 
 .post-body-content {
+    padding: 10px 0px;
     white-space: pre-line;  
     max-height: 200px;
 }
@@ -459,6 +460,8 @@ a {
 .images-display{
     max-width: 350px;
     max-height: 300px;
+    position: relative;
+    cursor: pointer;
 }
 
 .image-nav-display{

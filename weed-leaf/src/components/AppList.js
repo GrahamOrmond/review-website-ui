@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import AppCard from './AppCard';
+import { AppCard } from './AppCard';
 
 class AppList extends Component {
 

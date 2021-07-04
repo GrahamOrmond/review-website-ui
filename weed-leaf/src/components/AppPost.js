@@ -7,7 +7,7 @@ import ChatIcon from '@material-ui/icons/Chat';
 
 import AppButton from './AppButton';
 import { AppDropdown } from './AppDropdown';
-import AppCard from './AppCard';
+import { AppCard } from './AppCard';
 import { MediaFilesDisplay } from './MediaFilesDisplay';
 
 import { Link } from 'react-router-dom'
@@ -136,11 +136,13 @@ const PostHeader = (props) => {
 const PostBody = (props) => {
 
     let propertiesContent;
-    if(props.properties){
+    if(props.properties 
+        && props.properties.length > 0)
+    {
         propertiesContent = (
             <PostProperties 
                 title="Properties"
-                properties={props.productProperties}
+                properties={props.properties}
             />
         )
     }
@@ -151,7 +153,6 @@ const PostBody = (props) => {
             mediaFiles={props.mediaFiles}
         />
     }
-    console.log(props.content)
     return (
         <div className="post-body">
             {mediaFileContent}
@@ -212,9 +213,9 @@ const PostFooter = (props) => {
 
 const PostProperties = (props) => {
 
-    const renderProperties = (properties) => {
+    const renderProperties = () => {
 
-        return properties.map(property => {
+        return props.properties.map(property => {
             return (
                 <div class="post-property">
                     <div>
@@ -231,7 +232,7 @@ const PostProperties = (props) => {
     return (
         <div className="post-properties">
             <h3>{props.title}</h3>
-            {renderProperties(props.properties)}
+            {renderProperties()}
         </div>
     )
 }
@@ -252,36 +253,38 @@ export const AppPost = (props) => {
     const postUrlId = post.urlId.toLowerCase()
     const postType = post.type.toLowerCase()
 
-    let postUrl = `/community/user/${displayName}/${postUrlId}`;
-    if(post.product.productId != null)
-        postUrl = `/products/${post.brand.brandId}/${post.product.urlId}/${postType}s/${displayName}/${postUrlId}`
-    else if (post.brand.brandId != null)
-        postUrl = `/brands/${post.brand.brandId}/${postType}s/${displayName}/${postUrlId}`
+    let postUrl;
+    if(props.display != "full"){
+        postUrl = `/community/user/${displayName}/${postUrlId}`;
+        if(post.product.productId != null)
+            postUrl = `/products/${post.brand.brandId}/${post.product.urlId}/${postType}s/${displayName}/${postUrlId}`
+        else if (post.brand.brandId != null)
+            postUrl = `/brands/${post.brand.brandId}/${postType}s/${displayName}/${postUrlId}`
+    }
+    
 
     return (
-        <Link to={postUrl}>
-            <AppCard>
-                <div className="app-post">
-                    <PostHeader 
-                        title={post.title}
-                        type={post.type}
-                        displayName={post.displayName}
-                        date={post.dateUpdated}
-                        brand={post.brand}
-                        product={post.product}
-                        />
-                    <PostBody 
-                        mediaFiles={post.mediaFiles}
-                        properties={post.productProperties}
-                        content={post.content}
+        <AppCard url={postUrl}>
+            <div className="app-post">
+                <PostHeader 
+                    title={post.title}
+                    type={post.type}
+                    displayName={post.displayName}
+                    date={post.dateUpdated}
+                    brand={post.brand}
+                    product={post.product}
                     />
-                    <PostFooter 
-                        upCount={post.upCount}
-                        downCount={post.downCount}
-                        commentCount={0}
-                    />
-                </div>
-            </AppCard>
-        </Link>
+                <PostBody 
+                    mediaFiles={post.mediaFiles}
+                    properties={post.productProperties}
+                    content={post.content}
+                />
+                <PostFooter 
+                    upCount={post.upCount}
+                    downCount={post.downCount}
+                    commentCount={0}
+                />
+            </div>
+        </AppCard>
     )
 }

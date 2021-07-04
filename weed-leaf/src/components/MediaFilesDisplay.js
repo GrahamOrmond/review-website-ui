@@ -11,9 +11,7 @@ export const MediaFilesDisplay = (props) => {
     })
 
     const handleViewImage = (event) => {
-        event.preventDefault()
-        let image = mediaFilesInfo.files[mediaFilesInfo.index]
-        window.open(image.props.src);
+        window.open(event.target.src);
     }
 
     const renderMediaFiles = () => {
@@ -43,10 +41,11 @@ export const MediaFilesDisplay = (props) => {
             return (
                 <img src={"https://localhost:44303/uploads/" + m.fileId}
                     key={m.fileId}
+                    onClick={(e) => handleViewImage(e)}
                     onError={(e) => handleImageError(e)}
                     height={height}
                     width={width}
-                    className={"images-display"}
+                    className="images-display"
                 />
             )
         })
@@ -120,7 +119,7 @@ export const MediaFilesDisplay = (props) => {
                     </div>
                 </div>
             </div>
-            <div onClick={(e) => handleViewImage(e)}>
+            <div>
                 {displayMediaFile()}
             </div>
         </div>

@@ -1,7 +1,7 @@
 import React, { Component, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom'
-import AppCard from '../../components/AppCard';
+import { AppCard } from '../../components/AppCard';
 import { AppForm } from '../../components/AppForm';
 import AppModal from "../../components/AppModal"
 import { loginUser, registerUser } from './oauthSlice';
