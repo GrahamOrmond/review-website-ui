@@ -8,6 +8,7 @@ import ChatIcon from '@material-ui/icons/Chat';
 import AppButton from './AppButton';
 import { AppDropdown } from './AppDropdown';
 import AppCard from './AppCard';
+import { MediaFilesDisplay } from './MediaFilesDisplay';
 
 import { Link } from 'react-router-dom'
 
@@ -99,13 +100,27 @@ const PostUserInfo = (props) => {
 
 
 const PostHeader = (props) => {
-
     return (
         <div className="post-header">
             <PostUserInfo 
                 displayName={props.displayName}
                 date={props.date}
             />
+            <div className="post-reference">
+                    <div>
+                        <Link to={`/brands/${props.brand.brandId}`} >
+                            <p>{props.brand.name}</p>
+                        </Link>
+                    </div>
+                    <div className="reference-seperator">
+                        <p>/</p>
+                    </div>
+                    <div>
+                        <Link to={`/products/${props.brand.brandId}/${props.product.urlId}`} >
+                            <p>{props.product.name}</p>
+                        </Link>
+                    </div>
+            </div>
             <div className="title">
                 <h2>{props.title}</h2>
             </div>
@@ -114,8 +129,6 @@ const PostHeader = (props) => {
 }
 
 const PostBody = (props) => {
-
-    const [mediaFiles, setMediaFiles] = useState([])
 
     let propertiesContent;
     if(props.properties){
@@ -127,56 +140,22 @@ const PostBody = (props) => {
         )
     }
 
-
-    const renderMediaFiles = () => {
-        let images = [...props.mediaFiles]
-        if(images.length > 1){
-            images.sort(function(a,b){
-                return new Date(a.dateUploaded).getTime() - new Date(b.dateUploaded).getTime();
-            });
-        }
-    
-        // return the images
-        const maxHeight = 300, maxWidth = 600
-        return images.map(m => {
-            let width = m.width
-            let height = m.height
-
-            // handle image resizing here
-            if(height > maxHeight){
-                width = width/(height/maxHeight)
-                height = maxHeight
-            }
-            if(width > maxWidth){
-                height = height/(width/maxWidth)
-                width = maxWidth
-            }
-
-            return (
-                <img src={"https://localhost:44303/uploads/" + m.fileId}
-                    height={height}
-                    width={width}
-                    className={"images-display"}
-                />
-            )
-        })
+    let mediaFileContent;
+    if(props.mediaFiles.length > 1){
+        mediaFileContent = <MediaFilesDisplay 
+            mediaFiles={props.mediaFiles}
+        />
     }
-
-    useEffect(() => {
-        setMediaFiles(renderMediaFiles())
-    }, [])
 
     return (
         <div className="post-body">
-            <div className="post-body-images">
-                {mediaFiles}
-            </div>
-           
+            {mediaFileContent}
             {propertiesContent}
             {props.content}
         </div>
     )
 }
+
 
 const PostFooter = (props) => {
     
@@ -278,6 +257,8 @@ export const AppPost = (props) => {
                         title={post.title}
                         displayName={post.displayName}
                         date={post.dateUpdated}
+                        brand={post.brand}
+                        product={post.product}
                         />
                     <PostBody 
                         mediaFiles={post.mediaFiles}
