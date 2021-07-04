@@ -388,6 +388,29 @@ a {
         align-items: center;
     }
 
+    .post-header .post-content-info{
+        display: flex;
+        justify-content: space-between;
+        place-items: center;
+        width: 100%;
+        font-size: 12px;
+        color: #323639;
+    }
+
+    .post-content-info .post-type{
+        border-radius: 100px;
+        background-color: rgb(32, 33, 36);
+        display: flex;
+        justify-content: center;
+        place-items: center;
+    }
+    
+    .post-content-info .post-type p {
+        margin: 0px;
+        padding: 5px 10px;
+        color: white;
+    }
+
     .post-header .post-reference {
         display: flex;
         width: 100%;
@@ -402,10 +425,14 @@ a {
 
     .post-header .post-reference p {
         margin: 0px;
-        font-size: 12px;
-        color: #323639;
         line-height: 18px;
     }
+
+    .post-header .post-reference p:hover {
+        border-bottom: solid 1px #323639;
+    }
+
+    
 
 .post-body {
     font-size: 15px;
@@ -414,6 +441,11 @@ a {
     flex-wrap: wrap;
     justify-content: center;
     overflow: hidden;
+}
+
+.post-body-content {
+    white-space: pre-line;  
+    max-height: 200px;
 }
 
 .post-body-images {

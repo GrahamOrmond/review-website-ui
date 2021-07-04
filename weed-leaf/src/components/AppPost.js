@@ -106,19 +106,24 @@ const PostHeader = (props) => {
                 displayName={props.displayName}
                 date={props.date}
             />
-            <div className="post-reference">
-                    <div>
-                        <Link to={`/brands/${props.brand.brandId}`} >
-                            <p>{props.brand.name}</p>
-                        </Link>
+            <div className="post-content-info">
+                    <div className="post-reference">
+                        <div>
+                            <Link to={`/brands/${props.brand.brandId}`} >
+                                <p>{props.brand.name}</p>
+                            </Link>
+                        </div>
+                        <div className="reference-seperator">
+                            <p>/</p>
+                        </div>
+                        <div>
+                            <Link to={`/products/${props.brand.brandId}/${props.product.urlId}`} >
+                                <p>{props.product.name}</p>
+                            </Link>
+                        </div>
                     </div>
-                    <div className="reference-seperator">
-                        <p>/</p>
-                    </div>
-                    <div>
-                        <Link to={`/products/${props.brand.brandId}/${props.product.urlId}`} >
-                            <p>{props.product.name}</p>
-                        </Link>
+                    <div className="post-type">
+                        <p>{props.type}</p>
                     </div>
             </div>
             <div className="title">
@@ -146,12 +151,16 @@ const PostBody = (props) => {
             mediaFiles={props.mediaFiles}
         />
     }
-
+    console.log(props.content)
     return (
         <div className="post-body">
             {mediaFileContent}
             {propertiesContent}
-            {props.content}
+            <div className="post-body-content">
+                <div>
+                    {props.content}
+                </div>
+            </div>
         </div>
     )
 }
@@ -255,6 +264,7 @@ export const AppPost = (props) => {
                 <div className="app-post">
                     <PostHeader 
                         title={post.title}
+                        type={post.type}
                         displayName={post.displayName}
                         date={post.dateUpdated}
                         brand={post.brand}

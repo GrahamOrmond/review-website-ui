@@ -360,7 +360,7 @@ export const AppForm = (props) => {
             // text editor input1
             if(element.hidden && element.value == "textEditor"){
                 let content = document.getElementById("edit_content");
-                submitData[element.name] = content.innerHTML
+                submitData[element.name] = content.innerText
             }else{ // all other inputs
                 submitData[element.name] = element.value;
             }
