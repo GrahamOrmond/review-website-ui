@@ -43,7 +43,7 @@ export const fetchComments = createAsyncThunk('posts/fetchComments',
   return response.comments
 })
 
-export const selectPostComments = (state, post ) => {
+export const selectPostComments = (state, post) => {
   if(!post)
     return []
   return state.comments.commentsList.comments
@@ -57,12 +57,25 @@ export const commentsSlice = createSlice({
   reducers: {
   },
   extraReducers: {
+    [createComment.pending]: (state, action) => {
+      state.commentsList.status = 'loading'
+    },
+    [createComment.fulfilled]: (state, action) => {
+        state.commentsList.status = 'succeeded'
+        let comments = state.commentsList.comments
+        action.payload.dateCreated = action.payload.dateCreated.replace("Z", "")
+        state.commentsList.comments = comments.concat([action.payload]);
+    },
+    [createComment.rejected]: (state, action) => {
+        state.commentsList.status = 'failed'
+        state.commentsList.error = action.error.message
+    },
     [fetchComments.pending]: (state, action) => {
       state.commentsList.status = 'loading'
     },
     [fetchComments.fulfilled]: (state, action) => {
         state.commentsList.status = 'succeeded'
-        let comments = [...state.commentsList.comments]
+        let comments = state.commentsList.comments
         state.commentsList.comments = comments.concat(action.payload);
     },
     [fetchComments.rejected]: (state, action) => {

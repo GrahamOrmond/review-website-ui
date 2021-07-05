@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { determineTimePosted } from '../helpers/generalHelper'
 
 
 const CommentProfileImage = (props) => {
@@ -14,9 +15,11 @@ const CommentProfileImage = (props) => {
 const CommentProfileInfo = (props) => {
 
     const {
-        user
+        user,
+        dateCreated,
+        dateUpdated
     } = props
-
+    
     return (
         <div className="comment-profile">
             <div className="user-info">
@@ -29,7 +32,7 @@ const CommentProfileInfo = (props) => {
                 </div>
                 <div>
                     <p>
-                        21 hours ago
+                        {determineTimePosted(dateCreated)}
                     </p>
                 </div>
             </div>
@@ -51,7 +54,7 @@ const CommentActions = (props) => {
     )
 }
 
-const CommmentMessage = (props) => {
+const CommentMessage = (props) => {
 
     const {
         message
@@ -64,19 +67,23 @@ const CommmentMessage = (props) => {
     )
 }
 
-const CommmentContent = (props) => {
+const CommentContent = (props) => {
 
     const {
         user,
         message,
+        dateCreated,
+        dateUpdated,
     } = props
 
     return (
         <div className="comment-content">
             <CommentProfileInfo 
                 user={user}
+                dateCreated={dateCreated}
+                dateUpdated={dateUpdated}
             />
-            <CommmentMessage
+            <CommentMessage
                 message={message}
             />
             <CommentActions />
@@ -91,9 +98,11 @@ export const AppComment = (props) => {
     return (
         <div className="app-comment">
             <CommentProfileImage />
-            <CommmentContent 
+            <CommentContent 
                 user={comment.user}
                 message={comment.content}
+                dateCreated={comment.dateCreated}
+                dateUpdated={comment.dateUpdated}
             /> 
         </div>
     )

@@ -11,6 +11,7 @@ import { AppCard } from './AppCard';
 import { MediaFilesDisplay } from './MediaFilesDisplay';
 
 import { Link } from 'react-router-dom'
+import { determineTimePosted } from '../helpers/generalHelper';
 
 const PostUserInfo = (props) => {
 
@@ -29,47 +30,6 @@ const PostUserInfo = (props) => {
         ]
     }
 
-
-    const determinePostTime = () => {
-        const date = new Date(`${props.date}Z`);
-        const timeNow = new Date();
-
-        let timeBetween = timeNow.getTime() - date.getTime()
-        let minutes = timeBetween / 60000; // 1 min == 60000 milliseconds
-        if(minutes < 1){ // less than minute ago
-            return `less than a minute ago`
-        }
-
-        let hours = minutes/60
-        let days = hours/24
-        let months = days/30
-        let years = days/365
-
-        let count, message
-        if(years >= 1){
-            count = Math.round(years)
-            message = `${count} year`
-        }else if (months >= 1){
-            count = Math.round(months)
-            message = `${count} month`
-        }else if (days >= 1){
-            count = Math.round(days)
-            message = `${count} day`
-        }else if (hours >= 1){
-            count = Math.round(hours)
-            message = `${count} hour`
-        }else {
-            count = Math.round(minutes)
-            message = `${count} minute`
-        }
-
-        if(count > 1){
-            message += "s"
-        }
-        message += " ago"
-        return message
-    }
-
     return (
         <div className="post-info">
             <div className="user-info">
@@ -82,7 +42,7 @@ const PostUserInfo = (props) => {
                 </div>
                 <div>
                     <p>
-                        {determinePostTime()}
+                        {determineTimePosted(props.date)}
                     </p>
                 </div>
             </div>
@@ -282,7 +242,7 @@ export const AppPost = (props) => {
                 <PostFooter 
                     upCount={post.upCount}
                     downCount={post.downCount}
-                    commentCount={0}
+                    commentCount={post.commentCount}
                 />
             </div>
         </AppCard>

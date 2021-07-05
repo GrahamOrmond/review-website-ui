@@ -3,6 +3,7 @@ import { AppCommentEditor } from "./AppTextEditor";
 import { AppComment } from "./AppComment";
 import { useDispatch } from "react-redux";
 import { createComment } from "../pages/comments/commentsSlice";
+import { addToPostCommentCount } from "../pages/posts/postsSlice";
 
 export const AppCommentListFilter = (props) => {
 
@@ -32,7 +33,13 @@ export const AppCommentList = (props) => {
     } = props
 
     const renderComments = () => {
-        return comments.map(c => <AppComment comment={c}/>)
+        comments.sort(function(a,b){
+            return  new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime();
+        });
+
+        return comments.map(c => {
+            return<AppComment comment={c}/>
+        })
     }
 
     return (
@@ -66,6 +73,7 @@ export const AppCommentCreate = (props) => {
         .then(res => {
             if(res.meta.requestStatus == "fulfilled"){
                 textEditor.innerText = ""
+                dispatch(addToPostCommentCount({postId: postId}))
             }
         })
     }

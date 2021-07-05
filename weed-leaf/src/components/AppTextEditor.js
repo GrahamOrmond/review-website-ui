@@ -54,7 +54,7 @@ export const AppCommentEditor = (props) => {
             <div id="edit_content"
                 className="edit-content" 
                 contentEditable="true"
-                data-placeholder="Add a commment"
+                data-placeholder="Add a comment"
                 >
             </div>
         </div>

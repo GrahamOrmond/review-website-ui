@@ -87,7 +87,29 @@ export const postsSlice = createSlice({
                 status: 'idle',
                 error: null
             }
-          }
+        },
+        addToPostCommentCount(state, action) {
+            const {
+                postId
+            } = action.payload
+
+            // update post list
+            let postIndex = state.postsList.posts
+            .findIndex(post => post.postId === postId);
+            if(postIndex){ 
+                let post = {...state.postsList.posts[postIndex]}
+                post.commentCount += 1
+                state.postsList.posts[postIndex] = post
+            }
+
+            // update post view
+            let viewPost = state.viewPost.post
+            if(viewPost && viewPost.postId === postId){
+                viewPost.commentCount += 1
+                state.viewPost.post = viewPost
+            }
+
+        },
     },
     extraReducers: {
         [fetchPosts.pending]: (state, action) => {
@@ -123,6 +145,7 @@ export const postsSlice = createSlice({
   
 export const { 
     clearPostView,
+    addToPostCommentCount
 } = postsSlice.actions
   
 export default postsSlice.reducer

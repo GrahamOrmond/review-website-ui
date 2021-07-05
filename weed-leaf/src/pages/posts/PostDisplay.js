@@ -21,7 +21,7 @@ export const PostDisplay = (props) => {
                 && post.displayName.toLowerCase() === props.fetchData.displayName.toLowerCase()) // matches
             {
                 // load comments
-                if(postComments.length == 0){
+                if(postComments.length < post.commentCount){
                     dispatch(fetchComments({postId: post.postId}))
                 }
                 return
