@@ -2,7 +2,7 @@ import { AppCard } from "./AppCard"
 import { AppCommentEditor } from "./AppTextEditor";
 import { AppComment } from "./AppComment";
 import { useDispatch } from "react-redux";
-import { createComment } from "../pages/comment/commentsSlice";
+import { createComment } from "../pages/comments/commentsSlice";
 
 export const AppCommentListFilter = (props) => {
 
@@ -65,7 +65,7 @@ export const AppCommentCreate = (props) => {
         dispatch(createComment(postParams))
         .then(res => {
             if(res.meta.requestStatus == "fulfilled"){
-
+                textEditor.innerText = ""
             }
         })
     }
