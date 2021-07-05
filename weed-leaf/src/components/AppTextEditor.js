@@ -3,12 +3,7 @@ import FormatItalicIcon from '@material-ui/icons/FormatItalic';
 import ListIcon from '@material-ui/icons/List';
 import LinkIcon from '@material-ui/icons/Link';
 
-
-
-
 const EditSumbit = (props) => {
-
-
 
     return (
         <div className="edit-submit">
@@ -28,10 +23,6 @@ const EditSumbit = (props) => {
         
     )
 }
-
-
-
-
 
 const EditToolbar = (props) => {
 
@@ -55,6 +46,20 @@ const EditToolbar = (props) => {
     )
 }
 
+export const AppCommentEditor = (props) => {
+
+    return (
+        <div className="app-comment-editor" >
+            <input name={props.name} hidden value="textEditor" />
+            <div id="edit_content"
+                className="edit-content" 
+                contentEditable="true"
+                data-placeholder="Add a commment"
+                >
+            </div>
+        </div>
+    )
+}
 
 export const AppTextEditor = (props) => {
 

@@ -16,7 +16,8 @@
     14. FILTER
     15. TEXT EDITOR
     16. POST CREATE
-    17. EXTRAS
+    17. COMMENTS
+    18. EXTRAS
 */
 
 
@@ -45,18 +46,6 @@ input, select {
 
 input:focus, select:focus {
     outline: 1px solid #c1c1c2;
-}
-
-button {
-    border: none;
-    background-color: #FFF;
-    border-radius: 25px;
-    font-size: 14px;
-    padding: 10px 15px;
-}
-
-.button-blue {
-    background-color: #2196f3;
 }
 
 a {
@@ -182,6 +171,27 @@ a {
 /* 
     4. BUTTONS
 */
+
+button {
+    cursor: pointer;
+    border: none;
+    background-color: #FFF;
+    border-radius: 25px;
+    font-size: 14px;
+    padding: 10px 15px;
+}
+
+.button-blue {
+    background-color: #2196f3;
+}
+
+.button-blue:hover {
+    background-color: #4dabf5;
+}
+
+.button-blue:active {
+    background-color: #2196f3;
+}
 
 .app-button{
     margin: auto;
@@ -522,7 +532,6 @@ a {
     justify-content: space-between;
     place-items: center;
     border: solid 1px rgb(32, 33, 36, 0.5);
-    z-index: 99;
 }
 
 .image-nav .nav-buttons .img-button:hover{
@@ -1100,10 +1109,19 @@ a {
 */
 
 .app-text-editor {
-    height: 400px;
     background-color: #FFF;
     border-radius: 5px;
     border: solid #b6b6b7 1px;
+}
+
+.app-comment-editor {
+    background-color: #FFF;
+    border-radius: 5px;
+}
+
+[contenteditable]:empty:before {
+    color: #a9a9a9;
+    content: attr(data-placeholder);
 }
 
 .edit-toolbar {
@@ -1199,9 +1217,152 @@ a {
     padding-top: 5px;
 }
 
+/* 
+    17. COMMENTS
+*/
+
+.app-comment-display {
+    padding: 5px;
+}
+
+.app-comment-create {
+    border: solid 1px #D6D6D7;
+    margin-bottom: 5px;
+}
+
+.comment-create-content{
+    
+}
+
+.comment-create-buttons {
+    border-top: solid 1px #D6D6D7;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.comment-button {
+    margin: 5px;
+    border: solid 1px #D6D6D7;
+}
+
+.comments-filter{
+    padding: 5px 0px;
+}
+
+.comment-filter-header {
+    
+}
+
+.comment-filter-header h4{
+    margin: 0px;
+    padding: 0px;
+}
+
+.comment-filter-options{
+    display: flex;
+}
+
+.comment-filter-option {
+    display: flex;
+    place-items: center;
+}
+
+.comment-filter-option label {
+    white-space: nowrap;
+    color: #323639;
+    padding-right: 5px;
+}
+
+.comment-filter-option select{
+    width: auto;
+    outline: none;
+    border: solid 1px #D6D6D7;
+}
+
+.app-comment {
+    display: flex;
+    flex-wrap: nowrap;
+    padding: 10px;
+}
+
+.comment-profile {
+}
+
+.comment-profile .profile-image {
+    border: solid 1px #D6D6D7;
+    width: 25px;
+    height: 25px;
+    border-radius: 50px;
+}
+
+.comment-content {
+    padding: 0px 10px;
+}
+
+.comment-profile {
+    
+}
+
+.comment-profile .user-info{
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+.comment-profile .user-info h2{
+    margin: 0px;
+    font-size: 12px;
+    line-height: 18px;
+}
+
+.comment-profile .user-info h2:hover{
+    border-bottom: solid 1px #323639;
+}
+
+.comment-profile .user-info p{
+    margin: 0px;
+    font-size: 12px;
+    color: #323639;
+    padding: 0px 5px;
+    line-height: 18px;
+}
+
+.comment-content .comment-body {
+    margin: 0px;
+    padding: 0px;
+}
+
+.comment-content .comment-body p{
+    margin: 0px;
+    padding: 5px 0px;
+}
+
+.comment-content .comment-actions {
+    display: flex;
+}
+
+    .comment-actions .comment-action {
+        padding: 5px;
+        font-size: 12px;
+        color: #323639;
+        border-radius: 2px;
+        cursor: pointer;
+        margin-right: 5px;
+    }
+
+    .comment-actions .comment-action:hover {
+        color: #282b2e;
+        background-color: #efefef;
+    }
+
+    .comment-actions .comment-action:active {
+        color: #323639;
+    }
+
+
 
 /* 
-    17. EXTRAS
+    18. EXTRAS
 */
 
 .content-seperator {

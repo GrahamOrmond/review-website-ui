@@ -1,5 +1,6 @@
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
+import { AppCommentsDisplay } from "../../components/AppCommentsDisplay"
 import { AppPost }  from "../../components/AppPost"
 import { clearPostView, fetchPost, selectPostView } from "./postsSlice"
 
@@ -29,14 +30,12 @@ export const PostDisplay = (props) => {
         )
     }
     return (
-        <div>
+        <div className="post-display">
             <AppPost 
                 display="full"
                 post={post}>
             </AppPost>
-
-
-
+            <AppCommentsDisplay />
         </div>
         
     )
