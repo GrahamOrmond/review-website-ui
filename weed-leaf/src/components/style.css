@@ -1304,6 +1304,7 @@ button {
 }
 
 .comment-content {
+    width: 100%;
     padding: 0px 5px;
 }
 
@@ -1337,6 +1338,7 @@ button {
 }
 
 .comment-content .comment-body {
+    
     margin: 0px;
     padding: 0px 5px;
 }
@@ -1367,6 +1369,13 @@ button {
     .comment-actions .comment-action:active {
         color: #323639;
     }
+
+
+.comment-reply {
+    display: flex;
+    width: 100%;
+    border: solid;
+}
 
 
 

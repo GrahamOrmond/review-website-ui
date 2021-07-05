@@ -4,6 +4,7 @@ import { AppComment } from "./AppComment";
 import { useDispatch } from "react-redux";
 import { createComment } from "../pages/comments/commentsSlice";
 import { addToPostCommentCount } from "../pages/posts/postsSlice";
+import { useState } from "react";
 
 export const AppCommentListFilter = (props) => {
 
@@ -27,10 +28,37 @@ export const AppCommentListFilter = (props) => {
 
 
 export const AppCommentList = (props) => {
+    const dispatch = useDispatch()
+    const [replyBox, setReplyBox] = useState({commentId: null})
 
     const {
+        postId,
         comments
     } = props
+
+    const handleShowCommentBox = (commentId) => {
+        let reply = {...replyBox}
+        reply.commentId = reply.commentId === commentId? null : commentId
+        setReplyBox(reply)
+    }
+
+    const handleSubmitReply = (e, commentId) => {
+        e.preventDefault()
+        let textEditor = document.getElementById(commentId);
+        const postParams = {
+            postId: postId,
+            commentId: commentId,
+            content: textEditor.innerText
+        }
+        dispatch(createComment(postParams))
+        .then(res => {
+            if(res.meta.requestStatus == "fulfilled"){
+                textEditor.innerText = ""
+                dispatch(addToPostCommentCount({postId: postId}))
+                setReplyBox({commentId: null})
+            }
+        })
+    }
 
     const renderComments = () => {
         comments.sort(function(a,b){
@@ -38,7 +66,14 @@ export const AppCommentList = (props) => {
         });
 
         return comments.map(c => {
-            return<AppComment comment={c}/>
+            let showReplyBox = c.commentId === replyBox.commentId? true : false
+            return<AppComment 
+                key={c.commentId}
+                handleSubmitReply={handleSubmitReply}
+                handleShowCommentBox={handleShowCommentBox}
+                showReplyBox={showReplyBox}
+                comment={c}
+            />
         })
     }
 
@@ -64,7 +99,7 @@ export const AppCommentCreate = (props) => {
 
     const handleSubmitComment = (event) => {
         event.preventDefault()
-        let textEditor = document.getElementById("edit_content");
+        let textEditor = document.getElementById(postId);
         const postParams = {
             postId: postId,
             content: textEditor.innerText
@@ -82,7 +117,10 @@ export const AppCommentCreate = (props) => {
         <div className="app-comment-create">
             <form method="POST" onSubmit={(e) => handleSubmitComment(e)}>
                 <div className="comment-create-content">
-                    <AppCommentEditor />
+                    <AppCommentEditor 
+                        editId={postId}
+                        placeHolder="Add a comment"
+                    />
                 </div>
                 <div className="comment-create-toolbar">
                     <div className="comment-create-buttons">
@@ -95,7 +133,6 @@ export const AppCommentCreate = (props) => {
         </div>
     )
 }
-
 
 export const AppCommentsDisplay = (props) => {
 
@@ -112,6 +149,7 @@ export const AppCommentsDisplay = (props) => {
                     postId={postId}
                 />
                 <AppCommentList 
+                    postId={postId}
                     comments={comments}
                 />
             </div>

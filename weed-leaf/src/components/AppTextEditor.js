@@ -48,14 +48,19 @@ const EditToolbar = (props) => {
 
 export const AppCommentEditor = (props) => {
 
+    const {
+        editId,
+        placeHolder
+    } = props
+
+
     return (
         <div className="app-comment-editor" >
             <input name={props.name} hidden value="textEditor" />
-            <div id="edit_content"
+            <div id={editId}
                 className="edit-content" 
                 contentEditable="true"
-                data-placeholder="Add a comment"
-                >
+                data-placeholder={placeHolder}>
             </div>
         </div>
     )

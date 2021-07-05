@@ -63,7 +63,7 @@ export const commentsSlice = createSlice({
     [createComment.fulfilled]: (state, action) => {
         state.commentsList.status = 'succeeded'
         let comments = state.commentsList.comments
-        action.payload.dateCreated = action.payload.dateCreated.replace("Z", "")
+        action.payload.dateCreated = action.payload.dateCreated.slice(0,-1) // remove "Z" to match other dates
         state.commentsList.comments = comments.concat([action.payload]);
     },
     [createComment.rejected]: (state, action) => {
