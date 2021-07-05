@@ -1,6 +1,8 @@
 import { AppCard } from "./AppCard"
 import { AppCommentEditor } from "./AppTextEditor";
 import { AppComment } from "./AppComment";
+import { useDispatch } from "react-redux";
+import { createComment } from "../pages/comment/commentsSlice";
 
 export const AppCommentListFilter = (props) => {
 
@@ -25,12 +27,9 @@ export const AppCommentListFilter = (props) => {
 
 export const AppCommentList = (props) => {
 
-    const comments = [ {
-        user: {
-            displayName: "gmoney99s"
-        },
-        content: "test message"
-    }]
+    const {
+        comments
+    } = props
 
     const renderComments = () => {
         return comments.map(c => <AppComment comment={c}/>)
@@ -49,18 +48,42 @@ export const AppCommentList = (props) => {
 
 export const AppCommentCreate = (props) => {
 
+    const dispatch = useDispatch()
+
+    const {
+        postId
+    } = props
+
+
+    const handleSubmitComment = (event) => {
+        event.preventDefault()
+        let textEditor = document.getElementById("edit_content");
+        const postParams = {
+            postId: postId,
+            content: textEditor.innerText
+        }
+        dispatch(createComment(postParams))
+        .then(res => {
+            if(res.meta.requestStatus == "fulfilled"){
+
+            }
+        })
+    }
+
     return (
         <div className="app-comment-create">
-            <div className="comment-create-content">
-                <AppCommentEditor />
-            </div>
-            <div className="comment-create-toolbar">
-                <div className="comment-create-buttons">
-                    <button type="submit" className="button button-blue comment-button">
-                        Comment
-                    </button>
+            <form method="POST" onSubmit={(e) => handleSubmitComment(e)}>
+                <div className="comment-create-content">
+                    <AppCommentEditor />
                 </div>
-            </div>
+                <div className="comment-create-toolbar">
+                    <div className="comment-create-buttons">
+                        <button type="submit" className="button button-blue comment-button">
+                            Comment
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
     )
 }
@@ -68,11 +91,21 @@ export const AppCommentCreate = (props) => {
 
 export const AppCommentsDisplay = (props) => {
 
+    const {
+        postId,
+        comments
+    } = props
+
+
     return (
         <AppCard>
             <div className="app-comment-display">
-                <AppCommentCreate />
-                <AppCommentList />
+                <AppCommentCreate 
+                    postId={postId}
+                />
+                <AppCommentList 
+                    comments={comments}
+                />
             </div>
             
         </AppCard>

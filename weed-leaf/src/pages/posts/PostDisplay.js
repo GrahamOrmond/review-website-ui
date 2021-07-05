@@ -29,13 +29,24 @@ export const PostDisplay = (props) => {
             </div>
         )
     }
+
+    const comments = [ {
+        user: {
+            displayName: "gmoney99s"
+        },
+        content: "test message"
+    }]
+
     return (
         <div className="post-display">
             <AppPost 
                 display="full"
                 post={post}>
             </AppPost>
-            <AppCommentsDisplay />
+            <AppCommentsDisplay 
+                postId={post.postId}
+                comments={comments}
+            />
         </div>
         
     )

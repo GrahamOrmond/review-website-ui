@@ -349,6 +349,9 @@ button {
     padding-bottom: 10px;
 }
 
+.post-display{
+    padding: 5px 0px;
+}
 
 .post-header {
     display: flex;
@@ -1116,7 +1119,13 @@ button {
 
 .app-comment-editor {
     background-color: #FFF;
+    min-height: 60px;
     border-radius: 5px;
+}
+
+.app-comment-editor .edit-content {
+    min-height: 40px;
+    padding: 10px;
 }
 
 [contenteditable]:empty:before {
@@ -1160,7 +1169,6 @@ button {
 .edit-content {
     padding: 5px;
     overflow: auto;
-    height: calc(100% - 90px);
 }
 
 .edit-content:focus {
@@ -1296,7 +1304,7 @@ button {
 }
 
 .comment-content {
-    padding: 0px 10px;
+    padding: 0px 5px;
 }
 
 .comment-profile {
@@ -1304,6 +1312,7 @@ button {
 }
 
 .comment-profile .user-info{
+    padding: 0px 5px;
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
@@ -1329,7 +1338,7 @@ button {
 
 .comment-content .comment-body {
     margin: 0px;
-    padding: 0px;
+    padding: 0px 5px;
 }
 
 .comment-content .comment-body p{
