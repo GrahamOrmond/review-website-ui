@@ -43,6 +43,7 @@ export const AppDropdown = (props) => {
 
     // toggles the drop down when clicked
     const toggleDropDown = (event) => {
+        event.preventDefault()
         // get the drop down DOM and toggle it
         let dropdown = event.target.closest(".app-dropdown");
         let dropdownContent = dropdown.querySelector(".dropdown-content");

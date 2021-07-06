@@ -1345,14 +1345,14 @@ button {
 }
 
 .comment-content .comment-body {
-    
     margin: 0px;
     padding: 0px 5px;
 }
 
 .comment-content .comment-body p{
     margin: 0px;
-    padding: 5px 0px;
+    padding: 0px;
+    padding-bottom: 5px;
 }
 
 .comment-content .comment-actions {

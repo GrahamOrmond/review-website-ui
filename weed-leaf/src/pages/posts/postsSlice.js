@@ -61,6 +61,19 @@ async (fetchData, { getState, rejectWithValue }) => {
     return response
 })
 
+// rate post
+export const ratePost = createAsyncThunk('posts/ratePost', 
+async (formData, { getState, rejectWithValue }) => {
+    const token = getOauthToken(getState())
+    let customConfig = {}
+    customConfig.headers = {
+        'Authorization': `Bearer ${token.token}`
+    }
+    const response = await client
+        .post('/api/posts/rate', rejectWithValue, formData, customConfig)
+    return response
+})
+
 export const selectPostsListInfo = (state) => {
     return state.posts.postsList;
 }
@@ -139,6 +152,21 @@ export const postsSlice = createSlice({
         [createPost.fulfilled]: (state, action) => {
         },
         [createPost.rejected]: (state, action) => {
+        },
+        [ratePost.pending]: (state, action) => {
+        },
+        [ratePost.fulfilled]: (state, action) => {
+            const postIndex = state.postsList.posts
+                .findIndex(p => p.postId === action.payload.postId)
+            if(postIndex != -1){
+                let post = {...state.postsList.posts[postIndex]}
+                post.upCount = action.payload.upCount
+                post.downCount = action.payload.downCount
+                state.postsList.posts[postIndex] = post
+            }
+            
+        },
+        [ratePost.rejected]: (state, action) => {
         },
     }
 })

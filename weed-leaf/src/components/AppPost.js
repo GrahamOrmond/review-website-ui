@@ -12,6 +12,8 @@ import { MediaFilesDisplay } from './MediaFilesDisplay';
 
 import { Link } from 'react-router-dom'
 import { determineTimePosted } from '../helpers/generalHelper';
+import { useDispatch } from 'react-redux';
+import { ratePost } from '../pages/posts/postsSlice';
 
 const PostUserInfo = (props) => {
 
@@ -128,18 +130,11 @@ const PostBody = (props) => {
 
 
 const PostFooter = (props) => {
-    
-    const handleRatingDown = () => {
 
-    }
-
-    const handleRatingUp = () => {
-
-    }
-
-    const handleViewComments = () => {
-
-    }
+    const {
+        handleRatingDown,
+        handleRatingUp
+    } = props
 
     return (
         <div className="post-footer">
@@ -161,7 +156,7 @@ const PostFooter = (props) => {
                     <div className="value">
                         <p>{props.commentCount}</p>
                     </div>
-                    <AppButton handleOnClick={handleViewComments}>
+                    <AppButton handleOnClick={() => {}}>
                         <ChatIcon />
                     </AppButton>
                 </div>
@@ -200,6 +195,8 @@ const PostProperties = (props) => {
 
 export const AppPost = (props) => {
 
+    const dispatch = useDispatch()
+
     if(!props.post){
         return (
             <div>
@@ -212,6 +209,24 @@ export const AppPost = (props) => {
     const displayName = post.displayName.toLowerCase()
     const postUrlId = post.urlId.toLowerCase()
     const postType = post.type.toLowerCase()
+    
+    const handleRatingDown = (e) => {
+        e.preventDefault();
+        let formData = {
+            referenceId: post.postId,
+            rating: "DOWN"
+        }
+        dispatch(ratePost(formData))
+    }
+
+    const handleRatingUp = (e) => {
+        e.preventDefault();
+        let formData = {
+            referenceId: post.postId,
+            rating: "UP"
+        }
+        dispatch(ratePost(formData))
+    }
 
     let postUrl;
     if(props.display != "full"){
@@ -243,6 +258,8 @@ export const AppPost = (props) => {
                     upCount={post.upCount}
                     downCount={post.downCount}
                     commentCount={post.commentCount}
+                    handleRatingUp={handleRatingUp}
+                    handleRatingDown={handleRatingDown}
                 />
             </div>
         </AppCard>
