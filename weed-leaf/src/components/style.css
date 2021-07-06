@@ -1289,23 +1289,30 @@ button {
 
 .app-comment {
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     padding: 10px;
 }
 
 .comment-profile {
+    display: flex;
+    flex-wrap: nowrap;
+    place-items: center;
+    width: 100%;
 }
 
 .comment-profile .profile-image {
     border: solid 1px #D6D6D7;
-    width: 25px;
-    height: 25px;
+    width: 20px;
+    height: 20px;
     border-radius: 50px;
 }
 
 .comment-content {
+    
+    border-left: solid 1px #e6e6e7;
     width: 100%;
-    padding: 0px 5px;
+    padding: 0px 10px;
+    margin: 5px 10px;
 }
 
 .comment-profile {
@@ -1377,7 +1384,40 @@ button {
     border: solid;
 }
 
+.comment-replies-list {
+}
 
+.reply-list-action {
+    border: solid;
+}
+
+.reply-list-action p {
+    margin: 0px;
+    padding: 0px;
+    border: solid;
+}
+
+.reply-actions {
+    display: flex;
+}
+
+    .reply-actions .reply-action {
+        padding: 5px;
+        font-size: 12px;
+        color: #202124;
+        border-radius: 2px;
+        cursor: pointer;
+        margin-right: 5px;
+    }
+
+    .reply-actions .reply-action:hover {
+        color: #282b2e;
+        background-color: #efefef;
+    }
+
+    .reply-actions .reply-action:active {
+        color: #323639;
+    }
 
 /* 
     18. EXTRAS

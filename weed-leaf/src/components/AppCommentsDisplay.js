@@ -71,6 +71,7 @@ export const AppCommentList = (props) => {
                 key={c.commentId}
                 handleSubmitReply={handleSubmitReply}
                 handleShowCommentBox={handleShowCommentBox}
+                replyBoxId={replyBox.commentId}
                 showReplyBox={showReplyBox}
                 comment={c}
             />

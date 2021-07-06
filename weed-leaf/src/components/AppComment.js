@@ -1,20 +1,19 @@
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { determineTimePosted } from '../helpers/generalHelper'
+import { fetchComments, selectCommentReplies } from '../pages/comments/commentsSlice'
 import { AppCommentEditor } from './AppTextEditor'
 
 
 const CommentProfileImage = (props) => {
 
     return (
-        <div className="comment-profile">
-            <div className="profile-image">
-            </div>
+        <div className="profile-image">
         </div>
     )
 }
 
-const CommentProfileInfo = (props) => {
+const CommentProfile = (props) => {
 
     const {
         user,
@@ -24,6 +23,7 @@ const CommentProfileInfo = (props) => {
     
     return (
         <div className="comment-profile">
+            <CommentProfileImage />
             <div className="user-info">
                 <div>
                     <Link to={`/user/${user.displayName}`}>
@@ -73,12 +73,71 @@ const CommentMessage = (props) => {
     )
 }
 
+const CommentRepliesList = (props) => {
+    const dispatch = useDispatch()
+    const {
+        commentId,
+        count,
+        handleShowCommentBox,
+        replyBoxId,
+        handleSubmitReply,
+    } = props
+
+    const loadCommentReplies = (count) => {
+        dispatch(fetchComments({ replyCommentId: commentId }))
+    }
+
+    const replies = useSelector(state => selectCommentReplies(state, commentId))
+    const commentsLength = replies.length;
+    let replyActions;
+    if(commentsLength == 0){
+        replyActions = (
+            <div className="reply-actions">
+                <div className="reply-action" onClick={() => loadCommentReplies()}>
+                    View Replies ({count})
+                </div>
+            </div>
+        )
+    }else if (commentsLength < count){
+        replyActions = (
+            <div className="reply-actions">
+                <div className="reply-action" onClick={() => loadCommentReplies()}>
+                    Load More ({count - commentsLength})
+                </div>
+            </div>
+        )
+    }
+
+    const renderReplyComments = () => {
+        return replies.map(c => {
+            
+            let showReplyBox = c.commentId === replyBoxId? true : false
+            return <AppComment 
+                key={c.commentId}
+                handleSubmitReply={handleSubmitReply}
+                handleShowCommentBox={handleShowCommentBox}
+                replyBoxId={replyBoxId}
+                showReplyBox={showReplyBox}
+                comment={c}
+            />
+        })
+    }
+
+    return (
+        <div className="comment-replies-list">
+            {replyActions}
+            {renderReplyComments()}
+        </div>
+    )
+}
+
 const CommentContent = (props) => {
 
     const {
         comment,
         handleShowCommentBox,
         showReplyBox,
+        replyBoxId,
         handleSubmitReply,
     } = props
 
@@ -91,20 +150,28 @@ const CommentContent = (props) => {
         />
     }
 
+    let replyComments;
+    if(comment.replyCount > 0){
+        replyComments = <CommentRepliesList
+            commentId={comment.commentId}
+            count={comment.replyCount}
+            handleShowCommentBox={handleShowCommentBox}
+            showReplyBox={showReplyBox}
+            handleSubmitReply={handleSubmitReply}
+            replyBoxId={replyBoxId}
+        />
+    }
+
     return (
         <div className="comment-content">
-            <CommentProfileInfo 
-                user={comment.user}
-                dateCreated={comment.dateCreated}
-                dateUpdated={comment.dateUpdated}
-            />
             <CommentMessage
                 message={comment.content}
             />
             <CommentActions 
-                handleShowCommentBox={handleShowCommentBox}
+                handleShowCommentBox={() => handleShowCommentBox(comment.commentId)}
             />
             {replyContent}
+            {replyComments}
         </div>
     )
 }
@@ -146,15 +213,23 @@ export const AppComment = (props) => {
         handleShowCommentBox,
         showReplyBox,
         handleSubmitReply,
+        replyBoxId,
     } = props;
+
+    
 
     return (
         <div className="app-comment">
-            <CommentProfileImage />
+            <CommentProfile 
+                user={comment.user}
+                dateCreated={comment.dateCreated}
+                dateUpdated={comment.dateUpdated}
+            />
             <CommentContent 
                 comment={comment}
                 showReplyBox={showReplyBox}
-                handleShowCommentBox={() => handleShowCommentBox(comment.commentId)}
+                replyBoxId={replyBoxId}
+                handleShowCommentBox={handleShowCommentBox}
                 handleSubmitReply={handleSubmitReply}
             /> 
         </div>
