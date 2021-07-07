@@ -89,7 +89,7 @@ export const selectUserView = (state) => {
 }
 
 export const selectCurrentUser = (state) => {
-    return state.users.currentUser;
+    return state.users.currentUser.user;
 }
 
 
@@ -99,10 +99,10 @@ export const usersSlice = createSlice({
     initialState,
     reducers: {
         clearUserView(state, action) {
-            state.brandView = {
-              brand: null,
-              status: 'idle',
-              error: null
+            state.userView = {
+                user: null,
+                status: "idle",
+                error: null
             }
           }
     },

@@ -9,15 +9,14 @@ export const UserPage = (props) => {
     let currentUser = useSelector(selectCurrentUser)
     const history = useHistory()
     
-
     let {  
         displayName, 
         postType,
     } = props.match.params;
     const postsType = postType === undefined? "reviews" : postType.toLowerCase();
 
-    if(!displayName && currentUser.user){
-        displayName = currentUser.user.displayName
+    if(!displayName && currentUser){
+        displayName = currentUser.displayName
         history.push('/user/' + displayName)
     }
     

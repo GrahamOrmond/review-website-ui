@@ -1,10 +1,34 @@
 import { AppProfile } from  "../../components/AppProfile"
 import AppThreadDisplay from "../../components/AppThreadDisplay";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { clearUserView, fetchUserInfo, fetchUserPosts, followProfile, selectUserView, unfollowProfile } from "./usersSlice";
+import { clearUserView, fetchUserInfo, fetchUserPosts, followProfile, selectCurrentUser, selectUserView, unfollowProfile } from "./usersSlice";
+
+
+const EditUserProfile = (props) => {
+
+    const {
+        user,
+        handleSaveProfileEdit
+    } = props
+
+    const actionName = "Save"
+    const profileAction = handleSaveProfileEdit
+
+    return (
+        <div className="app-content">
+            <AppProfile
+                title={user.displayName}
+                profileAction={profileAction}
+                actionName={actionName}
+            />
+        </div>
+    )
+}
 
 export const UserProfile = (props) => {
+
+    const [showEditView, setShowEditView] = useState(false);
 
     const dispatch = useDispatch()
     const {  
@@ -13,7 +37,9 @@ export const UserProfile = (props) => {
     } = props;
 
     const userProfileView = useSelector(selectUserView)
+    const currentUser = useSelector(selectCurrentUser)
     const user = userProfileView.user
+
     useEffect(() => {
         if(user === null){
             if(userProfileView.status != "loading")
@@ -55,8 +81,27 @@ export const UserProfile = (props) => {
         dispatch(unfollowProfile(user.profileId))
     }
 
+    const handleEditProfile = (e) => {
+        e.preventDefault()
+        setShowEditView(true)
+    }
+
+    const handleSaveProfileEdit = (e) => {
+        e.preventDefault()
+        setShowEditView(false)
+    }
+
     let profileAction, actionName
-    if(!user.isFollowing){
+    if(user.profileId == currentUser.profileId){
+        actionName = "Edit"
+        profileAction = handleEditProfile
+        if(showEditView)
+            return <EditUserProfile 
+                user={currentUser}
+                handleSaveProfileEdit={handleSaveProfileEdit}
+            />
+    }
+    else if(!user.isFollowing){
         actionName = "Follow"
         profileAction = handleFollowProfile
     }else{
