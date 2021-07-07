@@ -1,82 +1,93 @@
 import { Link } from 'react-router-dom'
-import React, { Component } from 'react';
 import { AppCard } from './AppCard'
+import { useDispatch } from 'react-redux';
 
-class ProfileHeader extends Component {
+const ProfileHeader = (props) =>  {
 
-    constructor(props) {
-        super(props);
-    }
-    
-    render () {
+    const {
+        brand,
+        title,
+        description,
+        rating,
+        profileAction,
+        actionName
+    } = props
 
-        let secondaryTitle;
-        if(this.props.brand !== undefined){
-            secondaryTitle = (
-                <div className="profile-info-section">
-                    <div className="profile-title">
-                        By 
-                        <Link to="/brands/Carmel">
-                            <h5>{this.props.brand.name}</h5>
-                        </Link>
-                    </div>
+
+    let secondaryTitle;
+    if(brand !== undefined){
+        secondaryTitle = (
+            <div className="profile-info-section">
+                <div className="profile-title">
+                    By 
+                    <Link to="/brands/Carmel">
+                        <h5>{brand.name}</h5>
+                    </Link>
                 </div>
-            )
-        }
+            </div>
+        )
+    }
 
         
-        return (
-           <div className="profile-header">
-                <div className="profile-display">
-                    <div className="profile-image">
+    return (
+        <div className="profile-header">
+            <div className="profile-display">
+                <div className="profile-image">
 
-                    </div>
-                    <div className="profile-info">
-                        <div className="profile-info-section">
-                            <div className="profile-title">
-                                <h4>{this.props.title}</h4>
-                            </div>
-                            <div className="profile-action">
-                                <div className="profile-follow">
-                                    Follow
-                                </div>
+                </div>
+                <div className="profile-info">
+                    <div className="profile-info-section">
+                        <div className="profile-title">
+                            <h4>{title}</h4>
+                        </div>
+                        <div className="profile-action">
+                            <div className="app-button follow-button" 
+                                onClick={(e) => profileAction(e)}>
+                                {actionName}
                             </div>
                         </div>
+                    </div>
 
-                        
-                    </div>
-                </div>
-                <div className="profile-info-section">
-                    <div className="profile-description">
-                        {this.props.description}
-                    </div>
+                    
                 </div>
             </div>
-        );
-    }
+            <div className="profile-info-section">
+                <div className="profile-description">
+                    {description}
+                </div>
+            </div>
+        </div>
+    );
 }
 
 
 
-class AppProfile extends Component {
+export const AppProfile = (props) =>  {
 
-    constructor(props) {
-        super(props);
-    }
+    const dispatch = useDispatch()
+
+    const {
+        id,
+        profileType,
+        title,
+        description,
+        rating,
+        children,
+        profileAction,
+        actionName
+    } = props
     
-    render () {
-        
-        return (
-            <div className="app-profile">
-                <AppCard>
-                    <ProfileHeader 
-                    title={this.props.title}
-                    description={this.props.description}
-                    rating={this.props.rating}    />
-                </AppCard>
-                {this.props.children}
-            </div>
-        );
-    }
+    return (
+        <div className="app-profile">
+            <AppCard>
+                <ProfileHeader 
+                title={title}
+                description={description}
+                rating={rating}
+                profileAction={profileAction}
+                actionName={actionName} />
+            </AppCard>
+            {children}
+        </div>
+    );
 }
-export default AppProfile;

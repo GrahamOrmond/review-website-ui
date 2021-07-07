@@ -912,6 +912,7 @@ button {
 }
 
 .profile-header {
+    padding: 10px;
 }
 
 .profile-display {
@@ -970,9 +971,10 @@ button {
     height: 100%;
 }
 
-.profile-follow {
-    border: solid 1px;
+.follow-button {
+    margin: 0px;
     padding: 5px 10px;
+    border: solid 1px #D6D6D7;
     border-radius: 25px;
 }
 

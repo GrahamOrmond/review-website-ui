@@ -2,10 +2,9 @@
 // https://kentcdodds.com/blog/replace-axios-with-a-simple-custom-fetch-wrapper
 
 
-export async function client(endpoint, rejectWithValue, { body, ...customConfig } = {}) {
+export async function client(endpoint, rejectWithValue, { body, method, ...customConfig } = {}) {
     const url = `https://localhost:44303${endpoint}`
     const headers = { }
-
     let formData;
     if (body) {
       if(body instanceof FormData){
@@ -15,9 +14,9 @@ export async function client(endpoint, rejectWithValue, { body, ...customConfig 
         formData = JSON.stringify(body)
       }
     }
-    
+
     const config = {
-      method: formData ? 'POST' : 'GET',
+      method: method,
       ...customConfig,
       headers: {
         ...headers,
@@ -29,6 +28,9 @@ export async function client(endpoint, rejectWithValue, { body, ...customConfig 
     let data
     try {
       const response = await window.fetch(url, config)
+      if(response.status === 204) { // no content
+        return null
+      } 
       data = await response.json()
       if (response.ok) {
         return data
@@ -46,6 +48,10 @@ export async function client(endpoint, rejectWithValue, { body, ...customConfig 
   }
   
   client.post = async function (url, rejectWithValue = () => {}, body, customConfig = {}) {
-    return client(url, rejectWithValue, { ...customConfig, body })
+    return client(url, rejectWithValue, { ...customConfig, body, method: 'POST' })
+  }
+
+  client.delete = async function (url, rejectWithValue = () => {}, customConfig = {}) {
+    return client(url, rejectWithValue, { ...customConfig, method: 'DELETE' })
   }
   

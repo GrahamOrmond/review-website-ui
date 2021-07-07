@@ -3,7 +3,7 @@ import React, { useEffect, useReducer } from 'react'
 
 import { selectProductView, fetchProduct, clearProductView, fetchProductPosts } from './productsSlice'
 import AppThreadDisplay from '../../components/AppThreadDisplay';
-import AppProfile from '../../components/AppProfile';
+import { AppProfile } from '../../components/AppProfile';
   
 export const ProductProfile = (props) => {
     

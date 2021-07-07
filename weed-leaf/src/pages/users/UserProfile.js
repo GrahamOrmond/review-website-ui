@@ -1,8 +1,8 @@
-import AppProfile from  "../../components/AppProfile"
+import { AppProfile } from  "../../components/AppProfile"
 import AppThreadDisplay from "../../components/AppThreadDisplay";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { clearUserView, fetchUserInfo, fetchUserPosts, selectUserView } from "./usersSlice";
+import { clearUserView, fetchUserInfo, fetchUserPosts, followProfile, selectUserView, unfollowProfile } from "./usersSlice";
 
 export const UserProfile = (props) => {
 
@@ -32,8 +32,7 @@ export const UserProfile = (props) => {
             </div>
         )
     }
-
-
+    
     if(user[postsType].status === 'idle')
     {
         dispatch(fetchUserPosts({
@@ -43,10 +42,34 @@ export const UserProfile = (props) => {
         }))
     }
 
+    const handleFollowProfile = (e) => {
+        e.preventDefault()
+        const postData = {
+            id: user.profileId
+        }
+        dispatch(followProfile(postData))
+    }
+
+    const handleUnfollowProfile = (e) => {
+        e.preventDefault()
+        dispatch(unfollowProfile(user.profileId))
+    }
+
+    let profileAction, actionName
+    if(!user.isFollowing){
+        actionName = "Follow"
+        profileAction = handleFollowProfile
+    }else{
+        actionName = "Unfollow"
+        profileAction = handleUnfollowProfile
+    }
+
     return (
         <div className="app-content">
             <AppProfile
+                profileAction={profileAction}
                 title={displayName}
+                actionName={actionName}
             />
             <AppThreadDisplay 
                 postType={postsType}

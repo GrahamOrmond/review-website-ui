@@ -2,7 +2,7 @@ import React, { Component, useEffect } from 'react';
 import queryString from 'query-string';
 
 import AppList from "../../components/AppList";
-import AppProfile from "../../components/AppProfile";
+import { AppProfile } from "../../components/AppProfile";
 
 import { BrandsList } from './BrandsList'
 import { BrandProfile } from './BrandProfile'

@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux'
-import AppProfile from '../../components/AppProfile';
+import { AppProfile } from '../../components/AppProfile';
 import React, { useEffect, useReducer } from 'react'
 
 import { selectBrandView, fetchBrand, clearBrandView, fetchBrandPosts } from './brandsSlice'

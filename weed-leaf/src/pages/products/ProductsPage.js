@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import queryString from 'query-string';
-import AppProfile from "../../components/AppProfile";
-import { AppProductsDisplay } from "../../components/AppProduct" 
 import { ProductsList } from "./ProductsList" 
 import { ProductProfile } from './ProductProfile';
 import { PostDisplay } from '../posts/PostDisplay';
