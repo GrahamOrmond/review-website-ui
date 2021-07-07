@@ -157,14 +157,18 @@ export const postsSlice = createSlice({
         },
         [ratePost.fulfilled]: (state, action) => {
             const postIndex = state.postsList.posts
-                .findIndex(p => p.postId === action.payload.postId)
+                .findIndex(p => p.postId === action.payload.referenceId)
             if(postIndex != -1){
                 let post = {...state.postsList.posts[postIndex]}
                 post.upCount = action.payload.upCount
                 post.downCount = action.payload.downCount
                 state.postsList.posts[postIndex] = post
             }
-            
+            if(state.viewPost.post != null 
+                && state.viewPost.post.postId == action.payload.referenceId){
+                state.viewPost.post.upCount = action.payload.upCount
+                state.viewPost.post.downCount = action.payload.downCount
+            }
         },
         [ratePost.rejected]: (state, action) => {
         },

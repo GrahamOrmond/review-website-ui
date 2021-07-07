@@ -1,9 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { determineTimePosted } from '../helpers/generalHelper'
-import { fetchComments, selectCommentReplies } from '../pages/comments/commentsSlice'
+import { fetchComments, rateComment, selectCommentReplies } from '../pages/comments/commentsSlice'
 import { AppCommentEditor } from './AppTextEditor'
+import AppButton from './AppButton'
 
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 
 const CommentProfileImage = (props) => {
 
@@ -46,10 +49,24 @@ const CommentActions = (props) => {
     
     const {
         handleShowCommentBox,
+        handleRatingUp,
+        handleRatingDown,
+        rating
     } = props
 
     return (
         <div className="comment-actions">
+            <div class="comment-rating">
+                <div className="rate-action" onClick={(e) => handleRatingUp(e)}>
+                    <ArrowUpwardIcon />
+                </div>
+                <div>
+                    <p>{rating}</p>
+                </div>
+                <div className="rate-action" onClick={(e) => handleRatingDown(e)}>
+                    <ArrowDownwardIcon />
+                </div>
+            </div>
             <div className="comment-action" onClick={handleShowCommentBox} >
                 Reply
             </div>
@@ -139,7 +156,11 @@ const CommentContent = (props) => {
         showReplyBox,
         replyBoxId,
         handleSubmitReply,
+        handleRatingUp,
+        handleRatingDown,
     } = props
+
+    
 
     let replyContent;
     if(showReplyBox){
@@ -161,13 +182,17 @@ const CommentContent = (props) => {
             replyBoxId={replyBoxId}
         />
     }
-
+    
+    const rating = comment.upCount - comment.downCount
     return (
         <div className="comment-content">
             <CommentMessage
                 message={comment.content}
             />
             <CommentActions 
+                rating={rating}
+                handleRatingDown={handleRatingDown}
+                handleRatingUp={handleRatingUp}
                 handleShowCommentBox={() => handleShowCommentBox(comment.commentId)}
             />
             {replyContent}
@@ -208,6 +233,7 @@ export const CommentReply = (props) => {
 
 export const AppComment = (props) => {
 
+    const dispatch = useDispatch()
     const {
         comment,
         handleShowCommentBox,
@@ -216,7 +242,24 @@ export const AppComment = (props) => {
         replyBoxId,
     } = props;
 
-    
+    const handleRatingUp = (e) => {
+        e.preventDefault();
+        let formData = {
+            referenceId: comment.commentId,
+            rating: "UP"
+        }
+        dispatch(rateComment(formData))
+    }
+
+    const handleRatingDown = (e) => {
+        e.preventDefault();
+        let formData = {
+            referenceId: comment.commentId,
+            rating: "DOWN"
+        }
+        dispatch(rateComment(formData))
+    }
+
 
     return (
         <div className="app-comment">
@@ -231,6 +274,8 @@ export const AppComment = (props) => {
                 replyBoxId={replyBoxId}
                 handleShowCommentBox={handleShowCommentBox}
                 handleSubmitReply={handleSubmitReply}
+                handleRatingDown={handleRatingDown}
+                handleRatingUp={handleRatingUp}
             /> 
         </div>
     )

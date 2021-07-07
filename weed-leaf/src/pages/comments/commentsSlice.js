@@ -34,13 +34,26 @@ export const createComment = createAsyncThunk('comments/createComment',
 })
 
 // fetch post
-export const fetchComments = createAsyncThunk('posts/fetchComments',
+export const fetchComments = createAsyncThunk('comments/fetchComments',
  async (formData, { rejectWithValue }) => {
   let url = '/api/comments'
   if(formData)
       url += `?${new URLSearchParams(formData).toString()}`;
   const response = await client.get(url, rejectWithValue)
   return response.comments
+})
+
+// rate comment
+export const rateComment = createAsyncThunk('comments/rateComment', 
+async (formData, { getState, rejectWithValue }) => {
+    const token = getOauthToken(getState())
+    let customConfig = {}
+    customConfig.headers = {
+        'Authorization': `Bearer ${token.token}`
+    }
+    const response = await client
+        .post('/api/comments/rate', rejectWithValue, formData, customConfig)
+    return response
 })
 
 export const selectPostComments = (state, post) => {
@@ -91,6 +104,28 @@ export const commentsSlice = createSlice({
     [fetchComments.rejected]: (state, action) => {
         state.commentsList.status = 'failed'
         state.commentsList.error = action.error.message
+    },
+    [rateComment.pending]: (state, action) => {
+    },
+    [rateComment.fulfilled]: (state, action) => {
+        // update list with new count
+        const commentIndex = state.commentsList.comments
+            .findIndex(p => p.commentId === action.payload.referenceId)
+        if(commentIndex != -1){ 
+            let comment = {...state.commentsList.comments[commentIndex]}
+            comment.upCount = action.payload.upCount
+            comment.downCount = action.payload.downCount
+            state.commentsList.comments[commentIndex] = comment
+        }
+
+        // update view with new count
+        if(state.commentView.comment != null 
+            && state.commentView.comment.commentId == action.payload.referenceId){
+            state.commentView.comment.upCount = action.payload.upCount
+            state.commentView.comment.downCount = action.payload.downCount
+        }
+    },
+    [rateComment.rejected]: (state, action) => {
     },
   }
 })
