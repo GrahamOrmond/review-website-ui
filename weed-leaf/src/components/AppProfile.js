@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import { AppCard } from './AppCard'
-import { useDispatch } from 'react-redux';
 
 const ProfileHeader = (props) =>  {
 
@@ -8,7 +7,7 @@ const ProfileHeader = (props) =>  {
         brand,
         title,
         description,
-        rating,
+        // rating,
         profileAction,
         actionName
     } = props
@@ -40,6 +39,7 @@ const ProfileHeader = (props) =>  {
                         <div className="profile-title">
                             <h4>{title}</h4>
                         </div>
+                        {secondaryTitle}
                         <div className="profile-action">
                             <div className="app-button follow-button" 
                                 onClick={(e) => profileAction(e)}>
@@ -60,15 +60,11 @@ const ProfileHeader = (props) =>  {
     );
 }
 
-
-
 export const AppProfile = (props) =>  {
 
-    const dispatch = useDispatch()
-
     const {
-        id,
-        profileType,
+        // id,
+        // profileType,
         title,
         description,
         rating,

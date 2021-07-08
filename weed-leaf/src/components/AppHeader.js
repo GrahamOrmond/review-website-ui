@@ -1,8 +1,7 @@
-import React, { Component, useEffect } from 'react';
 import { AppDropdown } from './AppDropdown';
 import { Link, withRouter } from 'react-router-dom'
 import MenuIcon from '@material-ui/icons/Menu';
-import { logoutUser, LogoutUser } from '../pages/oauth/oauthSlice';
+import { logoutUser } from '../pages/oauth/oauthSlice';
 import { useDispatch } from 'react-redux';
 
 const HeaderNavLinks = (props) => {
@@ -28,7 +27,9 @@ const HeaderNavLinks = (props) => {
             if(props.activeLink.includes(link.link))
                 className += " active"
             return (
-                <Link to={link.link} >
+                <Link 
+                    key={link.link}
+                    to={link.link} >
                     <div className={className}>
                         <p>{link.label}</p>
                     </div>
@@ -45,19 +46,13 @@ const HeaderNavLinks = (props) => {
 }
 
 
-class AppSearch extends Component {
-    
-    constructor(props) {
-        super(props);
-    }
+const AppSearch = (props) => {
 
-    render () {
-        return (
-            <div className="app-search">
-                <input placeholder="Search..."></input>
-            </div>
-        );
-    }
+    return (
+        <div className="app-search">
+            <input placeholder="Search..."></input>
+        </div>
+    );
 }
 
 const HeaderNav = (props) => {
@@ -140,43 +135,36 @@ const HeaderNav = (props) => {
     );
 }
 
-class HeaderLogo  extends Component {
+const HeaderLogo = (props) => {
 
-    constructor(props) {
-        super(props);
-    }
-
-    render () {
-        
-        return (
-            <div className="header-logo">
-                <Link to="/">
-                    WeedLeaf
-                </Link>
-            </div>
-        );
-    }
+    return (
+        <div className="header-logo">
+            <Link to="/">
+                WeedLeaf
+            </Link>
+        </div>
+    );
 }
 
+export const AppHeader = (props) => {
 
-class AppHeader extends Component {
+    const {
+        location,
+        isLoggedIn
+    } = props
 
-    constructor(props) {
-        super(props);
-    }
+    let pathname = location.pathname;
+    if(pathname === "/")
+        pathname = "/community"
 
-    render () {
-        let pathname = this.props.location.pathname;
-        if(pathname == "/")
-            pathname = "/community"
-        return (
-            <div className="app-header">
-                <HeaderLogo />
-                <HeaderNav 
+    return (
+        <div className="app-header">
+            <HeaderLogo />
+            <HeaderNav 
                 activeLink={pathname}
-                isLoggedIn={this.props.isLoggedIn}/>
-            </div>
-        );
-    }
+                isLoggedIn={isLoggedIn}
+            />
+        </div>
+    );
 }
 export default withRouter(AppHeader);

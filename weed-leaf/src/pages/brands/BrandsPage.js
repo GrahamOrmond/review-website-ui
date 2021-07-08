@@ -1,8 +1,6 @@
-import React, { Component, useEffect } from 'react';
-import queryString from 'query-string';
+import React from 'react';
 
-import AppList from "../../components/AppList";
-import { AppProfile } from "../../components/AppProfile";
+import { AppList } from "../../components/AppList";
 
 import { BrandsList } from './BrandsList'
 import { BrandProfile } from './BrandProfile'
@@ -10,8 +8,7 @@ import { BrandProfile } from './BrandProfile'
 import { PostDisplay } from '../posts/PostDisplay';
 
 export const BrandsPage = (props) => {
-    let urlString = queryString.parse(props.location.search);
-
+    // let urlString = queryString.parse(props.location.search);
     const { 
         brandId, 
         displayName, 
@@ -19,7 +16,6 @@ export const BrandsPage = (props) => {
     } = props.match.params;
     const type = props.match.params.postsType
     const postsType = type === undefined? "reviews" : type.toLowerCase();
-    let content = "";
     if(brandId){
         if(postLink){
 

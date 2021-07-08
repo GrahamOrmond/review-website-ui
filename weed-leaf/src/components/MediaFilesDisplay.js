@@ -1,14 +1,25 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 
 export const MediaFilesDisplay = (props) => {
 
-    const [mediaFilesInfo, setMediaFiles] = useState({
-        "index": 0,
-        "files": []
-    })
+    const {
+        mediaFiles,
+        altTag
+    } = props
+
+    let images = [...mediaFiles]
+    if(images.length > 1){
+        images.sort(function(a,b){
+            return new Date(a.dateUploaded).getTime() - new Date(b.dateUploaded).getTime();
+        });
+    }
+
+    const [viewIndex, setViewIndex] = useState(0)
+    const fileCount = images.length
+    const currentIndex = viewIndex + 1
 
     const handleViewImage = (event) => {
         if(event.target.closest("a"))
@@ -16,41 +27,34 @@ export const MediaFilesDisplay = (props) => {
         window.open(event.target.src);
     }
 
-    const renderMediaFiles = () => {
-        let images = [...props.mediaFiles]
-        if(images.length > 1){
-            images.sort(function(a,b){
-                return new Date(a.dateUploaded).getTime() - new Date(b.dateUploaded).getTime();
-            });
-        }
-    
-        // return the images
+    const renderMediaFile = () => {
+        const image = images[viewIndex]
+        // return the image
         const maxHeight = 300, maxWidth = 600
-        return images.map(m => {
-            let width = m.width
-            let height = m.height
+        let width = image.width
+        let height = image.height
 
-            // handle image resizing here
-            if(height > maxHeight){
-                width = width/(height/maxHeight)
-                height = maxHeight
-            }
-            if(width > maxWidth){
-                height = height/(width/maxWidth)
-                width = maxWidth
-            }
+        // handle image resizing here
+        if(height > maxHeight){
+            width = width/(height/maxHeight)
+            height = maxHeight
+        }
+        if(width > maxWidth){
+            height = height/(width/maxWidth)
+            width = maxWidth
+        }
 
-            return (
-                <img src={"https://localhost:44303/uploads/" + m.fileId}
-                    key={m.fileId}
-                    onClick={(e) => handleViewImage(e)}
-                    onError={(e) => handleImageError(e)}
-                    height={height}
-                    width={width}
-                    className="images-display"
-                />
-            )
-        })
+        return (
+            <img src={"https://localhost:44303/uploads/" + image.fileId}
+                key={image.fileId}
+                alt={`${altTag}(${viewIndex})`}
+                onClick={(e) => handleViewImage(e)}
+                onError={(e) => handleImageError(e)}
+                height={height}
+                width={width}
+                className="images-display"
+            />
+        )
     }
 
     // handle any errors loading images
@@ -58,31 +62,14 @@ export const MediaFilesDisplay = (props) => {
         event.target.style.display = "none"; // hide the image
     }
 
-    // handles displaying the active file (1 at a time)
-    const displayMediaFile = () => {
-        return mediaFilesInfo.files[mediaFilesInfo.index] // return first file
-    }
-
     const handleNextMediaFile = (event, indexDirection) => {
         event.preventDefault()
-        let fileInfo = {...mediaFilesInfo}
-
-        let nextIndex = fileInfo.index + indexDirection
-        if(!fileInfo.files[nextIndex]){
+        let nextIndex = viewIndex + indexDirection
+        if(!images[nextIndex]){
             return
         }
-        fileInfo.index = nextIndex
-        setMediaFiles(fileInfo)
+        setViewIndex(nextIndex)
     }
-
-    useEffect(() => {
-        let fileInfo = {...mediaFilesInfo}
-        fileInfo.files = renderMediaFiles()
-        setMediaFiles(fileInfo)
-    }, [])
-
-    const fileCount = mediaFilesInfo.files.length
-    const currentIndex = mediaFilesInfo.index + 1
 
     let buttonBack;
     if(currentIndex > 1){
@@ -107,7 +94,7 @@ export const MediaFilesDisplay = (props) => {
             <div className="image-nav-display">
                 <div className="image-nav">
                     <div className="nav-info">
-                        <div class="page-count">
+                        <div className="page-count">
                             <p>{currentIndex} of {fileCount}</p>
                         </div>
                     </div>
@@ -122,7 +109,7 @@ export const MediaFilesDisplay = (props) => {
                 </div>
             </div>
             <div>
-                {displayMediaFile()}
+                {renderMediaFile()}
             </div>
         </div>
     )

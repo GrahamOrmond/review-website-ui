@@ -10,7 +10,11 @@ const AppThreadDisplay = (props) => {
 
     const renderPosts = () => {
         return props.posts.map(post => (
-            <AppPost post={post} />
+            <AppPost 
+                key={post.postId}
+                preview={true}
+                post={post} 
+            />
         ))
     }
 

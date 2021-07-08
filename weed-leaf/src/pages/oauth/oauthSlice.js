@@ -2,8 +2,6 @@ import {
     createSlice,
     createAsyncThunk,
 } from '@reduxjs/toolkit'
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { client } from '../../api/client'
 

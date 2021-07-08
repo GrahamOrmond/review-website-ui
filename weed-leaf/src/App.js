@@ -30,10 +30,8 @@ import { CommunityPage } from './pages/community/CommunityPage'
 // redux store
 import { store } from './store/store';
 import { fetchBrands } from './pages/brands/brandsSlice';
-import { fetchProducts } from './pages/products/productsSlice';
 import { checkLogin, isUserLoggedIn } from './pages/oauth/oauthSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchPosts } from './pages/posts/postsSlice';
 import { fetchCurrentUserInfo } from './pages/users/usersSlice';
 import { PostsPage } from './pages/posts/PostsPage';
 
@@ -45,7 +43,7 @@ function App() {
   useEffect(() => {
       dispatch(checkLogin())
       .then(res => {
-        if(res.meta.requestStatus == "fulfilled"){
+        if(res.meta.requestStatus === "fulfilled"){
           dispatch(fetchCurrentUserInfo())
         }
       })

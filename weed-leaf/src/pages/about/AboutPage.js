@@ -10,6 +10,7 @@ export const AboutPage = ({ match }) => {
                 title = "User Agreement"
                 break;
             case "privacy-policy":
+            default:
                 title = "Privacy Policy"
                 break;
         }

@@ -1,19 +1,21 @@
-import { Link } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 
 export const AppCard = (props) => {
-    
-    const cardContent = (
-        <div className="app-card">
+
+    const history = useHistory()
+
+    const {
+        url
+    } = props
+
+    const viewCard = () => {
+        if(url)
+        history.push(url)
+    }
+
+    return (
+        <div className="app-card" onClick={viewCard}>
             {props.children}
         </div>
     )
-
-    if(props.url){ // url included
-        return (
-            <Link to={props.url}>
-                {cardContent}
-            </Link>
-        )
-    }
-    return cardContent
 }

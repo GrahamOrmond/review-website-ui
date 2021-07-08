@@ -97,7 +97,9 @@ export const commentsSlice = createSlice({
         let comments = [...state.commentsList.comments]
         // check for duplicated before adding
         action.payload.forEach(c => {
-          if (comments.findIndex(comment => comment.commentId == c.commentId) === -1) comments.push(c);
+          if (comments.findIndex(comment => comment.commentId === c.commentId) === -1){
+            comments.push(c);
+          } 
         });
         state.commentsList.comments = comments
     },
@@ -111,7 +113,7 @@ export const commentsSlice = createSlice({
         // update list with new count
         const commentIndex = state.commentsList.comments
             .findIndex(p => p.commentId === action.payload.referenceId)
-        if(commentIndex != -1){ 
+        if(commentIndex !== -1){ 
             let comment = {...state.commentsList.comments[commentIndex]}
             comment.upCount = action.payload.upCount
             comment.downCount = action.payload.downCount
@@ -119,8 +121,8 @@ export const commentsSlice = createSlice({
         }
 
         // update view with new count
-        if(state.commentView.comment != null 
-            && state.commentView.comment.commentId == action.payload.referenceId){
+        if(state.commentView.comment !== null 
+            && state.commentView.comment.commentId === action.payload.referenceId){
             state.commentView.comment.upCount = action.payload.upCount
             state.commentView.comment.downCount = action.payload.downCount
         }
@@ -130,8 +132,8 @@ export const commentsSlice = createSlice({
   }
 })
 
-export const { 
-} = commentsSlice.actions
+// export const { 
+// } = commentsSlice.actions
 
 export default commentsSlice.reducer
   

@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { determineTimePosted } from '../helpers/generalHelper'
 import { fetchComments, rateComment, selectCommentReplies } from '../pages/comments/commentsSlice'
 import { AppCommentEditor } from './AppTextEditor'
-import AppButton from './AppButton'
 
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
@@ -21,7 +20,7 @@ const CommentProfile = (props) => {
     const {
         user,
         dateCreated,
-        dateUpdated
+        // dateUpdated
     } = props
     
     return (
@@ -56,7 +55,7 @@ const CommentActions = (props) => {
 
     return (
         <div className="comment-actions">
-            <div class="comment-rating">
+            <div className="comment-rating">
                 <div className="rate-action" onClick={(e) => handleRatingUp(e)}>
                     <ArrowUpwardIcon />
                 </div>
@@ -107,7 +106,7 @@ const CommentRepliesList = (props) => {
     const replies = useSelector(state => selectCommentReplies(state, commentId))
     const commentsLength = replies.length;
     let replyActions;
-    if(commentsLength == 0){
+    if(commentsLength === 0){
         replyActions = (
             <div className="reply-actions">
                 <div className="reply-action" onClick={() => loadCommentReplies()}>
@@ -205,7 +204,7 @@ export const CommentReply = (props) => {
     
     const {
         commentId,
-        postId,
+        // postId,
         handleSubmitReply,
     } = props
     

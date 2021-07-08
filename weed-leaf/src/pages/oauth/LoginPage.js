@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { Component, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom'
 import { AppCard } from '../../components/AppCard';
@@ -35,9 +35,9 @@ const LoginForm = () => {
         dispatch(loginUser(formData))
         .then((res) => {
             const status = res.meta.requestStatus
-            if(status == "rejected")
+            if(status === "rejected")
                 return "Invalid Login"
-            else if (status == "fulfilled"){
+            else if (status === "fulfilled"){
                 dispatch(fetchCurrentUserInfo(""))
                 .then(history.push('/'))
             }

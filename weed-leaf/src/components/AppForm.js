@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 import AppButton from './AppButton';
 import { AppTextEditor } from './AppTextEditor';
 
@@ -15,7 +15,7 @@ const renderSelectOptions = (options, selectedValue) => {
     
     let data = []
     for (const [key, option] of Object.entries(options)) {
-        let selected = selectedValue == key? true : false
+        let selected = selectedValue === key? true : false
         data.push(
             <option id={key} selected={selected}>
                 {option.label}
@@ -35,9 +35,9 @@ export const AppFileInput = (props) => {
         for (let i = 0; i < acceptedFiles.length; i++) {
             const acceptedInfo = acceptedFiles[i].split("/")
             const fileInfo  = file.type.split("/")
-            if(fileInfo[0] == acceptedInfo[0]){
-                if(acceptedInfo[1] == '*' 
-                    || fileInfo[1] == acceptedInfo[1]){
+            if(fileInfo[0] === acceptedInfo[0]){
+                if(acceptedInfo[1] === '*' 
+                    || fileInfo[1] === acceptedInfo[1]){
                         return true;
                     }
             }
@@ -99,12 +99,22 @@ export const AppFileInput = (props) => {
 }
 
 export const AppSelect = (props) => {
+
+    const {
+        label,
+        name,
+        selectedValue,
+        handleOnChange,
+        options,
+    } = props
     
     return (
         <div className="form-input">
-            <label>{props.label}</label>
-            <select name={props.name} onChange={(e) => props.handleOnChange(e)}>
-                { renderSelectOptions(props.options, props.selectedValue) }
+            <label>{label}</label>
+            <select name={name}
+                defaultValue={selectedValue}
+                onChange={(e) => handleOnChange(e)}>
+                { renderSelectOptions(options) }
             </select>
         </div>
     );
@@ -146,7 +156,7 @@ export const AppDynamicSelect = (props) => {
     const handleAddInput = (event) => {
         let selectBox = event.target
         const selectedOption = selectBox.options[selectBox.selectedIndex].id
-        if(selectedOption != ''){
+        if(selectedOption !== ''){
             let input = dynamicOptions[selectedOption]
             let inputs = {...dynamicInputs}
             inputs[selectedOption] = input
@@ -339,12 +349,12 @@ export const AppForm = (props) => {
         for (let i = 0 ; i < event.target.elements.length; i ++){
             const element = event.target.elements[i];
             // skip inputs
-            if(element.nodeName.toLowerCase() == "button" || element.name === ''){
+            if(element.nodeName.toLowerCase() === "button" || element.name === ''){
                 continue
             }
                 
             // select input
-            if(element.nodeName.toLowerCase() == "select"){
+            if(element.nodeName.toLowerCase() === "select"){
                 const selectedOption = element.options[element.selectedIndex]
                 if(selectedOption)
                     submitData[element.name] = selectedOption.id;
@@ -352,13 +362,13 @@ export const AppForm = (props) => {
             }
 
             // media files
-            if(element.type == "file"){
+            if(element.type === "file"){
                 submitData[element.name] = formData[element.name].files
                 continue
             }
 
             // text editor input1
-            if(element.hidden && element.value == "textEditor"){
+            if(element.hidden && element.value === "textEditor"){
                 let content = document.getElementById("edit_content");
                 submitData[element.name] = content.innerText
             }else{ // all other inputs
@@ -378,7 +388,7 @@ export const AppForm = (props) => {
                 continue
             }
             // email inputs
-            else if(data[element.name].type == "email"
+            else if(data[element.name].type === "email"
                 && !ValidateEmail(element.value))
             {
                 throwError = true

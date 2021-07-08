@@ -42,14 +42,14 @@ export const UserProfile = (props) => {
 
     useEffect(() => {
         if(user === null){
-            if(userProfileView.status != "loading")
+            if(userProfileView.status !== "loading")
                 dispatch(fetchUserInfo(displayName)) // fetch brand by id
             return
         }
 
         if(user.displayName !== displayName)
             dispatch(clearUserView()) // clear brand if not matching
-    }, [user, dispatch])
+    }, [user, displayName, userProfileView, dispatch])
 
     if(!user){
         return (
@@ -92,7 +92,7 @@ export const UserProfile = (props) => {
     }
 
     let profileAction, actionName
-    if(user.profileId == currentUser.profileId){
+    if(user.profileId === currentUser.profileId){
         actionName = "Edit"
         profileAction = handleEditProfile
         if(showEditView)

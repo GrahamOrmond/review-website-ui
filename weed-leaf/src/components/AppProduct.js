@@ -1,110 +1,98 @@
-import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
 
-class ProductFooter extends Component {
+const ProductFooter = () => {
 
-    constructor(props) {
-        super(props);
-    }
-
-    render(){
-        return (
-            <div className="product-footer">
-                <div className="card-info">
-                    <h5>
-                        11 Reviews
-                    </h5>
-                </div>
-                <div className="card-info">
-                    <h5>
-                        12 Questions
-                    </h5>
-                </div>
-                <div className="card-info">
-                    <h5>
-                        13 Threads
-                    </h5>
-                </div>
+    return (
+        <div className="product-footer">
+            <div className="card-info">
+                <h5>
+                    11 Reviews
+                </h5>
             </div>
-        );
-    }
+            <div className="card-info">
+                <h5>
+                    12 Questions
+                </h5>
+            </div>
+            <div className="card-info">
+                <h5>
+                    13 Threads
+                </h5>
+            </div>
+        </div>
+    );
+
+
 }
 
-class ProductHeader extends Component {
+const ProductHeader = (props) => {
 
-    constructor(props) {
-        super(props);
-    }
+    const {
+        brand,
+        title,
+        rating
+    } = props
 
-    render(){
-        return (
-            <div>
-                <div className="product-header">
-                    <div className="product-brand">
-                        <div className="card-info">
-                            <h5>
-                                {this.props.brand}
-                            </h5>
-                        </div>
+    return (
+        <div>
+            <div className="product-header">
+                <div className="product-brand">
+                    <div className="card-info">
+                        <h5>
+                            {brand}
+                        </h5>
                     </div>
-                    <div>
-                        <h4>{this.props.title}</h4>
-                    </div>
-                    <div className="product-rating">
-                        {this.props.rating}
-                    </div>
+                </div>
+                <div>
+                    <h4>{title}</h4>
+                </div>
+                <div className="product-rating">
+                    {rating}
                 </div>
             </div>
-        );
-    }
+        </div>
+    );
+
 }
 
+const ProductDescriptionInfo = () => {
 
-class ProductDescriptionInfo extends Component {
-    constructor(props) {
-        super(props);
-    }
-
-
-    render(){
-        return (
-            <div>
-                <div className="card-badge">
-                    <div className="badge-content">
-                        <div className="badge-image">
-                            THC
-                        </div>
-                        <div className="badge-label">
-                            24%
-                        </div>
+    return (
+        <div>
+            <div className="card-badge">
+                <div className="badge-content">
+                    <div className="badge-image">
+                        THC
                     </div>
-                </div>
-                <div className="card-badge">
-                    <div className="badge-content">
-                        <div className="badge-image">
-                            CBD
-                        </div>
-                        <div className="badge-label">
-                            1%
-                        </div>
+                    <div className="badge-label">
+                        24%
                     </div>
                 </div>
             </div>
-        )
-    }
+            <div className="card-badge">
+                <div className="badge-content">
+                    <div className="badge-image">
+                        CBD
+                    </div>
+                    <div className="badge-label">
+                        1%
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+
 }
 
-class ProductEffectInfo extends Component {
+const ProductEffectInfo = (props) => {
 
-    constructor(props) {
-        super(props);
+    const {
+        effects
+    } = props
 
-        this.renderEffects = this.renderEffects.bind(this);
-    }
-
-    renderEffects(){
+    const renderEffects = () =>{
         let content = [];
-        this.props.effects.forEach(effect => {
+        effects.forEach(effect => {
             content.push(
                 <div className="card-badge">
                     <div className="badge-content">
@@ -121,89 +109,75 @@ class ProductEffectInfo extends Component {
         return content;
     }
 
-
-    render(){
-
-        return (
-                <div>
-                    {this.renderEffects()}
-                </div>
-        );
-    }
-
-    
+    return (
+        <div>
+            {renderEffects()}
+        </div>
+    )
 }
 
+const ProductContent = (props) => {
+    
+    const {
+        type,
+        content,
+        productName,
+    } = props
 
-class ProductContent extends Component {
-
-    constructor(props) {
-        super(props);
-
-        this.renderContent = this.renderContent.bind(this);
-    }
-
-    renderContent(){
-        let content = []
-        switch(this.props.type){
+    const renderContent = () => {
+        let renderedContent = []
+        switch(type){
             case "flower":
-                content.push(
+                renderedContent.push(
                     <ProductDescriptionInfo 
-                        data={this.props.content.description}
+                        data={content.description}
                     />
                 );
-                content.push(
+                renderedContent.push(
                     <ProductEffectInfo 
-                        effects={this.props.content.effects}
+                        effects={content.effects}
                     />
                 );
                 break;
             default:
         }
-        return content;
+        return renderedContent;
     }
 
-    render(){
-        return (
-            <div className="product-content">
-                <div className="product-image">
-                    <img></img>
-                </div>
-                <div className="product-info">
-                    {this.renderContent()}
-                </div>
+    return (
+        <div className="product-content">
+            <div className="product-image">
+                <img alt={productName}></img>
             </div>
-        );
-    }
+            <div className="product-info">
+                {renderContent()}
+            </div>
+        </div>
+    );
+
 }
 
+export const AppProduct = (props) => {
 
+    const {
+        product
+    } = props
 
-class AppProduct extends Component {
-
-    constructor(props) {
-        super(props);
-    }
-
-    render(){
-        const product = this.props.product
-        return (
-            <div className="app-product">
-                <Link to={`/products/${product.brandId}/${product.urlId}`}>
-                    <ProductHeader 
-                        brand={product.brandName}
-                        title={product.name}
-                        rating={product.rating}
-                    />
-                    <ProductContent 
-                        type={product.type}
-                        content={product.data}
-                    />
-                    <ProductFooter posts={product.posts}/>
-                </Link>
-            </div>
-        );
-    }
+    return (
+        <div className="app-product">
+            <Link to={`/products/${product.brandId}/${product.urlId}`}>
+                <ProductHeader 
+                    brand={product.brandName}
+                    title={product.name}
+                    rating={product.rating}
+                />
+                <ProductContent 
+                    productName={product.name}
+                    type={product.type}
+                    content={product.data}
+                />
+                <ProductFooter posts={product.posts}/>
+            </Link>
+        </div>
+    );
 }
-
-export {  AppProduct };

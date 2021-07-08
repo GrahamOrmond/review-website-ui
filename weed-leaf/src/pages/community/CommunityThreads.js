@@ -8,10 +8,10 @@ export const CommunityThreads = (props) =>  {
     const postsList = useSelector(selectPostsListInfo);
     const dispatch = useDispatch();
     useEffect(() => {
-        if(postsList.status == 'idle'){
+        if(postsList.status === 'idle'){
             dispatch(fetchPosts())
         }
-    }, [dispatch])
+    }, [postsList, dispatch])
 
     return (
         <div className="app-content">

@@ -1,4 +1,3 @@
-import React, { Component } from 'react';
 import { useHistory } from 'react-router-dom';
 import { AppCard } from './AppCard'
 
@@ -46,7 +45,7 @@ export const AppPostFilter = (props) => {
             onChange: handleSelectChange
         }
     }
-    if(postType == "reviews"){
+    if(postType === "reviews"){
         selectOptions.rating = {
             value: "5",
             options: [{
@@ -102,11 +101,6 @@ export const AppPostFilter = (props) => {
 
 export const AppProductFilter = (props) => {
 
-    const handleSelectChange = (event) => {
-        const selectBox = event.target
-        const selectedOption = selectBox.options[selectBox.selectedIndex].id
-    }
-
     const handleOnClick = (event) => {
 
     }
@@ -158,14 +152,15 @@ const AppFilter = (props) => {
         let selectBoxes = []
         for (const [key, input] of Object.entries(selectData)) {
             let options = input.options.map(option => {
-                if(option.id == input.value){
-                    return (<option id={option.id} selected>{option.label}</option>)
-                }
-                return (<option id={option.id} >{option.label}</option>)
+                return (<option key={option.id} id={option.id} >{option.label}</option>)
             })
 
             selectBoxes.push(
-                <select name={key} onChange={(e) => {input.onChange(e)}}>
+                <select 
+                    key={key}
+                    defaultValue={input.value} 
+                    name={key} 
+                    onChange={(e) => {input.onChange(e)}}>
                     {options}
                 </select>
             )
@@ -181,7 +176,10 @@ const AppFilter = (props) => {
                 className += " active"
             }
             buttons.push(
-                <div className={className} onClick={(e) => {input.onClick(e)}}>
+                <div
+                    key={input.label} 
+                    className={className}
+                    onClick={(e) => {input.onClick(e)}}>
                     {input.label}
                 </div>
             )

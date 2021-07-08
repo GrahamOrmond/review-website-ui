@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchProducts, selectProductsListInfo } from './productsSlice';
@@ -8,21 +7,25 @@ import { isSearchParamsEqual } from '../../helpers/generalHelper';
 
 export const ProductsList = (props) => {
 
+    const {
+        brands
+    } = props
+
     useEffect(() => {
         window.scrollTo(0, 0)
     }, [])
     
-    let fetchData = {}
-    if(props.brands)
-        fetchData.brands = props.brands
-
     const productsInfo = useSelector(selectProductsListInfo);
     const dispatch = useDispatch();
     useEffect(() => {
-        if(productsInfo.status == 'idle' || !isSearchParamsEqual(productsInfo.params, fetchData)){
+        let fetchData = {
+            brands: brands
+        }
+        if(productsInfo.status === 'idle' 
+            || !isSearchParamsEqual(productsInfo.params, fetchData)){
             dispatch(fetchProducts(fetchData))
         }
-    }, [fetchData, dispatch])
+    }, [brands, productsInfo, dispatch])
 
     const renderList = () => {
         return productsInfo.products.map(product => {

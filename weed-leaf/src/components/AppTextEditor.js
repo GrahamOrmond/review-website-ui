@@ -3,27 +3,6 @@ import FormatItalicIcon from '@material-ui/icons/FormatItalic';
 import ListIcon from '@material-ui/icons/List';
 import LinkIcon from '@material-ui/icons/Link';
 
-const EditSumbit = (props) => {
-
-    return (
-        <div className="edit-submit">
-            <div className="edit-submit-content">
-
-            </div>
-            <div className="filter-buttons">
-                    <div className="app-button edit-submit-button" onClick={props.handleSaveDraft}>
-                        Save Draft
-                    </div>
-                    <div className="app-button edit-submit-button" onClick={props.handlePostThread}>
-                        Post
-                    </div>
-            </div>
-        </div>
-
-        
-    )
-}
-
 const EditToolbar = (props) => {
 
     return (

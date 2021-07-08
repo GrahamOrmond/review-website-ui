@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from "react-router-dom"
 import { AppCard } from "../../components/AppCard"
 import { AppForm } from "../../components/AppForm"
@@ -76,7 +76,7 @@ export const SubmitPost = (props) => {
 
     const updateFormData = (newState) => {
         const type = newState.type.value
-        if(type != "review"){
+        if(type !== "review"){
             newState['rating'].type = "hidden"
             newState['properties'] = "hidden"
         }else{
@@ -94,7 +94,6 @@ export const SubmitPost = (props) => {
         const postDto = ["content", "title", "type", 
         "status", "productUrlId", "brandId", "rating", "mediaFiles"];
         let properties = [] 
-        let effects = [] 
         for (const [key, param] of Object.entries(postParams)) {
             if(!postDto.includes(key)){
                 properties.push({
@@ -108,7 +107,7 @@ export const SubmitPost = (props) => {
         postParams.productEffects = []
         dispatch(createPost(postParams))
         .then(res => {
-            if(res.meta.requestStatus == "fulfilled")
+            if(res.meta.requestStatus === "fulfilled")
                 history.push(determineBaseUrl(postParams.brandId, postParams.productUrlId))
         })
     }
@@ -117,7 +116,7 @@ export const SubmitPost = (props) => {
         postParams.Status = "Draft"
         dispatch(createPost(postParams))
         .then(res => {
-            if(res.meta.requestStatus == "fulfilled")
+            if(res.meta.requestStatus === "fulfilled")
             history.push(determineBaseUrl(postParams.brandId, postParams.productUrlId))
         })
     }
@@ -212,7 +211,7 @@ export const SubmitPost = (props) => {
         }
     }
     
-    if(postType == "review"){
+    if(postType === "review"){
         for (const [key, value] of Object.entries(postProperties())) {
             formDataTemplate[key] = value
         }

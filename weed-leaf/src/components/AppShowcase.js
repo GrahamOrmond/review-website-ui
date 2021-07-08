@@ -1,52 +1,51 @@
-import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
 import { AppCard } from './AppCard';
 
+const ShowcaseItem = (props) => {
 
-class ShowcaseItem extends Component {
+    const {
+        item
+    } = props
 
-    constructor(props) {
-        super(props);
-    }
-    
-    render () {
-        
-        return (
-            <div className="showcase-item">
-                <p>24%</p>
-                <p>THC</p>
-            </div>
-        );
-    }
+    return (
+        <div className="showcase-item">
+            <p>{item}</p>
+        </div>
+    );
+
 }
 
+export const AppShowcase = (props) => {
 
+    const {
+        title,
+        actionTitle, 
+        actionLink,
+    } = props
 
-class AppShowcase extends Component {
+    const items = []
 
-    constructor(props) {
-        super(props);
+    const renderItems = () => {
+        return items.map(i => {
+            return <ShowcaseItem item={i}/>
+        })
     }
-    
-    render () {
-        
-        return (
-            <AppCard>
-                <div className="app-showcase">
-                    <div className="showcase-title">
-                        <h4>{this.props.title}</h4>
-                    </div>
-                    <div className="showcase-display">
-                        
-                    </div>
+
+    return (
+        <AppCard>
+            <div className="app-showcase">
+                <div className="showcase-title">
+                    <h4>{title}</h4>
                 </div>
-                <Link to={this.props.actionLink}>
-                    <div className="showcase-action app-button">
-                        {this.props.actionTitle}
-                    </div>
-                </Link>
-            </AppCard>
-        );
-    }
+                <div className="showcase-display">
+                    {renderItems()}
+                </div>
+            </div>
+            <Link to={actionLink}>
+                <div className="showcase-action app-button">
+                    {actionTitle}
+                </div>
+            </Link>
+        </AppCard>
+    );
 }
-export default AppShowcase;

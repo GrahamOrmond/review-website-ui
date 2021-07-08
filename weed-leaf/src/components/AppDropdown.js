@@ -1,4 +1,3 @@
-import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
 import { closeAllDropDownMenus } from '../helpers/generalHelper';
 
@@ -60,11 +59,12 @@ export const AppDropdown = (props) => {
             section.links.forEach(link => {
                 data.push(
                     <DropdownNav 
-                            mobileOnly={section.mobileOnly}
-                            handleOnClick={link.onClick}
-                            text={link.label} 
-                            link={link.link}
-                        />
+                        key={link.link}
+                        mobileOnly={section.mobileOnly}
+                        handleOnClick={link.onClick}
+                        text={link.label} 
+                        link={link.link}
+                    />
                 )
             })
         })

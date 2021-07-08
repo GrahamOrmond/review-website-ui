@@ -1,24 +1,28 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { AppProfile } from '../../components/AppProfile';
-import React, { useEffect, useReducer } from 'react'
+import React, { useEffect } from 'react'
 
 import { selectBrandView, fetchBrand, clearBrandView, fetchBrandPosts } from './brandsSlice'
 import AppThreadDisplay from '../../components/AppThreadDisplay';
-import AppShowcase from '../../components/AppShowcase';
+import { AppShowcase } from '../../components/AppShowcase';
   
 export const BrandProfile = (props) => {
+
+    const dispatch = useDispatch()
+    const {
+        postsType,
+        brandId
+    } = props
+
     useEffect(() => {
         window.scrollTo(0, 0)
     }, [])
-
-    const dispatch = useDispatch()
-    const postsType = props.postsType
 
     let brandProfile = useSelector(selectBrandView);
     let brand = brandProfile.brand
     useEffect(() => {
         if (brand !== null) { // brand loaded
-            if(brand.brandId === props.brandId) // matches id
+            if(brand.brandId === brandId) // matches id
             {
                 if(brand[postsType].status === 'idle')
                 {
@@ -32,12 +36,12 @@ export const BrandProfile = (props) => {
             }
             dispatch(clearBrandView()) // clear brand if not matching
         }
-        dispatch(fetchBrand(props.brandId)) // fetch brand by id
-    }, [brand, dispatch])
+        dispatch(fetchBrand(brandId)) // fetch brand by id
+    }, [brand, postsType, brandId, dispatch])
     
     let content;
     if(brand // loaded
-        && brand.brandId === props.brandId){ // matches id
+        && brand.brandId === brandId){ // matches id
 
         if(brand[postsType].status === 'idle')
         {

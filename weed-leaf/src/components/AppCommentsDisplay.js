@@ -52,7 +52,7 @@ export const AppCommentList = (props) => {
         }
         dispatch(createComment(postParams))
         .then(res => {
-            if(res.meta.requestStatus == "fulfilled"){
+            if(res.meta.requestStatus === "fulfilled"){
                 textEditor.innerText = ""
                 dispatch(addToPostCommentCount({postId: postId}))
                 setReplyBox({commentId: null})
@@ -107,7 +107,7 @@ export const AppCommentCreate = (props) => {
         }
         dispatch(createComment(postParams))
         .then(res => {
-            if(res.meta.requestStatus == "fulfilled"){
+            if(res.meta.requestStatus === "fulfilled"){
                 textEditor.innerText = ""
                 dispatch(addToPostCommentCount({postId: postId}))
             }

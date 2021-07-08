@@ -162,11 +162,11 @@ export const usersSlice = createSlice({
 
         },
         [followProfile.fulfilled]: (state, action) => {
-            if(state.userView.user.profileId == action.payload.profileId){
+            if(state.userView.user.profileId === action.payload.profileId){
                 state.userView.user.isFollowing = true
             }
             if (state.currentUser.user.followingList
-                    .findIndex(f => f.profileId == action.payload.userProfileId) === -1){
+                    .findIndex(f => f.profileId === action.payload.userProfileId) === -1){
                 let following = [...state.currentUser.user.followingList]
                 state.currentUser.user.followingList = following
             }
@@ -177,11 +177,11 @@ export const usersSlice = createSlice({
         [unfollowProfile.pending]: (state, action) => {
         },
         [unfollowProfile.fulfilled]: (state, action) => {
-            if(state.userView.user.profileId == action.meta.arg){
+            if(state.userView.user.profileId === action.meta.arg){
                 state.userView.user.isFollowing = false
             }
             let index = state.currentUser.user.followingList
-            .findIndex(f => f.profileId == action.meta.arg) 
+            .findIndex(f => f.profileId === action.meta.arg) 
             if (index !== -1){
                 let following = [...state.currentUser.user.followingList]
                 following.splice(index, 1);

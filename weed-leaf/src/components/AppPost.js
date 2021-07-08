@@ -1,4 +1,3 @@
-import React, { Component, useEffect, useState } from 'react';
 
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
@@ -97,22 +96,30 @@ const PostHeader = (props) => {
 
 const PostBody = (props) => {
 
+    const {
+        properties,
+        mediaFiles,
+        content,
+        altTag
+    } = props
+
     let propertiesContent;
-    if(props.properties 
-        && props.properties.length > 0)
+    if(properties 
+        && properties.length > 0)
     {
         propertiesContent = (
             <PostProperties 
                 title="Properties"
-                properties={props.properties}
+                properties={properties}
             />
         )
     }
 
     let mediaFileContent;
-    if(props.mediaFiles.length > 1){
+    if(mediaFiles.length > 1){
         mediaFileContent = <MediaFilesDisplay 
-            mediaFiles={props.mediaFiles}
+            altTag={altTag}
+            mediaFiles={mediaFiles}
         />
     }
     return (
@@ -121,7 +128,7 @@ const PostBody = (props) => {
             {propertiesContent}
             <div className="post-body-content">
                 <div>
-                    {props.content}
+                    {content}
                 </div>
             </div>
         </div>
@@ -172,7 +179,7 @@ const PostProperties = (props) => {
 
         return props.properties.map(property => {
             return (
-                <div class="post-property">
+                <div className="post-property">
                     <div>
                         {property.property}
                     </div>
@@ -194,18 +201,12 @@ const PostProperties = (props) => {
 
 
 export const AppPost = (props) => {
-
     const dispatch = useDispatch()
+    const {
+        preview,
+        post,
+    } = props
 
-    if(!props.post){
-        return (
-            <div>
-
-            </div>
-        )
-    }
-
-    const post = props.post
     const displayName = post.displayName.toLowerCase()
     const postUrlId = post.urlId.toLowerCase()
     const postType = post.type.toLowerCase()
@@ -229,7 +230,7 @@ export const AppPost = (props) => {
     }
 
     let postUrl;
-    if(props.display != "full"){
+    if(props.display !== "full"){
         postUrl = `/community/user/${displayName}/${postUrlId}`;
         if(post.product.productId != null)
             postUrl = `/products/${post.brand.brandId}/${post.product.urlId}/${postType}s/${displayName}/${postUrlId}`
@@ -237,10 +238,14 @@ export const AppPost = (props) => {
             postUrl = `/brands/${post.brand.brandId}/${postType}s/${displayName}/${postUrlId}`
     }
     
+    let className = "app-post"
+    if (preview){
+        className += " post-preview"
+    }
 
     return (
         <AppCard url={postUrl}>
-            <div className="app-post">
+            <div className={className}>
                 <PostHeader 
                     title={post.title}
                     type={post.type}
@@ -251,6 +256,7 @@ export const AppPost = (props) => {
                     />
                 <PostBody 
                     mediaFiles={post.mediaFiles}
+                    altTag={post.title}
                     properties={post.productProperties}
                     content={post.content}
                 />

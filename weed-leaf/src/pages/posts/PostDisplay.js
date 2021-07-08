@@ -9,16 +9,19 @@ import { clearPostView, fetchPost, selectPostView } from "./postsSlice"
 export const PostDisplay = (props) => {
     const dispatch = useDispatch()
 
+    const {
+        fetchData
+    } = props
+
     let postDisplay = useSelector(selectPostView);
     let post = postDisplay.post
     let postComments = useSelector(state => selectPostComments(state, post));
-    
     useEffect(() => {
         if (post !== null) { // post loaded
-            if(post.urlId.toLowerCase() === props.fetchData.urlId.toLowerCase()
-                && post.brand.brandId.toLowerCase() === props.fetchData.brandId.toLowerCase()
-                && post.product.urlId.toLowerCase() == props.fetchData.productUrlId.toLowerCase()
-                && post.displayName.toLowerCase() === props.fetchData.displayName.toLowerCase()) // matches
+            if(post.urlId.toLowerCase() === fetchData.urlId.toLowerCase()
+                && post.brand.brandId.toLowerCase() === fetchData.brandId.toLowerCase()
+                && post.product.urlId.toLowerCase() === fetchData.productUrlId.toLowerCase()
+                && post.displayName.toLowerCase() === fetchData.displayName.toLowerCase()) // matches
             {
                 // load comments
                 if(postComments.length < post.commentCount){
@@ -28,8 +31,10 @@ export const PostDisplay = (props) => {
             }
             dispatch(clearPostView()) // clear post if not matching
         }
-        dispatch(fetchPost(props.fetchData)) // fetch post by params 
-    }, [post, dispatch])
+        if(postDisplay.status !== 'loading'){
+             dispatch(fetchPost(fetchData)) // fetch post by params 
+        }
+    }, [post, postDisplay, postComments, fetchData, dispatch])
 
     if(post == null){
         return (

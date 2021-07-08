@@ -18,8 +18,8 @@ function renderList(brandsData){
             letter = "#";
         }
 
-        if(previousLetter != letter){
-            if(previousLetter != undefined)
+        if(previousLetter !== letter){
+            if(previousLetter !== undefined)
                 brandContent.push(<div className="list-section">
                     {brandSection}
                     <div className="section-content">

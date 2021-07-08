@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux'
-import React, { useEffect, useReducer } from 'react'
+import React, { useEffect } from 'react'
 
 import { selectProductView, fetchProduct, clearProductView, fetchProductPosts } from './productsSlice'
 import AppThreadDisplay from '../../components/AppThreadDisplay';
@@ -7,7 +7,12 @@ import { AppProfile } from '../../components/AppProfile';
   
 export const ProductProfile = (props) => {
     
-    let postsType = props.postsType
+    const {
+        postsType,
+        productUrlId,
+        brandId,
+    } = props
+
     useEffect(() => {
         window.scrollTo(0, 0)
     }, [])
@@ -17,8 +22,8 @@ export const ProductProfile = (props) => {
     let product = profile.product
     useEffect(() => {
         if (product !== null) { // product loaded
-            if(product.urlId === props.productUrlId
-                && product.brandId === props.brandId) // matches id
+            if(product.urlId === productUrlId
+                && product.brandId === brandId) // matches id
             {
                 if(product[postsType].status === 'idle')
                 {
@@ -34,11 +39,11 @@ export const ProductProfile = (props) => {
             dispatch(clearProductView()) // clear product if not matching
         }
         dispatch(fetchProduct({ 
-            brandId: props.brandId,
-            productUrlId: props.productUrlId
+            brandId: brandId,
+            productUrlId: productUrlId
         })) // fetch product by id
         .then(res => {
-            if(res.meta.requestStatus == "fulfilled"){
+            if(res.meta.requestStatus === "fulfilled"){
                 dispatch(fetchProductPosts({
                     brandId: res.payload.brandId,
                     productUri: res.payload.urlId,
@@ -47,11 +52,11 @@ export const ProductProfile = (props) => {
                 }))
             }
         })
-    }, [product, dispatch])
+    }, [product, postsType, productUrlId, brandId, dispatch])
 
     let content;
     if(product !== null // loaded
-        && product.urlId === props.productUrlId){ // matches id
+        && product.urlId === productUrlId){ // matches id
         if(product[postsType].status === 'idle')
         {
             dispatch(fetchProductPosts({

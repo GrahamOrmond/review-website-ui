@@ -1,4 +1,3 @@
-import React, { Component } from 'react';
 import { CommunityThreads } from './CommunityThreads';
 
 export const CommunityPage = props =>  {

@@ -349,6 +349,10 @@ button {
     padding-bottom: 10px;
 }
 
+.post-preview{
+    cursor: pointer;
+}
+
 .post-display{
     padding: 5px 0px;
 }

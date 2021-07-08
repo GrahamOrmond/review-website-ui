@@ -33,9 +33,9 @@ const RegisterForm = () => {
         dispatch(registerUser(formData))
         .then((res) => {
             const status = res.meta.requestStatus
-            if(status == "rejected")
+            if(status === "rejected")
                 return res.payload.message
-            else if (status == "fulfilled")
+            else if (status === "fulfilled")
             {
                 let loginData = {
                     'email': formData.email,
