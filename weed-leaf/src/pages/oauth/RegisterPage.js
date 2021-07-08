@@ -4,10 +4,9 @@ import { Link, useHistory } from 'react-router-dom'
 import { AppCard } from '../../components/AppCard';
 import { AppForm } from '../../components/AppForm';
 import AppModal from "../../components/AppModal"
-import { loginUser, registerUser } from './oauthSlice';
+import { fetchCurrentUser, loginUser, registerUser } from './oauthSlice';
 
 import './oauth.css'
-import { fetchCurrentUserInfo } from '../users/usersSlice';
 
 const RegisterExtra = () => {
 
@@ -43,7 +42,7 @@ const RegisterForm = () => {
                 }
                 dispatch(loginUser(loginData))
                 .then((res) => {
-                    dispatch(fetchCurrentUserInfo(""))
+                    dispatch(fetchCurrentUser(""))
                     .then(history.push('/'))
                 })
             }

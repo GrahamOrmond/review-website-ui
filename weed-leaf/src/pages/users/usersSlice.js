@@ -26,18 +26,6 @@ const postState = {
     error: null
   }
 
-// user sign up
-export const fetchCurrentUserInfo = createAsyncThunk('users/fetchCurrent', async (formData, { getState, rejectWithValue }) => {
-    const token = getOauthToken(getState())
-    let customConfig = {}
-    customConfig.headers = {
-        'Authorization': `Bearer ${token.token}`
-    }
-    const response = await client
-        .get('/api/profile/', rejectWithValue, customConfig)
-    return response
-})
-
 // fetch user
 export const fetchUserInfo = createAsyncThunk('users/fetchUser', async (displayName, { getState, rejectWithValue }) => {
     const token = getOauthToken(getState())
@@ -88,10 +76,6 @@ export const selectUserView = (state) => {
     return state.users.userView;
 }
 
-export const selectCurrentUser = (state) => {
-    return state.users.currentUser.user;
-}
-
 
 // setup slice
 export const usersSlice = createSlice({
@@ -107,20 +91,6 @@ export const usersSlice = createSlice({
           }
     },
     extraReducers: {
-        [fetchCurrentUserInfo.pending]: (state, action) => {
-            state.currentUser.status = 'loading'
-            state.currentUser.error = null
-        },
-        [fetchCurrentUserInfo.fulfilled]: (state, action) => {
-            state.currentUser.status = 'succeeded'
-            state.currentUser.user = action.payload
-        },
-        [fetchCurrentUserInfo.rejected]: (state, action) => {
-            state.currentUser.status = 'failed'
-            state.currentUser.user = null
-            state.currentUser.error = ''
-        },
-
         [fetchUserInfo.pending]: (state, action) => {
             state.userView.status = 'loading'
             state.userView.error = null

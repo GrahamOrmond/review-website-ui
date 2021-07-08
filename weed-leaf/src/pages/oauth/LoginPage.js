@@ -5,8 +5,7 @@ import { AppCard } from '../../components/AppCard';
 import { AppForm } from '../../components/AppForm';
 import AppModal from "../../components/AppModal"
 
-import { loginUser } from './oauthSlice'
-import { fetchCurrentUserInfo } from '../users/usersSlice'
+import { fetchCurrentUser, loginUser } from './oauthSlice'
 
 import './oauth.css'
 
@@ -38,7 +37,7 @@ const LoginForm = () => {
             if(status === "rejected")
                 return "Invalid Login"
             else if (status === "fulfilled"){
-                dispatch(fetchCurrentUserInfo(""))
+                dispatch(fetchCurrentUser(""))
                 .then(history.push('/'))
             }
             else

@@ -1,12 +1,12 @@
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { getCurrentUser } from "../oauth/oauthSlice";
 import { UserProfile } from "./UserProfile";
-import { selectCurrentUser } from "./usersSlice";
 
 
 
 export const UserPage = (props) => {
-    let currentUser = useSelector(selectCurrentUser)
+    let currentUser = useSelector(getCurrentUser)
     const history = useHistory()
     
     let {  

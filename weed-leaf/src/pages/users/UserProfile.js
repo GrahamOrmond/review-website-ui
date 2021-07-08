@@ -2,7 +2,8 @@ import { AppProfile } from  "../../components/AppProfile"
 import AppThreadDisplay from "../../components/AppThreadDisplay";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { clearUserView, fetchUserInfo, fetchUserPosts, followProfile, selectCurrentUser, selectUserView, unfollowProfile } from "./usersSlice";
+import { clearUserView, fetchUserInfo, fetchUserPosts, followProfile, selectUserView, unfollowProfile } from "./usersSlice";
+import { getCurrentUser } from "../oauth/oauthSlice";
 
 
 const EditUserProfile = (props) => {
@@ -37,7 +38,7 @@ export const UserProfile = (props) => {
     } = props;
 
     const userProfileView = useSelector(selectUserView)
-    const currentUser = useSelector(selectCurrentUser)
+    const currentUser = useSelector(getCurrentUser)
     const user = userProfileView.user
 
     useEffect(() => {
