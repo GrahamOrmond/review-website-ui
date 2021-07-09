@@ -7,63 +7,70 @@ import { client } from '../../api/client'
   
 // setup inital state
 const initialState = {
-    productView: {
-        product: null,
+    view: {
+        urlId: null,
+        brandId: null,
         status: 'idle',
         error: null
     },
-    productsList: {
-        params: {},
+    list: {
+        params: [],
         products: [],
         status: 'idle',
         error: null
     }
 }
 
-const postState = {
-    posts: null,
-    status: 'idle',
-    error: null
-}
-
-
 // fetch list of products
-export const fetchProducts = createAsyncThunk('products/fetchProducts', async (fetchData, { rejectWithValue }) => {
-    let url = `/api/products?${new URLSearchParams(fetchData).toString()}`;
-    const response = await client.get(url, rejectWithValue)
-    return response.products
+export const fetchProducts = createAsyncThunk('products/fetchProducts', 
+  async (fetchData, { getState, rejectWithValue }) => {
+    Object.keys(fetchData).forEach(k => fetchData[k] === undefined 
+            && delete fetchData[k])
+    const params = new URLSearchParams(fetchData).toString()
+    let url = `/api/products?${params}`;
+    let response = await client.get(url, rejectWithValue)
+    response.params = {
+        params: params,
+        timeStamp: new Date().getTime(),
+        data: fetchData
+    }
+    // remove duplicates
+    const state = getState()
+    state.products.list.products.forEach(product => {
+        let index = response.products.findIndex(p => p.productId === product.productId);
+        if(index !== -1)
+            response.products.splice(index, 1)
+    })
+    return response
 })
 
 // fetch product by id
 export const fetchProduct = createAsyncThunk('products/fetchProduct',
-async (fetchData, { getState, rejectWithValue }) => {
-  const product = selectProductById(getState(), fetchData)
-  if(product)
-    return product
-  const response = await client.get(`/api/products/${fetchData.brandId}/${fetchData.productUrlId}`, { rejectWithValue })
-  return response
+async (fetchData, { rejectWithValue }) => {
+    let response = await client.get(`/api/products/${fetchData.brandId}/${fetchData.productUrlId}`, { rejectWithValue })
+    return response
 })
 
-// fetch product by id
-export const fetchProductPosts = createAsyncThunk('products/fetchProductPosts',
-async (fetchData, { getState, rejectWithValue }) => {
-  let url = `/api/posts?${new URLSearchParams(fetchData).toString()}`;
-  const response = await client.get(url, { rejectWithValue })
-  return response
-})
-
-export const selectProductsListInfo = (state) => {
-    return state.products.productsList;
+export const getProductsListInfo = (state) => {
+    return state.products.list;
 }
 
-export const selectProductView = (state) => {
-    return state.products.productView
+export const getProductView = (state) => {
+    return state.products.view
 }
 
-export const selectProductById = (state, productInfo) => {
-    return state.products.productsList.products
-        .find(product => product.brandId === productInfo.brandId
-            && product.urlId === productInfo.productUrlId);
+export const getProductById = (state, brandId, urlId) => {
+    return state.products.list.products
+        .find(p => p.brandId === brandId
+            && p.urlId === urlId);
+}
+
+export const getProductSearchParams = (state, params) => {
+    Object.keys(params).forEach(k => params[k] === undefined 
+            && delete params[k])
+    const paramsString = new URLSearchParams(params).toString()
+    return state.products.list.params
+    .find(p => p.params === paramsString);
 }
   
 // setup slice
@@ -72,62 +79,68 @@ export const productSlice = createSlice({
     initialState,
     reducers: {
         clearProductView(state, action) {
-            state.productView = {
-                product: null,
+            state.view = {
+                urlId: null,
+                brandId: null,
                 status: 'idle',
                 error: null
             }
-        }
-    },
-    extraReducers: {
-        [fetchProducts.pending]: (state, action) => {
-            state.productsList.status = 'loading'
         },
-        [fetchProducts.fulfilled]: (state, action) => {
-            state.productsList.status = 'succeeded'
-            state.productsList.params = action.meta.arg? action.meta.arg : {};
-            state.productsList.products = action.payload;
-        },
-        [fetchProducts.rejected]: (state, action) => {
-            state.productsList.status = 'failed'
-            state.productsList.error = action.error.message
-        },
-        [fetchProduct.pending]: (state, action) => {
-            state.productView.status = 'loading'
-        },
-        [fetchProduct.fulfilled]: (state, action) => {
-            let product = {...action.payload}
-            product.reviews = postState
-            product.questions = postState
-            product.threads = postState
-
-            state.productView.product = product;
-            state.productView.status = 'succeeded'
-        },
-        [fetchProduct.rejected]: (state, action) => {
-            state.productView.status = 'failed'
-            state.productView.error = action.error.message
-        },
-        [fetchProductPosts.pending]: (state, action) => {
-            state.productView.product[action.meta.arg.type].status = 'loading'
-        },
-        [fetchProductPosts.fulfilled]: (state, action) => {
-            let setPayload = {
-                posts: action.payload.posts,
+        setProductView(state, action) {
+            state.view = {
+                urlId: action.payload.productUrlId,
+                brandId: action.payload.brandId,
                 status: 'succeeded',
                 error: null
             }
-            state.productView.product[action.meta.arg.type] = setPayload
         },
-        [fetchProductPosts.rejected]: (state, action) => {
-            state.productView.product[action.meta.arg.type].status = 'failed'
-            state.productView.product[action.meta.arg.type].error = action.error.message
+        idleProductList(state, action) {
+            state.list.status = 'idle'
+        }
+    },
+    extraReducers: {
+        // FETCH LIST OF PRODUCTS
+        [fetchProducts.pending]: (state, action) => {
+            state.list.status = 'loading'
+        },
+        [fetchProducts.fulfilled]: (state, action) => {
+            state.list = {
+                status: 'succeeded',
+                params: state.list.params.concat([action.payload.params]),
+                products: state.list.products.concat(action.payload.products),
+                error: null
+            }
+        },
+        [fetchProducts.rejected]: (state, action) => {
+            state.list.status = 'failed'
+            state.list.error = action.error.message
+        },
+
+        // FETCH PRODUCT BY URL ID
+        [fetchProduct.pending]: (state, action) => {
+            state.view = {
+                urlId: action.meta.arg.productUrlId,
+                brandId: action.meta.arg.brandId,
+                status: 'loading',
+                error: null
+            }
+        },
+        [fetchProduct.fulfilled]: (state, action) => {
+            let product = {...action.payload}
+            state.list.products = state.list.products.concat(product)
+            state.view.status = 'succeeded'
+        },
+        [fetchProduct.rejected]: (state, action) => {
+            state.view.status = 'failed'
+            state.view.error = action.error.message
         },
     }
 })
 
   export const { 
     clearProductView,
+    setProductView,
+    idleProductList
   } = productSlice.actions
   
   export default productSlice.reducer
