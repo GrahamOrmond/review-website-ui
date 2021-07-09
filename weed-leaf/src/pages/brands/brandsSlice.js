@@ -13,6 +13,7 @@ const initialState = {
     error: null
   },
   list: {
+    params: [],
     brands: [],
     status: 'idle',
     error: null
@@ -20,17 +21,31 @@ const initialState = {
 }
 
 // fetch list of brands
-export const fetchBrands = createAsyncThunk('brands/fetchBrands', async (data, { rejectWithValue }) => {
-  const response = await client.get('/api/brands', rejectWithValue)
-  return response.brands
+export const fetchBrands = createAsyncThunk('brands/fetchBrands', 
+  async (fetchData, { getState, rejectWithValue }) => {
+  Object.keys(fetchData).forEach(k => fetchData[k] === undefined 
+    && delete fetchData[k])
+  const params = new URLSearchParams(fetchData).toString()
+  let url = `/api/brands?${params}`;
+  let response = await client.get(url, rejectWithValue)
+  response.params = {
+    params: params,
+    timeStamp: new Date().getTime(),
+    data: fetchData
+  }
+  // remove duplicates
+  const state = getState()
+  state.brands.list.brands.forEach(brand => {
+    let index = response.brands.findIndex(b => b.brandId === brand.brandId);
+    if(index !== -1)
+        response.brands.splice(index, 1)
+  })
+  return response
 })
 
 // fetch brand by id
 export const fetchBrand = createAsyncThunk('brands/fetchBrand',
-async (brandId, { getState, rejectWithValue }) => {
-  const brand = getBrandById(getState(), brandId)
-  if(brand)
-    return brand
+async (brandId, { rejectWithValue }) => {
   const response = await client.get('/api/brands/' + brandId, { rejectWithValue })
   return response
 })
@@ -56,6 +71,14 @@ export const getBrandById = (state, brandId) => {
     .find(brand => brand.brandId === brandId);
 } 
 
+export const getBrandsSearchParams = (state, params) => {
+  Object.keys(params).forEach(k => params[k] === undefined 
+    && delete params[k])
+  const paramsString = new URLSearchParams(params).toString()
+  return state.brands.list.params
+  .find(p => p.params === paramsString);
+} 
+
 // setup slice
 export const brandSlice = createSlice({
   name: 'brands',
@@ -67,6 +90,16 @@ export const brandSlice = createSlice({
         status: 'idle',
         error: null
       }
+    },
+    setBrandView(state, action) {
+      state.view = {
+        brandId: action.payload.brandId,
+        status: 'succeeded',
+            error: null
+        }
+    },
+    idleBrandsList(state, action) {
+      state.list.status = "idle"
     }
   },
   extraReducers: {
@@ -75,8 +108,12 @@ export const brandSlice = createSlice({
       state.list.status = 'loading'
     },
     [fetchBrands.fulfilled]: (state, action) => {
-      state.list.status = 'succeeded'
-      state.list.brands = action.payload;
+      state.list = {
+        status: 'succeeded',
+        params: state.list.params.concat([action.payload.params]),
+        brands: state.list.brands.concat(action.payload.brands),
+        error: null
+      }
     },
     [fetchBrands.rejected]: (state, action) => {
       state.list.status = 'failed'
@@ -89,6 +126,7 @@ export const brandSlice = createSlice({
     },
     [fetchBrand.fulfilled]: (state, action) => {
       state.view.status = 'succeeded'
+      state.list.brands = state.list.brands.concat([action.payload])
     },
     [fetchBrand.rejected]: (state, action) => {
       state.view.status = 'failed'
@@ -99,6 +137,8 @@ export const brandSlice = createSlice({
 
 export const { 
   clearBrandView,
+  setBrandView,
+  idleBrandsList,
 } = brandSlice.actions
 
 export default brandSlice.reducer

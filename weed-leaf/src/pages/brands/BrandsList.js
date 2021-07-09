@@ -1,66 +1,104 @@
 import { Link } from 'react-router-dom'
 import React, { useEffect } from 'react'
-import { useSelector } from 'react-redux'
-import { getBrandsListInfo } from './brandsSlice';
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchBrands, getBrandsListInfo, getBrandsSearchParams, idleBrandsList } from './brandsSlice';
 import { sortListByName } from '../../helpers/generalHelper';
+import { ListSection } from '../../components/AppList';
 
-function renderList(brandsData){
+const BrandLabel = (props) => {
 
-    let brandSorted = sortListByName(brandsData, "name")
-
-    let previousLetter;
-    let brandContent = [], brandSection, sectionContent = [];
-    brandSorted.forEach(brand => {
-        let letter = brand.name[0];
-        if(letter.match(/[a-z]/i)){
-            letter = letter.toUpperCase()
-        }else{
-            letter = "#";
-        }
-
-        if(previousLetter !== letter){
-            if(previousLetter !== undefined)
-                brandContent.push(<div className="list-section">
-                    {brandSection}
-                    <div className="section-content">
-                        {sectionContent}
-                    </div>
-                </div>);
-            sectionContent = []
-
-            previousLetter = letter
-            brandSection = (
-                <div className="section-title">
-                    <h2>{letter}</h2>
-                </div>
-            );
-        }
-        sectionContent.push(
-           
-                <div>
-                     <Link to={"/brands/" + brand.brandId}>
-                    {brand.name}         
-                    </Link>  
-                </div>
-            
-        );
-    });
-
-    return brandContent;
+    const {
+        name,
+        brandId,
+    } = props
+    
+    return (
+        <div>
+            <Link to={"/brands/" + brandId}>
+                {name}         
+            </Link>  
+        </div>
+    )
 }
 
+const BrandsListDisplay = (props) => {
 
-export const BrandsList = () => {
+    const {
+        brands,
+    } = props
+
+    const renderBrands = () => {
+        let brandSorted = sortListByName(brands, "name") // sort brands
+
+        let previousLetter; // tracks previous letter
+        let brandContent = [], sectionTitle, sectionContent = [];
+        brandSorted.forEach(brand => {
+            // determine brand section letter
+            let letter = brand.name[0];
+            if(letter.match(/[a-z]/i)){
+                letter = letter.toUpperCase()
+            }else{
+                letter = "#";
+            }
+
+            // previous letter is different from current
+            if(previousLetter !== letter){
+                if(previousLetter !== undefined) // not first section
+                    brandContent.push( // brand section with content
+                        <ListSection key={sectionTitle} title={sectionTitle}>
+                            {sectionContent}
+                        </ListSection>
+                    )
+                sectionContent = [] // reset section content
+                previousLetter = letter // track previous letter
+                sectionTitle = letter // track next section title
+            }
+
+            // add brand to section content
+            sectionContent.push(<BrandLabel 
+                key={brand.brandId}
+                name={brand.name}
+                brandId={brand.brandId}
+            />);
+        });
+        return brandContent;
+    }
+
+    return (
+        <div>
+            {renderBrands()}
+        </div>
+    )
+}
+
+export const BrandsList = (props) => {
+
+    const dispatch = useDispatch();
+    const {
+        fetchData
+    } = props
+
     const brandsInfo = useSelector(getBrandsListInfo);
+    const existingParams = useSelector(s => getBrandsSearchParams(s, fetchData));
     useEffect(() => {
-        window.scrollTo(0, 0)
-    }, [])
+        if(brandsInfo.status === 'idle'){
+            dispatch(fetchBrands(fetchData))
+            return
+        }
+
+        if(brandsInfo.status !== 'loading'
+            && !existingParams){
+            dispatch(idleBrandsList())
+        }
+    }, [brandsInfo, fetchData, existingParams, dispatch])
     
     let content;
     if (brandsInfo.status === 'loading') {
         content = (<div className="loader">Loading...</div>)
     } else if (brandsInfo.status === 'succeeded') {
-        content = renderList(brandsInfo.brands);
+        content = <BrandsListDisplay 
+            brands={brandsInfo.brands}
+        />
     } else if (brandsInfo.status === 'error') {
         content = (<div>{brandsInfo.error}</div>)
     }

@@ -28,13 +28,9 @@ import { ProductsPage } from './pages/products/ProductsPage'
 import { CommunityPage } from './pages/community/CommunityPage'
 
 // redux store
-import { store } from './store/store';
-import { fetchBrands } from './pages/brands/brandsSlice';
 import { checkLogin, fetchCurrentUser, isUserLoggedIn } from './pages/oauth/oauthSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { PostsPage } from './pages/posts/PostsPage';
-
-store.dispatch(fetchBrands());
 
 function App() {
 
