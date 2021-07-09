@@ -1,17 +1,28 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AppThreadDisplay from "../../components/AppThreadDisplay";
-import { fetchPosts, selectPostsListInfo } from "../posts/postsSlice";
+import { fetchPosts, getPostsList, getPostsSearchParams, idlePostList } from "../posts/postsSlice";
 
 export const CommunityThreads = (props) =>  {
 
-    const postsList = useSelector(selectPostsListInfo);
     const dispatch = useDispatch();
+    const {
+        fetchData
+    } = props
+
+    const postsList = useSelector(getPostsList);
+    const existingParams = useSelector(s => getPostsSearchParams(s, fetchData));
     useEffect(() => {
         if(postsList.status === 'idle'){
-            dispatch(fetchPosts())
+            dispatch(fetchPosts(fetchData))
+            return
         }
-    }, [postsList, dispatch])
+
+        if(postsList.status !== 'loading'
+            && !existingParams){
+            dispatch(idlePostList())
+        }
+    }, [postsList, existingParams, fetchData, dispatch])
 
     return (
         <div className="app-content">

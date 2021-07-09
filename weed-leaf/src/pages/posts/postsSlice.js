@@ -8,12 +8,14 @@ import { getOauthToken } from '../oauth/oauthSlice'
 
 // setup inital state
 const initialState = {
-    viewPost: {
-        post: null,
+    view: {
+        displayName: null,
+        urlId: null,
         status: 'idle',
         error: null
     },
-    postsList: {
+    list: {
+        params: [],
         posts: [],
         status: 'idle',
         error: null
@@ -42,20 +44,31 @@ export const createPost = createAsyncThunk('posts/createPosts', async (formData,
 })
 
 // fetch post
-export const fetchPosts = createAsyncThunk('posts/fetchPosts', async (formData, { rejectWithValue }) => {
-    let url = '/api/posts'
-    if(formData)
-        url += `?${new URLSearchParams(formData).toString()}`;
-    const response = await client.get(url, rejectWithValue)
-    return response.posts
+export const fetchPosts = createAsyncThunk('posts/fetchPosts', 
+async (formData, { getState, rejectWithValue }) => {
+    Object.keys(formData).forEach(k => formData[k] === undefined 
+        && delete formData[k])
+    const params = new URLSearchParams(formData).toString()
+    let url = `/api/posts?${params}`;
+    let response = await client.get(url, rejectWithValue)
+    response.params = {
+        params: params,
+        timeStamp: new Date().getTime(),
+        data: formData
+    }
+    // remove duplicates
+    const state = getState()
+    state.posts.list.posts.forEach(post => {
+    let index = response.posts.findIndex(p => p.postId === post.postId);
+    if(index !== -1)
+        response.posts.splice(index, 1)
+    })
+    return response
 })
 
 // fetch brand by id
 export const fetchPost = createAsyncThunk('posts/fetchPost',
-async (fetchData, { getState, rejectWithValue }) => {
-    const post = selectPostFetchData(getState(), fetchData)
-    if(post)
-        return post
+async (fetchData, { rejectWithValue }) => {
     let url = `/api/posts/${fetchData.displayName}/${fetchData.urlId}`
     const response = await client.get(url, { rejectWithValue })
     return response
@@ -74,18 +87,26 @@ async (formData, { getState, rejectWithValue }) => {
     return response
 })
 
-export const selectPostsListInfo = (state) => {
-    return state.posts.postsList;
+export const getPostsList = (state) => {
+    return state.posts.list;
 }
 
-export const selectPostView = (state) => {
-    return state.posts.viewPost
+export const getPostView = (state) => {
+    return state.posts.view
 } 
 
-export const selectPostFetchData = (state, fetchData) => {
-    return state.posts.postsList.posts
-        .find(post => post.urlId === fetchData.urlId
-            && post.displayName === fetchData.displayName);
+export const getPostById = (state, displayName, urlId) => {
+    return state.posts.list.posts
+        .find(p => p.urlId.toLowerCase() === urlId.toLowerCase()
+            && p.displayName.toLowerCase() === displayName.toLowerCase());
+} 
+  
+export const getPostsSearchParams = (state, params) => {
+    Object.keys(params).forEach(k => params[k] === undefined 
+      && delete params[k])
+    const paramsString = new URLSearchParams(params).toString()
+    return state.posts.list.params
+        .find(p => p.params.toLowerCase() === paramsString.toLowerCase());
 } 
   
 
@@ -95,8 +116,9 @@ export const postsSlice = createSlice({
     initialState,
     reducers: {
         clearPostView(state, action) {
-            state.viewPost = {
-                post: null,
+            state.view = {
+                displayName: null,
+                urlId: null,
                 status: 'idle',
                 error: null
             }
@@ -123,51 +145,72 @@ export const postsSlice = createSlice({
             }
 
         },
+        setPostView(state, action) {
+            state.view = {
+                displayName: action.payload.displayName,
+                urlId: action.payload.urlId,
+                status: 'succeeded',
+                error: null
+            }
+        },
+        idlePostList(state, action) {
+            state.list.status = 'idle'
+        },
     },
     extraReducers: {
+        // FETCH LIST OF POST
         [fetchPosts.pending]: (state, action) => {
-            state.postsList.status = 'loading'
+            state.list.status = 'loading'
+            state.list.error = null
         },
         [fetchPosts.fulfilled]: (state, action) => {
-            state.postsList.status = 'succeeded'
-            state.postsList.posts = action.payload;
+            state.list = {
+                params: state.list.params.concat([action.payload.params]),
+                posts: state.list.posts.concat(action.payload.posts),
+                status: 'succeeded',
+                error: null
+            }
         },
         [fetchPosts.rejected]: (state, action) => {
-            state.postsList.status = 'failed'
-            state.postsList.error = action.error.message
+            state.list.status = 'failed'
+            state.list.error = action.error.message
         },
+
+        // FETCH POST BY ID
         [fetchPost.pending]: (state, action) => {
-            state.viewPost.status = 'loading'
+            state.view = {
+                displayName: action.meta.arg.displayName,
+                urlId: action.meta.arg.urlId,
+                status: 'loading',
+                error: null
+            }
         },
         [fetchPost.fulfilled]: (state, action) => {
-            state.viewPost.status = 'succeeded'
-            state.viewPost.post = action.payload;
+            state.view.status = 'succeeded'
+            state.list.posts = state.list.posts.concat([action.payload])
         },
         [fetchPost.rejected]: (state, action) => {
-            state.viewPost.status = 'failed'
-            state.viewPost.error = action.error.message
+            state.view.status = 'failed'
+            state.view.error = action.error.message
         },
+
+        // CREATE POST
         [createPost.pending]: (state, action) => {
         },
         [createPost.fulfilled]: (state, action) => {
         },
         [createPost.rejected]: (state, action) => {
         },
+
+        // RATE POST
         [ratePost.pending]: (state, action) => {
         },
         [ratePost.fulfilled]: (state, action) => {
-            const postIndex = state.postsList.posts
+            const postIndex = state.list.posts
                 .findIndex(p => p.postId === action.payload.referenceId)
             if(postIndex !== -1){
-                let post = {...state.postsList.posts[postIndex]}
-                post.upCount = action.payload.upCount
-                post.downCount = action.payload.downCount
-                state.postsList.posts[postIndex] = post
-            }
-            if(state.viewPost.post !== null 
-                && state.viewPost.post.postId === action.payload.referenceId){
-                state.viewPost.post.upCount = action.payload.upCount
-                state.viewPost.post.downCount = action.payload.downCount
+                state.list.posts[postIndex].upCount = action.payload.upCount
+                state.list.posts[postIndex].downCount = action.payload.downCount
             }
         },
         [ratePost.rejected]: (state, action) => {
@@ -177,7 +220,9 @@ export const postsSlice = createSlice({
   
 export const { 
     clearPostView,
-    addToPostCommentCount
+    addToPostCommentCount,
+    setPostView,
+    idlePostList
 } = postsSlice.actions
   
 export default postsSlice.reducer

@@ -19,18 +19,13 @@ export const BrandsPage = (props) => {
     const postsType = type === undefined? "reviews" : type.toLowerCase();
     if(brandId){
         if(postLink){
-
-            let fetchData = {
-                brandId: brandId,
-                type: postsType,
-                displayName: displayName,
-                urlId: postLink
-            }
-
             return (
                 <div className="app-content">
                     <PostDisplay
-                        fetchData={fetchData}
+                        brandId={brandId}
+                        type={postsType}
+                        displayName={displayName}
+                        urlId={postLink}
                     />
                 </div>
             )

@@ -2,47 +2,46 @@ import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { AppCommentsDisplay } from "../../components/AppCommentsDisplay"
 import { AppPost }  from "../../components/AppPost"
-import { fetchComments, selectPostComments } from "../comments/commentsSlice"
-import { clearPostView, fetchPost, selectPostView } from "./postsSlice"
+import { clearPostView, fetchPost, getPostById, getPostView, setPostView } from "./postsSlice"
 
 
 export const PostDisplay = (props) => {
     const dispatch = useDispatch()
 
     const {
-        fetchData
+        // brandId,
+        // productUrlId,
+        // type,
+        displayName,
+        urlId,
     } = props
 
-    let postDisplay = useSelector(selectPostView);
-    let post = postDisplay.post
-    let postComments = useSelector(state => selectPostComments(state, post));
+    let view = useSelector(getPostView);
+    let post = useSelector(state => getPostById(state, displayName, urlId));
     useEffect(() => {
-        if (post !== null) { // post loaded
-            if(post.urlId.toLowerCase() === fetchData.urlId.toLowerCase()
-                && post.brand.brandId.toLowerCase() === fetchData.brandId.toLowerCase()
-                && post.product.urlId.toLowerCase() === fetchData.productUrlId.toLowerCase()
-                && post.displayName.toLowerCase() === fetchData.displayName.toLowerCase()) // matches
-            {
-                // load comments
-                if(postComments.length < post.commentCount){
-                    dispatch(fetchComments({postId: post.postId}))
-                }
-                return
+        if(view.status === 'idle'){
+            if(!post){ // no post found
+                dispatch(fetchPost({
+                    displayName: displayName,
+                    urlId: urlId
+                }))
+            }else{
+                // post already loaded and found
+                dispatch(setPostView({ 
+                    displayName: post.displayName,
+                    urlId: post.urlId 
+                }))
             }
-            dispatch(clearPostView()) // clear post if not matching
+            return
         }
-        if(postDisplay.status !== 'loading'){
-             dispatch(fetchPost(fetchData)) // fetch post by params 
+
+        if(view.displayName.toLowerCase() !== displayName.toLowerCase()
+            && view.urlId.toLowerCase() !== urlId.toLowerCase()){
+            dispatch(clearPostView())
         }
-    }, [post, postDisplay, postComments, fetchData, dispatch])
+    }, [view, post, displayName, urlId,  dispatch])
 
-    if(post == null){
-        return (
-            <div>
-
-            </div>
-        )
-    }
+    if(!post) return (<div></div>)
     return (
         <div className="post-display">
             <AppPost 
@@ -51,7 +50,7 @@ export const PostDisplay = (props) => {
             </AppPost>
             <AppCommentsDisplay 
                 postId={post.postId}
-                comments={postComments}
+                comments={[]}
             />
         </div>
         

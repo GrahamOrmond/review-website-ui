@@ -7,24 +7,29 @@ import { AppPostCreate } from './AppPostCreate';
 const AppThreadDisplay = (props) => {
 
     const isLoggedIn = useSelector(isUserLoggedIn);
+    const {
+        postType,
+        urlBase,
+        posts,
+    } = props
 
     const renderPosts = () => {
-        return props.posts.map(post => (
-            <AppPost 
+        return posts.map(post => {
+            return (
+                <AppPost 
                 key={post.postId}
                 preview={true}
                 post={post} 
-            />
-        ))
+            />)
+        })
     }
 
     let content = ""
-    if(props.posts != null){
+    if(posts.length > 0){
         content = renderPosts()
     }
 
     let progress = "End Of Content";
-
     let createContent;
     if(isLoggedIn){
         createContent = (
@@ -38,8 +43,8 @@ const AppThreadDisplay = (props) => {
         <div>
             {createContent}
             <AppPostFilter
-                postType={props.postType}
-                urlBase={props.urlBase}
+                postType={postType}
+                urlBase={urlBase}
             />
             {content}
             <div className="thread-end">

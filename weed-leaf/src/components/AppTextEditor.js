@@ -35,7 +35,7 @@ export const AppCommentEditor = (props) => {
 
     return (
         <div className="app-comment-editor" >
-            <input name={props.name} hidden value="textEditor" />
+            <input name={props.name} hidden defaultValue="textEditor" />
             <div id={editId}
                 className="edit-content" 
                 contentEditable="true"
@@ -54,7 +54,7 @@ export const AppTextEditor = (props) => {
     return (
         <div className="app-text-editor" >
             <EditToolbar handleFormatChange={handleFormatChange}/>
-            <input name={props.name} hidden value="textEditor" />
+            <input name={props.name} hidden defaultValue="textEditor" />
             <div id="edit_content" className="edit-content" contentEditable="true">
 
             </div>

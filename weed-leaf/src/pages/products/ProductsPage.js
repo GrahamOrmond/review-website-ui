@@ -19,18 +19,14 @@ export const ProductsPage = (props) => {
 
         if(postLink){
 
-            let fetchData = {
-                brandId: brandId,
-                productUrlId: productUrlId,
-                type: postsType,
-                displayName: displayName,
-                urlId: postLink
-            }
-
             return (
                 <div className="app-content">
                     <PostDisplay
-                        fetchData={fetchData}
+                        brandId={brandId}
+                        productUrlId={productUrlId}
+                        type={postsType}
+                        displayName={displayName}
+                        urlId={postLink}
                     />
                 </div>
             )
