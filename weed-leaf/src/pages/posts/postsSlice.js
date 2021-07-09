@@ -124,26 +124,12 @@ export const postsSlice = createSlice({
             }
         },
         addToPostCommentCount(state, action) {
-            const {
-                postId
-            } = action.payload
-
             // update post list
-            let postIndex = state.postsList.posts
-            .findIndex(post => post.postId === postId);
-            if(postIndex){ 
-                let post = {...state.postsList.posts[postIndex]}
-                post.commentCount += 1
-                state.postsList.posts[postIndex] = post
+            let postIndex = state.list.posts
+                .findIndex(p => p.postId === action.payload.postId);
+            if(postIndex !== -1){ 
+                state.list.posts[postIndex].commentCount += 1
             }
-
-            // update post view
-            let viewPost = state.viewPost.post
-            if(viewPost && viewPost.postId === postId){
-                viewPost.commentCount += 1
-                state.viewPost.post = viewPost
-            }
-
         },
         setPostView(state, action) {
             state.view = {

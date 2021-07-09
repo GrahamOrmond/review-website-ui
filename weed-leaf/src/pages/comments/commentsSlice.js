@@ -8,12 +8,13 @@ import { getOauthToken } from '../oauth/oauthSlice'
 
 // setup inital state
 const initialState = {
-  commentView: {
-    comment: null,
+  view: {
+    commentId: null,
     status: 'idle',
     error: null
   },
-  commentsList: {
+  list: {
+    params: [],
     comments: [],
     status: 'idle',
     error: null
@@ -35,12 +36,25 @@ export const createComment = createAsyncThunk('comments/createComment',
 
 // fetch post
 export const fetchComments = createAsyncThunk('comments/fetchComments',
- async (formData, { rejectWithValue }) => {
-  let url = '/api/comments'
-  if(formData)
-      url += `?${new URLSearchParams(formData).toString()}`;
-  const response = await client.get(url, rejectWithValue)
-  return response.comments
+ async (fetchData, { getState, rejectWithValue }) => {
+  Object.keys(fetchData).forEach(k => fetchData[k] === undefined 
+    && delete fetchData[k])
+  const params = new URLSearchParams(fetchData).toString()
+  let url = `/api/comments?${params}`;
+  let response = await client.get(url, rejectWithValue)
+  response.params = {
+    params: params,
+    timeStamp: new Date().getTime(),
+    data: fetchData
+  }
+  // remove duplicates
+  const state = getState()
+  state.comments.list.comments.forEach(comment => {
+    let index = response.comments.findIndex(c => c.commentId === comment.commentId);
+    if(index !== -1)
+        response.comments.splice(index, 1)
+  })
+  return response
 })
 
 // rate comment
@@ -56,75 +70,91 @@ async (formData, { getState, rejectWithValue }) => {
     return response
 })
 
-export const selectPostComments = (state, post) => {
+export const getCommentsView = (state, commentId) => {
+  return state.comments.list.comments
+      .filter(c => c.commentReplyId === commentId);
+}
+
+export const getCommentsByPost = (state, post) => {
   if(!post)
     return []
-  return state.comments.commentsList.comments
+  return state.comments.list.comments
       .filter(c => c.postId === post.postId 
         && c.commentReplyId === null);
 }
 
 export const selectCommentReplies = (state, commentId) => {
-  return state.comments.commentsList.comments
+  return state.comments.list.comments
       .filter(c => c.commentReplyId === commentId);
 }
+
+export const getCommentsSearchParams = (state, params) => {
+  Object.keys(params).forEach(k => params[k] === undefined 
+    && delete params[k])
+  const paramsString = new URLSearchParams(params).toString()
+  return state.comments.list.params
+  .find(c => c.params === paramsString);
+} 
   
 // setup slice
 export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
+    idleCommentsList(state, action) {
+      state.list.status = "idle"
+    }
   },
   extraReducers: {
+    // CREATE COMMMENT
     [createComment.pending]: (state, action) => {
-      state.commentsList.status = 'loading'
+      state.list.status = 'loading'
+      state.list.error = null
     },
     [createComment.fulfilled]: (state, action) => {
-        state.commentsList.status = 'succeeded'
-        let comments = state.commentsList.comments
         action.payload.dateCreated = action.payload.dateCreated.slice(0,-1) // remove "Z" to match other dates
-        state.commentsList.comments = comments.concat([action.payload]);
+        state.list.status = 'succeeded'
+        state.list.comments = state.list.comments.concat([action.payload]);
+        if(action.payload.commentReplyId){
+          let index = state.list.comments
+            .findIndex(c => c.commentId === action.payload.commentReplyId);
+          if(index !== -1)
+            state.list.comments[index].replyCount += 1
+        }
     },
     [createComment.rejected]: (state, action) => {
-        state.commentsList.status = 'failed'
-        state.commentsList.error = action.error.message
+        state.list.status = 'failed'
+        state.list.error = action.error.message
     },
+
+    // FETCH COMMENTS
     [fetchComments.pending]: (state, action) => {
-      state.commentsList.status = 'loading'
+      state.list.status = 'loading'
+      state.list.error = null
     },
     [fetchComments.fulfilled]: (state, action) => {
-        state.commentsList.status = 'succeeded'
-        let comments = [...state.commentsList.comments]
-        // check for duplicated before adding
-        action.payload.forEach(c => {
-          if (comments.findIndex(comment => comment.commentId === c.commentId) === -1){
-            comments.push(c);
-          } 
-        });
-        state.commentsList.comments = comments
+      state.list = {
+        status: 'succeeded',
+        params: state.list.params.concat([action.payload.params]),
+        comments: state.list.comments.concat(action.payload.comments),
+        error: null
+      }
     },
     [fetchComments.rejected]: (state, action) => {
-        state.commentsList.status = 'failed'
-        state.commentsList.error = action.error.message
+        state.list.status = 'failed'
+        state.list.error = action.error.message
     },
+
+    // RATE COMMENT
     [rateComment.pending]: (state, action) => {
     },
     [rateComment.fulfilled]: (state, action) => {
         // update list with new count
-        const commentIndex = state.commentsList.comments
-            .findIndex(p => p.commentId === action.payload.referenceId)
+        const commentIndex = state.list.comments
+            .findIndex(c => c.commentId === action.payload.referenceId)
         if(commentIndex !== -1){ 
-            let comment = {...state.commentsList.comments[commentIndex]}
-            comment.upCount = action.payload.upCount
-            comment.downCount = action.payload.downCount
-            state.commentsList.comments[commentIndex] = comment
-        }
-
-        // update view with new count
-        if(state.commentView.comment !== null 
-            && state.commentView.comment.commentId === action.payload.referenceId){
-            state.commentView.comment.upCount = action.payload.upCount
-            state.commentView.comment.downCount = action.payload.downCount
+            state.list.comments[commentIndex].upCount = action.payload.upCount
+            state.list.comments[commentIndex].downCount = action.payload.downCount
         }
     },
     [rateComment.rejected]: (state, action) => {

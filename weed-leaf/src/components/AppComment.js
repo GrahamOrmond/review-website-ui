@@ -99,7 +99,7 @@ const CommentRepliesList = (props) => {
         handleSubmitReply,
     } = props
 
-    const loadCommentReplies = (count) => {
+    const loadCommentReplies = () => {
         dispatch(fetchComments({ replyCommentId: commentId }))
     }
 
@@ -141,8 +141,8 @@ const CommentRepliesList = (props) => {
 
     return (
         <div className="comment-replies-list">
-            {replyActions}
             {renderReplyComments()}
+            {replyActions}
         </div>
     )
 }

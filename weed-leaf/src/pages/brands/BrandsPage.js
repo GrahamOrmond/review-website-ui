@@ -22,8 +22,6 @@ export const BrandsPage = (props) => {
             return (
                 <div className="app-content">
                     <PostDisplay
-                        brandId={brandId}
-                        type={postsType}
                         displayName={displayName}
                         urlId={postLink}
                     />

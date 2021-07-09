@@ -2,6 +2,7 @@ import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { AppCommentsDisplay } from "../../components/AppCommentsDisplay"
 import { AppPost }  from "../../components/AppPost"
+import { fetchComments, getCommentsByPost, getCommentsSearchParams } from "../comments/commentsSlice"
 import { clearPostView, fetchPost, getPostById, getPostView, setPostView } from "./postsSlice"
 
 
@@ -9,37 +10,47 @@ export const PostDisplay = (props) => {
     const dispatch = useDispatch()
 
     const {
-        // brandId,
-        // productUrlId,
-        // type,
         displayName,
         urlId,
     } = props
 
-    let view = useSelector(getPostView);
-    let post = useSelector(state => getPostById(state, displayName, urlId));
+    const view = useSelector(getPostView);
+    const post = useSelector(s => getPostById(s, displayName, urlId));
+    const existingParam = useSelector(s => getCommentsSearchParams(s, {
+        postId: post?.postId,
+    }))
+    const comments = useSelector(s => getCommentsByPost(s, post))
     useEffect(() => {
-        if(view.status === 'idle'){
+        if(view.status === 'idle'){ // view not loaded
             if(!post){ // no post found
                 dispatch(fetchPost({
                     displayName: displayName,
                     urlId: urlId
                 }))
-            }else{
-                // post already loaded and found
-                dispatch(setPostView({ 
-                    displayName: post.displayName,
-                    urlId: post.urlId 
-                }))
+                return
             }
+            // post already loaded and found
+            dispatch(setPostView({ 
+                displayName: post.displayName,
+                urlId: post.urlId 
+            }))
             return
         }
 
+        // view doesnt match post
         if(view.displayName.toLowerCase() !== displayName.toLowerCase()
             && view.urlId.toLowerCase() !== urlId.toLowerCase()){
             dispatch(clearPostView())
+            return
         }
-    }, [view, post, displayName, urlId,  dispatch])
+
+        // fetch comments of post loaded and params not searched before
+        if(post && !existingParam){
+            dispatch(fetchComments({
+                postId: post.postId,
+            }))
+        }
+    }, [view, post, displayName, urlId, existingParam,  dispatch])
 
     if(!post) return (<div></div>)
     return (
@@ -50,7 +61,7 @@ export const PostDisplay = (props) => {
             </AppPost>
             <AppCommentsDisplay 
                 postId={post.postId}
-                comments={[]}
+                comments={comments}
             />
         </div>
         
