@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { selectBrandsListInfo } from './brandsSlice';
+import { getBrandsListInfo } from './brandsSlice';
 import { sortListByName } from '../../helpers/generalHelper';
 
 function renderList(brandsData){
@@ -51,7 +51,7 @@ function renderList(brandsData){
 
 
 export const BrandsList = () => {
-    const brandsInfo = useSelector(selectBrandsListInfo);
+    const brandsInfo = useSelector(getBrandsListInfo);
     useEffect(() => {
         window.scrollTo(0, 0)
     }, [])

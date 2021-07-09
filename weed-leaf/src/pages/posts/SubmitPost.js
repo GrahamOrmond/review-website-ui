@@ -4,7 +4,7 @@ import { AppCard } from "../../components/AppCard"
 import { AppForm } from "../../components/AppForm"
 import { useDispatch, useSelector } from "react-redux"
 import { createPost } from "./postsSlice"
-import { getBrandProducts, selectAllBrands } from "../brands/brandsSlice"
+import { getAllBrands } from "../brands/brandsSlice"
 import { sortListByName } from "../../helpers/generalHelper"
 import { postProperties } from "./PostProperties"
 
@@ -31,8 +31,7 @@ const generateProductOptions = (productsList) => {
 };
 
 const renderProductOptions = async (brandId) => {
-    const productsInfo = await getBrandProducts(brandId)
-    let productOptions = generateProductOptions(productsInfo.products);
+    let productOptions = []//generateProductOptions(productsInfo.products);
 
     let productSelectBox = document.getElementById("post-form")
         .elements["productUrlId"];
@@ -144,7 +143,7 @@ export const SubmitPost = (props) => {
         }
     }
 
-    const brandsList = useSelector(selectAllBrands)
+    const brandsList = useSelector(getAllBrands)
     let formDataTemplate = {
         "type": {
             'label': 'Post Type',

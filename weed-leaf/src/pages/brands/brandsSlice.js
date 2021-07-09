@@ -7,22 +7,16 @@ import { client } from '../../api/client'
 
 // setup inital state
 const initialState = {
-  brandView: {
-    brand: null,
+  view: {
+    brandId: null,
     status: 'idle',
     error: null
   },
-  brandsList: {
+  list: {
     brands: [],
     status: 'idle',
     error: null
   }
-}
-
-const postState = {
-  posts: null,
-  status: 'idle',
-  error: null
 }
 
 // fetch list of brands
@@ -34,40 +28,31 @@ export const fetchBrands = createAsyncThunk('brands/fetchBrands', async (data, {
 // fetch brand by id
 export const fetchBrand = createAsyncThunk('brands/fetchBrand',
 async (brandId, { getState, rejectWithValue }) => {
-  const brand = selectBrandById(getState(), brandId)
+  const brand = getBrandById(getState(), brandId)
   if(brand)
     return brand
   const response = await client.get('/api/brands/' + brandId, { rejectWithValue })
   return response
 })
 
-// fetch brand posts
-export const fetchBrandPosts = createAsyncThunk('brands/fetchBrandPosts',
-async (fetchData, { getState, rejectWithValue }) => {
-  let url = `/api/posts?${new URLSearchParams(fetchData).toString()}`;
-  const response = await client.get(url, { rejectWithValue })
-  return response
-})
-
-export const getBrandProducts = async (brandId) => {
-  const response = await client.get('/api/products?brands=' + brandId)
-  return response;
-};
-
-export const selectBrandsListInfo = (state) => {
-  return state.brands.brandsList;
+// get brands list info
+export const getBrandsListInfo = (state) => {
+  return state.brands.list;
 }
 
-export const selectBrandView = (state) => {
-  return state.brands.brandView
+// get brand view
+export const getBrandView = (state) => {
+  return state.brands.view
 }
 
-export const selectAllBrands = (state) => {
-  return state.brands.brandsList.brands
+// get all brands
+export const getAllBrands = (state) => {
+  return state.brands.list.brands
 }
 
-export const selectBrandById = (state, brandId) => {
-  return state.brands.brandsList.brands
+// get brand by Id
+export const getBrandById = (state, brandId) => {
+  return state.brands.list.brands
     .find(brand => brand.brandId === brandId);
 } 
 
@@ -77,55 +62,37 @@ export const brandSlice = createSlice({
   initialState,
   reducers: {
     clearBrandView(state, action) {
-      state.brandView = {
-        brand: null,
+      state.view = {
+        brandId: null,
         status: 'idle',
         error: null
       }
     }
   },
   extraReducers: {
+    // FETCH LIST OF BRANDS
     [fetchBrands.pending]: (state, action) => {
-      state.brandsList.status = 'loading'
+      state.list.status = 'loading'
     },
     [fetchBrands.fulfilled]: (state, action) => {
-      state.brandsList.status = 'succeeded'
-      state.brandsList.brands = action.payload;
+      state.list.status = 'succeeded'
+      state.list.brands = action.payload;
     },
     [fetchBrands.rejected]: (state, action) => {
-      state.brandsList.status = 'failed'
-      state.brandsList.error = action.error.message
+      state.list.status = 'failed'
+      state.list.error = action.error.message
     },
+
     [fetchBrand.pending]: (state, action) => {
-      state.brandView.status = 'loading'
+      state.view.brandId = action.meta.arg
+      state.view.status = 'loading'
     },
     [fetchBrand.fulfilled]: (state, action) => {
-      let brand = {...action.payload}
-      brand.reviews = postState
-      brand.questions = postState
-      brand.threads = postState
-
-      state.brandView.brand = brand;
-      state.brandView.status = 'succeeded'
+      state.view.status = 'succeeded'
     },
     [fetchBrand.rejected]: (state, action) => {
-      state.brandView.status = 'failed'
-      state.brandView.error = action.error.message
-    },
-    [fetchBrandPosts.pending]: (state, action) => {
-      state.brandView.brand[action.meta.arg.type].status = 'loading'
-    },
-    [fetchBrandPosts.fulfilled]: (state, action) => {
-        let setPayload = {
-            posts: action.payload.posts,
-            status: 'succeeded',
-            error: null
-        }
-        state.brandView.brand[action.meta.arg.type] = setPayload
-    },
-    [fetchBrandPosts.rejected]: (state, action) => {
-        state.brandView.brand[action.meta.arg.type].status = 'failed'
-        state.brandView.brand[action.meta.arg.type].error = action.error.message
+      state.view.status = 'failed'
+      state.view.error = action.error.message
     },
   }
 })
