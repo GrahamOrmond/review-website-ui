@@ -2,9 +2,9 @@ import { AppProfile } from  "../../components/AppProfile"
 import AppThreadDisplay from "../../components/AppThreadDisplay";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { clearUserView, fetchUserInfo, fetchUserPosts, followProfile, selectUserView, unfollowProfile } from "./usersSlice";
+import { clearUserView, fetchUser, followProfile, getUserByDisplayName, getUserView, selectUserView, unfollowProfile } from "./usersSlice";
 import { getCurrentUser } from "../oauth/oauthSlice";
-
+import { fetchPost } from "../posts/postsSlice";
 
 const EditUserProfile = (props) => {
 
@@ -37,37 +37,35 @@ export const UserProfile = (props) => {
         postsType,
     } = props;
 
-    const userProfileView = useSelector(selectUserView)
+    const user = useSelector(s => getUserByDisplayName(s, displayName))
+    const view = useSelector(getUserView)
     const currentUser = useSelector(getCurrentUser)
-    const user = userProfileView.user
 
     useEffect(() => {
-        if(user === null){
-            if(userProfileView.status !== "loading")
-                dispatch(fetchUserInfo(displayName)) // fetch brand by id
-            return
-        }
+        if(view.status === "idle") {
+             dispatch(fetchUser(displayName))
+             return
+        } 
 
-        if(user.displayName !== displayName)
-            dispatch(clearUserView()) // clear brand if not matching
-    }, [user, displayName, userProfileView, dispatch])
+        if(view.status !== "loading" &&
+            view.displayName &&
+            view.displayName.toLowerCase() !== displayName.toLowerCase()){
+            dispatch(clearUserView())
+        }
+    }, [user, displayName, view, dispatch])
 
     if(!user){
-        return (
-            <div>
-                
-            </div>
-        )
+        return (<div></div>)
     }
     
-    if(user[postsType].status === 'idle')
-    {
-        dispatch(fetchUserPosts({
-            displayName: user.displayName,
-            type: postsType,
-            sortBy: "new"
-        }))
-    }
+    // if(user[postsType].status === 'idle')
+    // {
+    //     dispatch(fetchPost({
+    //         displayName: user.displayName,
+    //         type: postsType,
+    //         sortBy: "new"
+    //     }))
+    // }
 
     const handleFollowProfile = (e) => {
         e.preventDefault()
@@ -92,17 +90,18 @@ export const UserProfile = (props) => {
         setShowEditView(false)
     }
 
+    // determine profile action button
     let profileAction, actionName
-    if(user.profileId === currentUser.profileId){
+    if(currentUser // user logged in
+        && user.profileId === currentUser.profileId){ // user view own profile 
         actionName = "Edit"
         profileAction = handleEditProfile
-        if(showEditView)
+        if(showEditView) // show user edit?
             return <EditUserProfile 
                 user={currentUser}
                 handleSaveProfileEdit={handleSaveProfileEdit}
             />
-    }
-    else if(!user.isFollowing){
+    }else if(!user.isFollowing){
         actionName = "Follow"
         profileAction = handleFollowProfile
     }else{
