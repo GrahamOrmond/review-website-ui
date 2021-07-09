@@ -7,12 +7,12 @@ import { client } from '../../api/client'
 
 // setup inital state
 const initialState = {
-    userInfo: { // tracks logged in user
+    identity: { // tracks logged in user
         user: null,
         status: 'idle',
         error: null
     },
-    tokenInfo: { // holds user oauth token
+    access: { // holds user oauth token
         isLoggedIn: false,
         token: null,
         status: 'idle',
@@ -58,15 +58,15 @@ export const fetchCurrentUser = createAsyncThunk('users/fetchCurrent', async (fo
 })
 
 export const isUserLoggedIn = (state) => {
-    return state.oauth.tokenInfo.isLoggedIn
+    return state.oauth.access.isLoggedIn
 }
 
 export const getCurrentUser = (state) => {
-    return state.oauth.userInfo.user
+    return state.oauth.identity.user
 }
 
 export const getOauthToken = (state) => {
-    return state.oauth.tokenInfo.token
+    return state.oauth.access.token
 }
   
 // setup slice
@@ -76,17 +76,18 @@ export const oauthSlice = createSlice({
     reducers: {
         logoutUser(state, action) {
             window.localStorage.removeItem("session");
-            state = {...initialState}
+            state.identity = {...initialState.identity}
+            state.access = {...initialState.access}
         }
     },
     extraReducers: {
         // LOGIN USER
         [loginUser.pending]: (state, action) => {
-            state.tokenInfo.status = 'loading'
-            state.tokenInfo.error = null
+            state.access.status = 'loading'
+            state.access.error = null
         },
         [loginUser.fulfilled]: (state, action) => {
-            state.tokenInfo = {
+            state.access = {
                 isLoggedIn: true,
                 token: action.payload,
                 status: 'succeeded',
@@ -94,7 +95,7 @@ export const oauthSlice = createSlice({
             }
         },
         [loginUser.rejected]: (state, action) => {
-            state.tokenInfo = {
+            state.access = {
                 isLoggedIn: false,
                 token: null,
                 status: 'failed',
@@ -104,11 +105,11 @@ export const oauthSlice = createSlice({
 
         // REGISTER USER
         [registerUser.pending]: (state, action) => {
-            state.tokenInfo.status = 'loading'
-            state.tokenInfo.error = null
+            state.access.status = 'loading'
+            state.access.error = null
         },
         [registerUser.fulfilled]: (state, action) => {
-            state.tokenInfo = {
+            state.access = {
                 isLoggedIn: true,
                 token: action.payload,
                 status: 'succeeded',
@@ -116,7 +117,7 @@ export const oauthSlice = createSlice({
             }
         },
         [registerUser.rejected]: (state, action) => {
-            state.tokenInfo = {
+            state.access = {
                 isLoggedIn: false,
                 token: null,
                 status: 'failed',
@@ -126,11 +127,11 @@ export const oauthSlice = createSlice({
 
         // CHECK USER LOGIN
         [checkLogin.pending]: (state, action) => {
-            state.tokenInfo.status = 'loading'
-            state.tokenInfo.error = null
+            state.access.status = 'loading'
+            state.access.error = null
         },
         [checkLogin.fulfilled]: (state, action) => {
-            state.tokenInfo = {
+            state.access = {
                 isLoggedIn: true,
                 token: action.payload,
                 status: 'succeeded',
@@ -138,7 +139,7 @@ export const oauthSlice = createSlice({
             }
         },
         [checkLogin.rejected]: (state, action) => {
-            state.tokenInfo = {
+            state.access = {
                 isLoggedIn: false,
                 token: null,
                 status: 'failed',
@@ -148,18 +149,18 @@ export const oauthSlice = createSlice({
 
         // SET CURRENT USER INFO
         [fetchCurrentUser.pending]: (state, action) => {
-            state.userInfo.status = 'loading'
-            state.userInfo.error = null
+            state.identity.status = 'loading'
+            state.identity.error = null
         },
         [fetchCurrentUser.fulfilled]: (state, action) => {
-            state.userInfo = {
+            state.identity = {
                 user: action.payload,
                 status: 'succeeded',
                 error: null
             }
         },
         [fetchCurrentUser.rejected]: (state, action) => {
-            state.userInfo = {
+            state.identity = {
                 user: null,
                 status: 'failed',
                 error: action.error.message

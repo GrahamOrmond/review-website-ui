@@ -15,7 +15,7 @@ const initialState = {
   },
   list: {
     params: [],
-    comments: [],
+    items: [],
     status: 'idle',
     error: null
   }
@@ -49,7 +49,7 @@ export const fetchComments = createAsyncThunk('comments/fetchComments',
   }
   // remove duplicates
   const state = getState()
-  state.comments.list.comments.forEach(comment => {
+  state.comments.list.items.forEach(comment => {
     let index = response.comments.findIndex(c => c.commentId === comment.commentId);
     if(index !== -1)
         response.comments.splice(index, 1)
@@ -71,20 +71,20 @@ async (formData, { getState, rejectWithValue }) => {
 })
 
 export const getCommentsView = (state, commentId) => {
-  return state.comments.list.comments
+  return state.comments.list.items
       .filter(c => c.commentReplyId === commentId);
 }
 
 export const getCommentsByPost = (state, post) => {
   if(!post)
     return []
-  return state.comments.list.comments
+  return state.comments.list.items
       .filter(c => c.postId === post.postId 
         && c.commentReplyId === null);
 }
 
 export const selectCommentReplies = (state, commentId) => {
-  return state.comments.list.comments
+  return state.comments.list.items
       .filter(c => c.commentReplyId === commentId);
 }
 
@@ -114,12 +114,12 @@ export const commentsSlice = createSlice({
     [createComment.fulfilled]: (state, action) => {
         action.payload.dateCreated = action.payload.dateCreated.slice(0,-1) // remove "Z" to match other dates
         state.list.status = 'succeeded'
-        state.list.comments = state.list.comments.concat([action.payload]);
+        state.list.items = state.list.items.concat([action.payload]);
         if(action.payload.commentReplyId){
-          let index = state.list.comments
+          let index = state.list.items
             .findIndex(c => c.commentId === action.payload.commentReplyId);
           if(index !== -1)
-            state.list.comments[index].replyCount += 1
+            state.list.items[index].replyCount += 1
         }
     },
     [createComment.rejected]: (state, action) => {
@@ -136,7 +136,7 @@ export const commentsSlice = createSlice({
       state.list = {
         status: 'succeeded',
         params: state.list.params.concat([action.payload.params]),
-        comments: state.list.comments.concat(action.payload.comments),
+        items: state.list.items.concat(action.payload.comments),
         error: null
       }
     },
@@ -150,11 +150,11 @@ export const commentsSlice = createSlice({
     },
     [rateComment.fulfilled]: (state, action) => {
         // update list with new count
-        const commentIndex = state.list.comments
+        const commentIndex = state.list.items
             .findIndex(c => c.commentId === action.payload.referenceId)
         if(commentIndex !== -1){ 
-            state.list.comments[commentIndex].upCount = action.payload.upCount
-            state.list.comments[commentIndex].downCount = action.payload.downCount
+            state.list.items[commentIndex].upCount = action.payload.upCount
+            state.list.items[commentIndex].downCount = action.payload.downCount
         }
     },
     [rateComment.rejected]: (state, action) => {

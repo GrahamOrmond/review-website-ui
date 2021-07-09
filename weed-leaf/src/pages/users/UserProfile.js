@@ -2,9 +2,8 @@ import { AppProfile } from  "../../components/AppProfile"
 import AppThreadDisplay from "../../components/AppThreadDisplay";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { clearUserView, fetchUser, followProfile, getUserByDisplayName, getUserView, selectUserView, unfollowProfile } from "./usersSlice";
+import { clearUserView, fetchUser, followProfile, getUserByDisplayName, getUserView, unfollowProfile } from "./usersSlice";
 import { getCurrentUser } from "../oauth/oauthSlice";
-import { fetchPost } from "../posts/postsSlice";
 
 const EditUserProfile = (props) => {
 

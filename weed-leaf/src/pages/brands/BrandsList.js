@@ -78,29 +78,29 @@ export const BrandsList = (props) => {
         fetchData
     } = props
 
-    const brandsInfo = useSelector(getBrandsListInfo);
+    const brandsList = useSelector(getBrandsListInfo);
     const existingParams = useSelector(s => getBrandsSearchParams(s, fetchData));
     useEffect(() => {
-        if(brandsInfo.status === 'idle'){
+        if(brandsList.status === 'idle'){
             dispatch(fetchBrands(fetchData))
             return
         }
 
-        if(brandsInfo.status !== 'loading'
+        if(brandsList.status !== 'loading'
             && !existingParams){
             dispatch(idleBrandsList())
         }
-    }, [brandsInfo, fetchData, existingParams, dispatch])
+    }, [brandsList, fetchData, existingParams, dispatch])
     
     let content;
-    if (brandsInfo.status === 'loading') {
+    if (brandsList.status === 'loading') {
         content = (<div className="loader">Loading...</div>)
-    } else if (brandsInfo.status === 'succeeded') {
+    } else if (brandsList.status === 'succeeded') {
         content = <BrandsListDisplay 
-            brands={brandsInfo.brands}
+            brands={brandsList.items}
         />
-    } else if (brandsInfo.status === 'error') {
-        content = (<div>{brandsInfo.error}</div>)
+    } else if (brandsList.status === 'error') {
+        content = (<div>{brandsList.error}</div>)
     }
 
     return (

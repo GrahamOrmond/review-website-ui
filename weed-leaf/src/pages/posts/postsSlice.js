@@ -16,7 +16,7 @@ const initialState = {
     },
     list: {
         params: [],
-        posts: [],
+        items: [],
         status: 'idle',
         error: null
     }
@@ -58,7 +58,7 @@ async (formData, { getState, rejectWithValue }) => {
     }
     // remove duplicates
     const state = getState()
-    state.posts.list.posts.forEach(post => {
+    state.posts.list.items.forEach(post => {
     let index = response.posts.findIndex(p => p.postId === post.postId);
     if(index !== -1)
         response.posts.splice(index, 1)
@@ -96,7 +96,7 @@ export const getPostView = (state) => {
 } 
 
 export const getPostById = (state, displayName, urlId) => {
-    return state.posts.list.posts
+    return state.posts.list.items
         .find(p => p.urlId.toLowerCase() === urlId.toLowerCase()
             && p.displayName.toLowerCase() === displayName.toLowerCase());
 } 
@@ -125,10 +125,10 @@ export const postsSlice = createSlice({
         },
         addToPostCommentCount(state, action) {
             // update post list
-            let postIndex = state.list.posts
+            let postIndex = state.list.items
                 .findIndex(p => p.postId === action.payload.postId);
             if(postIndex !== -1){ 
-                state.list.posts[postIndex].commentCount += 1
+                state.list.items[postIndex].commentCount += 1
             }
         },
         setPostView(state, action) {
@@ -152,7 +152,7 @@ export const postsSlice = createSlice({
         [fetchPosts.fulfilled]: (state, action) => {
             state.list = {
                 params: state.list.params.concat([action.payload.params]),
-                posts: state.list.posts.concat(action.payload.posts),
+                items: state.list.items.concat(action.payload.posts),
                 status: 'succeeded',
                 error: null
             }
@@ -173,7 +173,7 @@ export const postsSlice = createSlice({
         },
         [fetchPost.fulfilled]: (state, action) => {
             state.view.status = 'succeeded'
-            state.list.posts = state.list.posts.concat([action.payload])
+            state.list.items = state.list.items.concat([action.payload])
         },
         [fetchPost.rejected]: (state, action) => {
             state.view.status = 'failed'
@@ -192,11 +192,11 @@ export const postsSlice = createSlice({
         [ratePost.pending]: (state, action) => {
         },
         [ratePost.fulfilled]: (state, action) => {
-            const postIndex = state.list.posts
+            const postIndex = state.list.items
                 .findIndex(p => p.postId === action.payload.referenceId)
             if(postIndex !== -1){
-                state.list.posts[postIndex].upCount = action.payload.upCount
-                state.list.posts[postIndex].downCount = action.payload.downCount
+                state.list.items[postIndex].upCount = action.payload.upCount
+                state.list.items[postIndex].downCount = action.payload.downCount
             }
         },
         [ratePost.rejected]: (state, action) => {

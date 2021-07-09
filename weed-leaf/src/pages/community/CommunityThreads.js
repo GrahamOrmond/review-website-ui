@@ -29,7 +29,7 @@ export const CommunityThreads = (props) =>  {
             <AppThreadDisplay
                 postType={props.postsType}
                 urlBase={`/community/`}
-                posts={postsList.posts}
+                posts={postsList.items}
             />
         </div>
     );

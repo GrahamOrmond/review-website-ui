@@ -14,7 +14,7 @@ const initialState = {
         error: null
     },
     list: {
-        users: [],
+        items: [],
         status: "idle",
         error: null
     },
@@ -62,7 +62,7 @@ export const getUserView = (state) => {
 
 // return user from list by display name
 export const getUserByDisplayName = (state, displayName) => {
-    return state.users.list.users
+    return state.users.list.items
         .find(u => u.displayName === displayName)
 }
 
@@ -92,7 +92,7 @@ export const usersSlice = createSlice({
         },
         [fetchUser.fulfilled]: (state, action) => {
             let user = {...action.payload}
-            state.list.users = state.list.users.concat(user)
+            state.list.items = state.list.items.concat(user)
 
             state.view.profileId = user.profileId
             state.view.status = 'succeeded'
@@ -104,37 +104,37 @@ export const usersSlice = createSlice({
 
         // FOLLOW USER PROFILE
         [followProfile.pending]: (state, action) => {
-            let index = state.list.users
+            let index = state.list.items
                 .findIndex(u => u.profileId === action.meta.arg.id);
             if(index !== -1){
-                state.list.users[index].isFollowing = true
+                state.list.items[index].isFollowing = true
             }
         },
         [followProfile.fulfilled]: (state, action) => {
         },
         [followProfile.rejected]: (state, action) => {
-            let index = state.list.users
+            let index = state.list.items
                 .findIndex(u => u.profileId === action.meta.arg);
             if(index !== -1){
-                state.list.users[index].isFollowing = false
+                state.list.items[index].isFollowing = false
             }
         },
 
         // UNFOLLOW USER PROFILE
         [unfollowProfile.pending]: (state, action) => {
-            let index = state.list.users
+            let index = state.list.items
                 .findIndex(u => u.profileId === action.meta.arg);
             if(index !== -1){
-                state.list.users[index].isFollowing = false
+                state.list.items[index].isFollowing = false
             }
         },
         [unfollowProfile.fulfilled]: (state, action) => {
         },
         [unfollowProfile.rejected]: (state, action) => {
-            let index = state.list.users
+            let index = state.list.items
                 .findIndex(u => u.profileId === action.meta.arg);
             if(index !== -1){
-                state.list.users[index].isFollowing = true
+                state.list.items[index].isFollowing = true
             }
         },
     }

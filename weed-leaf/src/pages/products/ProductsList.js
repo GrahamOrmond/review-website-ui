@@ -11,23 +11,22 @@ export const ProductsList = (props) => {
         fetchData
     } = props
 
-    const listInfo = useSelector(getProductsListInfo);
+    const productsList = useSelector(getProductsListInfo);
     const existingParams = useSelector(s => getProductSearchParams(s, fetchData));
     useEffect(() => {
-        
-        if(listInfo.status === 'idle'){
+        if(productsList.status === 'idle'){
             dispatch(fetchProducts(fetchData))
             return
         }
 
-        if(listInfo.status !== 'loading'
+        if(productsList.status !== 'loading'
             && !existingParams){
             dispatch(idleProductList())
         }
-    }, [listInfo, fetchData, existingParams, dispatch])
-
+    }, [productsList, fetchData, existingParams, dispatch])
+    
     const renderList = () => {
-        return listInfo.products.map(p => {
+        return productsList.items.map(p => {
             return (
                 <AppProduct 
                     key={p.brandId + '-' + p.urlId}

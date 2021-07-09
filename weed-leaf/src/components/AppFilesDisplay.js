@@ -3,7 +3,7 @@ import { useState } from "react";
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 
-export const MediaFilesDisplay = (props) => {
+export const AppFilesDisplay = (props) => {
 
     const {
         mediaFiles,

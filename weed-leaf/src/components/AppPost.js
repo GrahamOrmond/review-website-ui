@@ -7,7 +7,7 @@ import ChatIcon from '@material-ui/icons/Chat';
 import AppButton from './AppButton';
 import { AppDropdown } from './AppDropdown';
 import { AppCard } from './AppCard';
-import { MediaFilesDisplay } from './MediaFilesDisplay';
+import { AppFilesDisplay } from './AppFilesDisplay';
 
 import { Link } from 'react-router-dom'
 import { determineTimePosted } from '../helpers/generalHelper';
@@ -117,7 +117,7 @@ const PostBody = (props) => {
 
     let mediaFileContent;
     if(mediaFiles.length > 1){
-        mediaFileContent = <MediaFilesDisplay 
+        mediaFileContent = <AppFilesDisplay 
             altTag={altTag}
             mediaFiles={mediaFiles}
         />

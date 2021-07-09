@@ -14,7 +14,7 @@ const initialState = {
   },
   list: {
     params: [],
-    brands: [],
+    items: [],
     status: 'idle',
     error: null
   }
@@ -35,7 +35,7 @@ export const fetchBrands = createAsyncThunk('brands/fetchBrands',
   }
   // remove duplicates
   const state = getState()
-  state.brands.list.brands.forEach(brand => {
+  state.brands.list.items.forEach(brand => {
     let index = response.brands.findIndex(b => b.brandId === brand.brandId);
     if(index !== -1)
         response.brands.splice(index, 1)
@@ -62,12 +62,12 @@ export const getBrandView = (state) => {
 
 // get all brands
 export const getAllBrands = (state) => {
-  return state.brands.list.brands
+  return state.brands.list.items
 }
 
 // get brand by Id
 export const getBrandById = (state, brandId) => {
-  return state.brands.list.brands
+  return state.brands.list.items
     .find(brand => brand.brandId === brandId);
 } 
 
@@ -111,7 +111,7 @@ export const brandSlice = createSlice({
       state.list = {
         status: 'succeeded',
         params: state.list.params.concat([action.payload.params]),
-        brands: state.list.brands.concat(action.payload.brands),
+        items: state.list.items.concat(action.payload.brands),
         error: null
       }
     },
@@ -126,7 +126,7 @@ export const brandSlice = createSlice({
     },
     [fetchBrand.fulfilled]: (state, action) => {
       state.view.status = 'succeeded'
-      state.list.brands = state.list.brands.concat([action.payload])
+      state.list.items = state.list.items.concat([action.payload])
     },
     [fetchBrand.rejected]: (state, action) => {
       state.view.status = 'failed'
