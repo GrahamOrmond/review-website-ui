@@ -20,12 +20,6 @@ const initialState = {
     },
 }
 
-const postState = {
-    timeLoaded: null,
-    status: 'idle',
-    error: null
-}
-
 // fetch user
 export const fetchUser = createAsyncThunk('users/fetchUser',
   async (displayName, { rejectWithValue }) => {
@@ -87,33 +81,28 @@ export const usersSlice = createSlice({
         }
     },
     extraReducers: {
+        // FETCH USER
         [fetchUser.pending]: (state, action) => {
             state.view = {
-                user: action.meta.arg,
+                profileId: null,
+                displayName: action.meta.arg,
                 status: 'loading',
                 error: null
             }
         },
         [fetchUser.fulfilled]: (state, action) => {
             let user = {...action.payload}
-            user.reviews = postState
-            user.questions = postState
-            user.threads = postState
             state.list.users = state.list.users.concat(user)
-            state.view = {
-                profileId: user.profileId,
-                displayName: user.displayName
-            } 
+
+            state.view.profileId = user.profileId
             state.view.status = 'succeeded'
         },
         [fetchUser.rejected]: (state, action) => {
-            state.view = {
-                user: action.meta.arg,
-                status: 'failed',
-                error: action.error.message
-            }
+            state.view.status = 'failed'
+            state.view.error = action.error.message
         },
 
+        // FOLLOW USER PROFILE
         [followProfile.pending]: (state, action) => {
             let index = state.list.users
                 .findIndex(u => u.profileId === action.meta.arg.id);
@@ -122,7 +111,6 @@ export const usersSlice = createSlice({
             }
         },
         [followProfile.fulfilled]: (state, action) => {
-            
         },
         [followProfile.rejected]: (state, action) => {
             let index = state.list.users
@@ -132,6 +120,7 @@ export const usersSlice = createSlice({
             }
         },
 
+        // UNFOLLOW USER PROFILE
         [unfollowProfile.pending]: (state, action) => {
             let index = state.list.users
                 .findIndex(u => u.profileId === action.meta.arg);
@@ -148,9 +137,6 @@ export const usersSlice = createSlice({
                 state.list.users[index].isFollowing = true
             }
         },
-
-
-
     }
 })
   

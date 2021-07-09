@@ -46,10 +46,7 @@ export const UserProfile = (props) => {
              dispatch(fetchUser(displayName))
              return
         } 
-
-        if(view.status !== "loading" &&
-            view.displayName &&
-            view.displayName.toLowerCase() !== displayName.toLowerCase()){
+        if(view.displayName.toLowerCase() !== displayName.toLowerCase()){
             dispatch(clearUserView())
         }
     }, [user, displayName, view, dispatch])
@@ -57,15 +54,6 @@ export const UserProfile = (props) => {
     if(!user){
         return (<div></div>)
     }
-    
-    // if(user[postsType].status === 'idle')
-    // {
-    //     dispatch(fetchPost({
-    //         displayName: user.displayName,
-    //         type: postsType,
-    //         sortBy: "new"
-    //     }))
-    // }
 
     const handleFollowProfile = (e) => {
         e.preventDefault()
@@ -119,7 +107,7 @@ export const UserProfile = (props) => {
             <AppThreadDisplay 
                 postType={postsType}
                 urlBase={`/user/${displayName}/`}
-                posts={user[postsType].posts}
+                posts={[]}
             />
         </div>
     )
