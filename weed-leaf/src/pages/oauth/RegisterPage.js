@@ -1,9 +1,8 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom'
-import { AppCard } from '../../components/AppCard';
 import { AppForm } from '../../components/AppForm';
-import AppModal from "../../components/AppModal"
+import { AppModal } from "../../components/AppModal"
 import { fetchCurrentUser, loginUser, registerUser } from './oauthSlice';
 
 import './oauth.css'
@@ -106,32 +105,14 @@ const RegisterForm = () => {
     );
 }
 
-class RegisterPage extends Component {
+export const RegisterPage = (props) => {
 
-    constructor(props) {
-        super(props);
-
-        this.renderLoginContent = this.renderLoginContent.bind(this);
-    }
-
-    renderLoginContent(){
-        return (
-            <div>
-                <AppCard >
-                    <RegisterForm/>
-                    <RegisterExtra/>
-                </AppCard> 
-            </div>
-        );
-    }
-    
-    render () {
-        
-        return (
-            <div className="app-content">
-                <AppModal renderModal={this.renderLoginContent}/>
-            </div>
-        );
-    }
+    return (
+        <div className="app-content">
+            <AppModal>
+                <RegisterForm/>
+                <RegisterExtra/>
+            </AppModal>
+        </div>
+    );
 }
-export  { RegisterPage };

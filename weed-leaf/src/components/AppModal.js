@@ -1,22 +1,18 @@
-import React, { Component } from 'react';
+import { AppCard } from "./AppCard"
 
-class AppModal extends Component {
+export const AppModal = (props) => {
 
-    constructor(props) {
-        super(props);
+    const {
+        children
+    } = props
 
-        this.renderModal = props.renderModal.bind(this);
-    }
-    
-    render () {
-        
-        return (
-            <div className="app-modal">
-                <div className="modal-content">
-                    { this.renderModal() }
-                </div>
+    return (
+        <div className="app-modal">
+            <div className="modal-content">
+                <AppCard>
+                    { children }
+                </AppCard>
             </div>
-        );
-    }
+        </div>
+    );
 }
-export default AppModal;

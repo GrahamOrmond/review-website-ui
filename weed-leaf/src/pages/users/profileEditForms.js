@@ -22,34 +22,58 @@ const profileGeneralForm = (profile) =>
 const profileShowcaseForm = (profile) =>
 {
     return {
-        'bio': {
+        'showcase': {
             'label': 'Add Showcase',
             'type': 'dynamicSelect',
-            'placeholder': '',
-            'value': '',
             'options': {
                 '': {
                     label: "-- select --"
                 },
                 'images': {
-                    label: "Image Showcase"
+                    label: "Image Showcase",
+                    type: 'showcase',
+                    data: {
+                        'items': []
+                    }
                 },
-                'strain': {
-                    label: "Favourite Strain"
+                'product': {
+                    label: "Favourite Product",
+                    type: 'showcase',
+                    data: {
+                        'items': []
+                    }
                 },
                 'brand': {
-                    label: "Favourite Brand"
+                    label: "Favourite Brand",
+                    type: 'showcase',
+                    data: {
+                        'items': []
+                    }
                 },
                 'products': {
-                    label: "Product Showcase"
+                    label: "Product Showcase",
+                    type: 'showcase',
+                    data: {
+                        'items': []
+                    }
                 },
                 'review': {
-                    label: "Review Showcase"
+                    label: "Review Showcase",
+                    type: 'showcase',
+                    data: {
+                        'items': []
+                    }
                 },
                 'collection': {
-                    label: "Collection Showcase"
+                    label: "Collection Showcase",
+                    type: 'showcase',
+                    data: {
+                        'items': []
+                    }
                 },
-            }
+            },
+            'selected': [
+            ]
         }
     }
 }
@@ -57,8 +81,8 @@ const profileShowcaseForm = (profile) =>
 const profilePrivacyForm = (profile) =>
 {
     return {
-        'account': {
-            'label': 'Account',
+        'visability': {
+            'label': 'Visability',
             'type': 'select',
             'options': {
                 'public': {

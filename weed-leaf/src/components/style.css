@@ -219,6 +219,13 @@ button {
     margin: auto;
 }
 
+.default-button{
+    margin: 0px;
+    padding: 5px 10px;
+    border: solid 1px #D6D6D7;
+    border-radius: 25px;
+}
+
 .dropdown-content{
     display: none;
     position: absolute;
@@ -1017,14 +1024,29 @@ button {
 
 .profile-edit-menu{
     width: 100%;
-    
+    border-bottom: solid 1px #D6D6D7;
+}
+
+.edit-menu-options{
     display: flex;
     flex-wrap: nowrap;
 }
 
 .edit-menu-option{
+    height: 30px;
     width: 100%;
-    border: solid 1px #D6D6D7;
+    display: flex;
+    justify-content: center;
+    place-items: center;
+    cursor: pointer;
+}
+
+.edit-menu-option:not(:last-child) {
+    border-right: solid 1px #D6D6D7;
+}
+
+.edit-menu-option:hover{
+    background-color: #f2f2f2;
 }
 
 .edit-menu-option.active{
@@ -1041,6 +1063,14 @@ button {
     width: 100%;
 }
 
+.profile-showcase-edit {
+    padding: 10px;
+}
+
+.profile-showcase-edit .showcases {
+    margin-bottom: 10px;
+}
+
 /* 
     14. SHOWCASE
 */
@@ -1050,9 +1080,12 @@ button {
 }
 
 .showcase-title {
+    display: flex;
+    justify-content: space-between;
+    place-items: center;
     padding: 5px;
-    margin: 0px 5px;
     border-bottom: solid 1px #D6D6D7;
+    
 }
 
 .showcase-title h4 {
@@ -1080,8 +1113,15 @@ button {
     padding: 0%;
 }
 
+.profile-showcase-save {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px;
+}
 
-
+.profile-showcase-save button {
+    width: 100%;
+}
 
 .showcase-item {
     margin: 5px;
@@ -1098,6 +1138,103 @@ button {
 .showcase-item p {
     padding: 0px;
     margin: 0px;
+}
+
+.showcase-images{
+    border: solid 1px #D6D6D7;
+    margin: 5px;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.showcase-images .main {
+    width: 100%;
+    min-height: 200px;
+    max-height: 400px;
+    border-bottom: solid 1px #D6D6D7;
+}
+
+.showcase-images .main .showcase-image {
+    width: 100%;
+    height: 100%;
+}
+
+.showcase-images .secondary {
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    max-height: 175px;
+}
+
+.showcase-images .secondary .showcase-image{
+    width: 100%;
+    min-height: 75px;
+}
+
+.showcase-images .showcase-image img{
+    width: 100%;
+    height: 100%;
+}
+
+.showcase-images .showcase-image div{
+    background-color: #202124;
+    width: 100%;
+    height: 100%;
+}
+
+.showcase-images .showcase-image img:hover{
+    opacity: 0.9;
+}
+
+.showcase-images .secondary div:not(:last-child) {
+    border-right: solid 1px #D6D6D7;
+}
+
+.showcase-image.edit{
+    cursor: pointer;
+}
+
+.showcase-item-selector {
+}
+
+.showcase-item-selector title {
+    border: solid;
+}
+
+.item-selector-items {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.selector-item {
+    cursor: pointer;
+    border: solid 1px #D6D6D7;
+    height: 250px;
+    flex-grow: 1;
+}
+
+.selector-item:hover {
+    background-color: #202124;
+    
+}
+
+.selector-item img {
+    max-height: 100%;
+    min-width: 100%;
+    object-fit: cover;
+    vertical-align: bottom;
+}
+
+.selector-item img:hover {
+    opacity:0.7;
+}
+
+.favourite-item {
+    width: 100%;
+    margin: 5px;
+    border: solid 1px #D6D6D7;
+    min-height: 100px
 }
 
 /* 
@@ -1563,6 +1700,39 @@ button {
 
     .mobile-nav {
         display: none;
+    }
+
+    /* 
+        13. PROFILE EDIT
+    */
+
+    
+    .profile-edit {
+        min-height: 400px;
+        flex-wrap: nowrap;
+    }
+
+    .profile-edit-menu{
+        border: none;
+        border-right: solid 1px #D6D6D7;
+        width: 20%;
+    }
+
+    .edit-menu-options{
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .edit-menu-option{
+        border-bottom: solid 1px #D6D6D7;
+        display: flex;
+        height: 40px;
+        justify-content: center;
+        place-items: center;
+    }
+
+    .edit-menu-option:not(:last-child) {
+        border-right: none;
     }
 
 }

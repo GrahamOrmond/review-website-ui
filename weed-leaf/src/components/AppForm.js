@@ -293,6 +293,7 @@ export const AppForm = (props) => {
                 case 'select':
                     data.push(<AppSelect 
                         name={key}
+                        label={input.label}
                         selectedValue={input.value}
                         options={input.options}
                         handleOnChange={handleSelectChange}

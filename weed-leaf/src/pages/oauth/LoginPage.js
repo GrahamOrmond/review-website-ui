@@ -1,9 +1,8 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom'
-import { AppCard } from '../../components/AppCard';
 import { AppForm } from '../../components/AppForm';
-import AppModal from "../../components/AppModal"
+import { AppModal } from "../../components/AppModal"
 
 import { fetchCurrentUser, loginUser } from './oauthSlice'
 
@@ -87,32 +86,14 @@ const LoginForm = () => {
     );
 }
 
-class LoginPage extends Component {
+export const LoginPage = (props) => {
 
-    constructor(props) {
-        super(props);
-
-        this.renderLoginContent = this.renderLoginContent.bind(this);
-    }
-
-    renderLoginContent(){
-        return (
-            <div>
-               <AppCard >
-                    <LoginForm />
-                    <LoginExtra />
-                </AppCard> 
-            </div>
-        );
-    }
-    
-    render () {
-        
-        return (
-            <div className="app-content">
-                <AppModal renderModal={this.renderLoginContent}/>
-            </div>
-        );
-    }
+    return (
+        <div className="app-content">
+            <AppModal>
+                <LoginForm />
+                <LoginExtra />
+            </AppModal>
+        </div>
+    );
 }
-export  { LoginPage };
