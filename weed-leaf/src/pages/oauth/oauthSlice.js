@@ -78,7 +78,11 @@ export const oauthSlice = createSlice({
             window.localStorage.removeItem("session");
             state.identity = {...initialState.identity}
             state.access = {...initialState.access}
-        }
+        },
+        updateCurrentUser(state, action) {
+            state.identity.user.displayName = action.payload.displayName
+            state.identity.user.bio = action.payload.bio
+        },
     },
     extraReducers: {
         // LOGIN USER
@@ -172,6 +176,7 @@ export const oauthSlice = createSlice({
   
 export const { 
     logoutUser,
+    updateCurrentUser,
 } = oauthSlice.actions
   
 export default oauthSlice.reducer

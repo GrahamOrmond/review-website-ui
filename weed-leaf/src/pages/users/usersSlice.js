@@ -55,6 +55,19 @@ async (profileId, { getState, rejectWithValue }) => {
     return response
 })
 
+// update profile
+export const updateProfile = createAsyncThunk('users/updateProfile',
+async (formData, { getState, rejectWithValue }) => {
+    const token = getOauthToken(getState())
+    let customConfig = {}
+    customConfig.headers = {
+        'Authorization': `Bearer ${token.token}`
+    }
+    const response = await client
+        .update('/api/profile/', rejectWithValue, formData, customConfig)
+    return response
+})
+
 // return user view
 export const getUserView = (state) => {
     return state.users.view
@@ -136,6 +149,20 @@ export const usersSlice = createSlice({
             if(index !== -1){
                 state.list.items[index].isFollowing = true
             }
+        },
+        
+        // UPDATE USER PROFILE
+        [updateProfile.pending]: (state, action) => {
+        },
+        [updateProfile.fulfilled]: (state, action) => {
+            let index = state.list.items
+                .findIndex(u => u.profileId === action.payload.profileId);
+            if(index !== -1){
+                state.list.items[index].displayName = action.payload.displayName
+                state.list.items[index].bio = action.payload.bio
+            }
+        },
+        [updateProfile.rejected]: (state, action) => {
         },
     }
 })

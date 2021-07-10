@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { determineTimePosted } from '../helpers/generalHelper'
 import { fetchComments, rateComment, selectCommentReplies } from '../pages/comments/commentsSlice'
-import { AppCommentEditor } from './AppTextEditor'
+import { AppTextEditor } from './AppTextEditor'
 
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
@@ -212,8 +212,9 @@ export const CommentReply = (props) => {
         <div className="app-comment-create">
             <form method="POST" onSubmit={(e) => handleSubmitReply(e, commentId)}>
                 <div className="comment-create-content">
-                    <AppCommentEditor 
+                    <AppTextEditor 
                         editId={commentId}
+                        name="comment"
                         placeHolder="Add a Reply"
                     />
                 </div>

@@ -1,34 +1,82 @@
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { getCurrentUser } from "../oauth/oauthSlice";
+import { getCurrentUser, updateCurrentUser } from "../oauth/oauthSlice";
 import { UserProfile } from "./UserProfile";
-
-
+import { UserProfileEdit } from "./UserProfileEdit";
+import { clearUserView, fetchUser, getUserByDisplayName, getUserView, updateProfile } from "./usersSlice";
 
 export const UserPage = (props) => {
-    let currentUser = useSelector(getCurrentUser)
+
+    const [showEditView, setShowEditView] = useState(false);
     const history = useHistory()
+    const dispatch = useDispatch()
     
-    let {  
+    const {  
         displayName, 
         postType,
     } = props.match.params;
     const postsType = postType === undefined? "reviews" : postType.toLowerCase();
 
-    if(!displayName && currentUser){
-        displayName = currentUser.displayName
-        history.push('/user/' + displayName)
+    const user = useSelector(s => getUserByDisplayName(s, displayName))
+    const view = useSelector(getUserView)
+    const currentUser = useSelector(getCurrentUser)
+
+    useEffect(() => {
+
+        if(!displayName){
+            if(currentUser){
+                history.push(`/user/${currentUser.displayName}`)
+            }
+            return
+        }
+
+        if(view.status === "idle") {
+             dispatch(fetchUser(displayName))
+             return
+        } 
+
+        if(view.displayName.toLowerCase() !== displayName.toLowerCase()){
+            dispatch(clearUserView())
+        }
+    }, [user, displayName, currentUser, view, dispatch, history])
+
+    if(!user){ // no user loaded
+        return (<div></div>)
     }
-    
-    if(displayName){
-        return <UserProfile 
-            displayName={displayName}
-            postsType={postsType} 
+
+    const handleEditProfile = (e) => {
+        e.preventDefault()
+        setShowEditView(!showEditView)
+    }
+
+    const handleSaveProfile = (data) => {
+        dispatch(updateProfile(data))
+        .then(res => {
+            if(res.meta.requestStatus === "fulfilled"){
+                setShowEditView(false)
+                dispatch(updateCurrentUser(res.payload))
+                history.push(`/user/${res.payload.displayName}`)
+            }
+        })
+    }
+
+
+    if(showEditView){
+        return  <UserProfileEdit 
+            user={currentUser}
+            handleCancelEdit={handleEditProfile}
+            handleSaveProfile={handleSaveProfile}
         />
     }
-        
-    return (
-        <div className="app-content">
-        </div>
-    )
+
+    let showEdit
+    if(currentUser && user.profileId === currentUser.profileId)
+        showEdit = handleEditProfile
+    
+    return <UserProfile 
+        user={user}
+        postsType={postsType} 
+        handleShowEdit={showEdit}
+    />
 }

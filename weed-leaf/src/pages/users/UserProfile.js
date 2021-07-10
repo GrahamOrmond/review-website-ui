@@ -1,58 +1,16 @@
 import { AppProfile } from  "../../components/AppProfile"
 import AppThreadDisplay from "../../components/AppThreadDisplay";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { clearUserView, fetchUser, followProfile, getUserByDisplayName, getUserView, unfollowProfile } from "./usersSlice";
-import { getCurrentUser } from "../oauth/oauthSlice";
-
-const EditUserProfile = (props) => {
-
-    const {
-        user,
-        handleSaveProfileEdit
-    } = props
-
-    const actionName = "Save"
-    const profileAction = handleSaveProfileEdit
-
-    return (
-        <div className="app-content">
-            <AppProfile
-                title={user.displayName}
-                profileAction={profileAction}
-                actionName={actionName}
-            />
-        </div>
-    )
-}
+import { useDispatch } from "react-redux";
+import { followProfile, unfollowProfile, } from "./usersSlice";
 
 export const UserProfile = (props) => {
 
-    const [showEditView, setShowEditView] = useState(false);
-
     const dispatch = useDispatch()
     const {  
-        displayName, 
+        user, 
         postsType,
+        handleShowEdit,
     } = props;
-
-    const user = useSelector(s => getUserByDisplayName(s, displayName))
-    const view = useSelector(getUserView)
-    const currentUser = useSelector(getCurrentUser)
-
-    useEffect(() => {
-        if(view.status === "idle") {
-             dispatch(fetchUser(displayName))
-             return
-        } 
-        if(view.displayName.toLowerCase() !== displayName.toLowerCase()){
-            dispatch(clearUserView())
-        }
-    }, [user, displayName, view, dispatch])
-
-    if(!user){
-        return (<div></div>)
-    }
 
     const handleFollowProfile = (e) => {
         e.preventDefault()
@@ -67,47 +25,33 @@ export const UserProfile = (props) => {
         dispatch(unfollowProfile(user.profileId))
     }
 
-    const handleEditProfile = (e) => {
-        e.preventDefault()
-        setShowEditView(true)
-    }
-
-    const handleSaveProfileEdit = (e) => {
-        e.preventDefault()
-        setShowEditView(false)
-    }
-
     // determine profile action button
     let profileAction, actionName
-    if(currentUser // user logged in
-        && user.profileId === currentUser.profileId){ // user view own profile 
+    if(handleShowEdit){
+        profileAction = handleShowEdit
         actionName = "Edit"
-        profileAction = handleEditProfile
-        if(showEditView) // show user edit?
-            return <EditUserProfile 
-                user={currentUser}
-                handleSaveProfileEdit={handleSaveProfileEdit}
-            />
     }else if(!user.isFollowing){
-        actionName = "Follow"
         profileAction = handleFollowProfile
+        actionName = "Follow"
     }else{
-        actionName = "Unfollow"
         profileAction = handleUnfollowProfile
+        actionName = "Unfollow"
     }
 
     return (
         <div className="app-content">
             <AppProfile
+                title={user.displayName}
+                description={user.bio}
                 profileAction={profileAction}
-                title={displayName}
                 actionName={actionName}
-            />
+            >
             <AppThreadDisplay 
                 postType={postsType}
-                urlBase={`/user/${displayName}/`}
+                urlBase={`/user/${user.displayName}/`}
                 posts={[]}
             />
+            </AppProfile>
         </div>
     )
 }

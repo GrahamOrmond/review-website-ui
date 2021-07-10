@@ -1,5 +1,5 @@
 import { AppCard } from "./AppCard"
-import { AppCommentEditor } from "./AppTextEditor";
+import { AppTextEditor } from "./AppTextEditor";
 import { AppComment } from "./AppComment";
 import { useDispatch } from "react-redux";
 import { createComment } from "../pages/comments/commentsSlice";
@@ -118,8 +118,9 @@ export const AppCommentCreate = (props) => {
         <div className="app-comment-create">
             <form method="POST" onSubmit={(e) => handleSubmitComment(e)}>
                 <div className="comment-create-content">
-                    <AppCommentEditor 
+                    <AppTextEditor 
                         editId={postId}
+                        name="comment"
                         placeHolder="Add a comment"
                     />
                 </div>

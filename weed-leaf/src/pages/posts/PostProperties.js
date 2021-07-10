@@ -31,7 +31,7 @@ export const postProperties = (props) => {
         },
         "properties": {
             'label': 'Properties',
-            'type': 'properties',
+            'type': 'dynamicSelect',
             'options': {
                 '': {
                     label: "-- select --"

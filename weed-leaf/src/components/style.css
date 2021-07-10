@@ -12,12 +12,13 @@
     10. FORM
     11. PRODUCT DISPLAY
     12. PROFILE
-    13. SHOWCASE
-    14. FILTER
-    15. TEXT EDITOR
-    16. POST CREATE
-    17. COMMENTS
-    18. EXTRAS
+    13. PROFILE EDIT
+    14. SHOWCASE
+    15. FILTER
+    16. TEXT EDITOR
+    17. POST CREATE
+    18. COMMENTS
+    19. EXTRAS
 */
 
 
@@ -733,6 +734,7 @@ button {
     }
 
     .form-input input {
+        font-size: 14px;
         display: block;
     }
 
@@ -1004,9 +1006,43 @@ button {
     flex-wrap: wrap;
 }
 
+/* 
+    13. PROFILE EDIT
+*/
+
+.profile-edit {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.profile-edit-menu{
+    width: 100%;
+    
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.edit-menu-option{
+    width: 100%;
+    border: solid 1px #D6D6D7;
+}
+
+.edit-menu-option.active{
+    background-color: #e6e6e6;
+}
+
+.edit-menu-option p {
+    text-align: center;
+    margin: 0px;
+    padding: 5px 10px;
+}
+
+.profile-edit-content{
+    width: 100%;
+}
 
 /* 
-    13. SHOWCASE
+    14. SHOWCASE
 */
 
 .app-showcase {
@@ -1114,10 +1150,19 @@ button {
 }
 
 /* 
-    15. TEXT EDITOR
+    16. TEXT EDITOR
 */
 
 .app-text-editor {
+}
+
+.text-editor-label {
+    margin-bottom: 5px;
+    font-size: 16px;
+    display: block;
+}
+
+.text-editor-content {
     background-color: #FFF;
     border-radius: 5px;
     border: solid #b6b6b7 1px;
@@ -1173,6 +1218,7 @@ button {
 }
 
 .edit-content {
+    font-size: 14px;
     padding: 5px;
     overflow: auto;
 }
@@ -1211,7 +1257,7 @@ button {
 }
 
 /* 
-    16. POST CREATE
+    17. POST CREATE
 */
 
 .app-post-create {
@@ -1232,7 +1278,7 @@ button {
 }
 
 /* 
-    17. COMMENTS
+    18. COMMENTS
 */
 
 .app-comment-display {
@@ -1467,7 +1513,7 @@ button {
     }
 
 /* 
-    18. EXTRAS
+    19. EXTRAS
 */
 
 .content-seperator {

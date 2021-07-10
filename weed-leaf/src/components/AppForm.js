@@ -121,18 +121,28 @@ export const AppSelect = (props) => {
 }
 
 export const AppInput = (props) => {
+
+    const {
+        label,
+        name,
+        type,
+        value,
+        placeholder,
+        handleChange,
+        error,
+    } = props
     
     return (
         <div className="form-input">
-            <label>{props.label}</label>
+            <label>{label}</label>
             <input 
-                name={props.name}
-                onChange={props.handleChange}
-                type={props.type}
-                value={props.value} 
-                placeholder={props.placeholder} 
+                name={name}
+                onChange={handleChange}
+                type={type}
+                value={value} 
+                placeholder={placeholder} 
             />
-            <label className="input-error">{props.error}</label>
+            <label className="input-error">{error}</label>
         </div>
     );
 }
@@ -289,7 +299,12 @@ export const AppForm = (props) => {
                     />);
                     break;
                 case 'textEditor':
-                    data.push(<AppTextEditor name={key}/>)
+                    data.push(<AppTextEditor 
+                        editId={key}
+                        name={key}
+                        label={input.label}
+                        value={input.value}
+                    />)
                     break;
                 case 'hidden':
                     data.push(<AppHiddenInput 
@@ -297,7 +312,7 @@ export const AppForm = (props) => {
                         value={input.value}
                     />)
                     break;
-                case 'properties':
+                case 'dynamicSelect':
                     data.push(<AppDynamicSelect
                         label={input.label}
                         options={input.options}
@@ -369,7 +384,7 @@ export const AppForm = (props) => {
 
             // text editor input1
             if(element.hidden && element.value === "textEditor"){
-                let content = document.getElementById("edit_content");
+                let content = document.getElementById(element.name);
                 submitData[element.name] = content.innerText
             }else{ // all other inputs
                 submitData[element.name] = element.value;

@@ -2,6 +2,7 @@ import FormatBoldIcon from '@material-ui/icons/FormatBold';
 import FormatItalicIcon from '@material-ui/icons/FormatItalic';
 import ListIcon from '@material-ui/icons/List';
 import LinkIcon from '@material-ui/icons/Link';
+import { useEffect } from 'react';
 
 const EditToolbar = (props) => {
 
@@ -25,27 +26,42 @@ const EditToolbar = (props) => {
     )
 }
 
-export const AppCommentEditor = (props) => {
+export const AppTextEditor = (props) => {
 
     const {
         editId,
-        placeHolder
+        name,
+        label,
+        value,
+        placeHolder,
     } = props
 
+    useEffect(() => {
+        let editor = document.getElementById(editId);
+        editor.innerText = value
+    }, [editId, value])
 
     return (
-        <div className="app-comment-editor" >
-            <input name={props.name} hidden defaultValue="textEditor" />
-            <div id={editId}
-                className="edit-content" 
-                contentEditable="true"
-                data-placeholder={placeHolder}>
+        <div className="app-text-editor" >
+            <input name={name} hidden defaultValue="textEditor" />
+            <div className="text-editor-label">
+                <label>{label}</label>
+            </div>
+            <div className="text-editor-content">
+                <div id={editId}
+                    className="edit-content" 
+                    contentEditable="true"
+                    data-placeholder={placeHolder}
+                    defaultValue={value}
+                    >
+                </div>
             </div>
         </div>
     )
 }
 
-export const AppTextEditor = (props) => {
+
+export const AppMarkupEditor = (props) => {
 
     const handleFormatChange = (command, value) => {
         document.execCommand(command, false, value);
@@ -54,7 +70,7 @@ export const AppTextEditor = (props) => {
     return (
         <div className="app-text-editor" >
             <EditToolbar handleFormatChange={handleFormatChange}/>
-            <input name={props.name} hidden defaultValue="textEditor" />
+            <input name={props.name} hidden defaultValue="markupEditor" />
             <div id="edit_content" className="edit-content" contentEditable="true">
 
             </div>

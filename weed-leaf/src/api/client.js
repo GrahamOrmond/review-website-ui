@@ -51,6 +51,10 @@ export async function client(endpoint, rejectWithValue, { body, method, ...custo
     return client(url, rejectWithValue, { ...customConfig, body, method: 'POST' })
   }
 
+  client.update = async function (url, rejectWithValue = () => {}, body, customConfig = {}) {
+    return client(url, rejectWithValue, { ...customConfig, body, method: 'PUT' })
+  }
+
   client.delete = async function (url, rejectWithValue = () => {}, customConfig = {}) {
     return client(url, rejectWithValue, { ...customConfig, method: 'DELETE' })
   }
