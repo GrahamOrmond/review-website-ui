@@ -1140,6 +1140,12 @@ button {
     margin: 0px;
 }
 
+.showcase-card-item {
+    border: solid;
+    height: 50px;
+    width: 100%;
+}
+
 .showcase-images{
     border: solid 1px #D6D6D7;
     margin: 5px;
@@ -1205,21 +1211,57 @@ button {
 .item-selector-items {
     display: flex;
     flex-wrap: wrap;
+    width: 100%;
+}
+
+.item-selector-items .card-item {
+    cursor: pointer;
+    border: solid 1px #D6D6D7;
+    min-width: 200px;
+    margin: 5px auto;
+}
+
+.card-item {
+    border: solid 1px #D6D6D7;
+}
+
+.card-item .card-item-header {
+    text-align: center;
+    padding: 5px;
+}
+
+.card-item .card-item-header h4 {
+    font-size: 14px;
+    margin: 0px;
+}
+
+.card-item .card-item-header h3 {
+    font-size: 16px;
+    margin: 0px;
+}
+
+.card-item .card-item-rating {
+    text-align: center;
+}
+.card-item .card-item-rating p {
+    margin: 0px;
+}
+
+.card-item .card-item-content {
+    min-height: 150px;
 }
 
 .selector-item {
     cursor: pointer;
     border: solid 1px #D6D6D7;
-    height: 250px;
-    flex-grow: 1;
 }
 
 .selector-item:hover {
     background-color: #202124;
-    
 }
 
 .selector-item img {
+    height: 250px;
     max-height: 100%;
     min-width: 100%;
     object-fit: cover;
@@ -1232,9 +1274,7 @@ button {
 
 .favourite-item {
     width: 100%;
-    margin: 5px;
-    border: solid 1px #D6D6D7;
-    min-height: 100px
+    margin: 10px 10%;
 }
 
 /* 

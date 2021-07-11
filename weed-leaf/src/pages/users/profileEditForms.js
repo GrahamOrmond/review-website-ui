@@ -13,7 +13,7 @@ const profileGeneralForm = (profile) =>
             'label': 'Bio',
             'type': 'textEditor',
             'placehoder': '',
-            'required': true,
+            'required': false,
             'value': profile.bio
         }
     }
@@ -22,59 +22,61 @@ const profileGeneralForm = (profile) =>
 const profileShowcaseForm = (profile) =>
 {
     return {
-        'showcase': {
-            'label': 'Add Showcase',
-            'type': 'dynamicSelect',
-            'options': {
-                '': {
-                    label: "-- select --"
-                },
-                'images': {
-                    label: "Image Showcase",
-                    type: 'showcase',
-                    data: {
-                        'items': []
-                    }
-                },
-                'product': {
-                    label: "Favourite Product",
-                    type: 'showcase',
-                    data: {
-                        'items': []
-                    }
-                },
-                'brand': {
-                    label: "Favourite Brand",
-                    type: 'showcase',
-                    data: {
-                        'items': []
-                    }
-                },
-                'products': {
-                    label: "Product Showcase",
-                    type: 'showcase',
-                    data: {
-                        'items': []
-                    }
-                },
-                'review': {
-                    label: "Review Showcase",
-                    type: 'showcase',
-                    data: {
-                        'items': []
-                    }
-                },
-                'collection': {
-                    label: "Collection Showcase",
-                    type: 'showcase',
-                    data: {
-                        'items': []
-                    }
-                },
+        'options': {
+            '': {
+                label: "-- select --"
             },
-            'selected': [
-            ]
-        }
+            'images': {
+                label: "Image Showcase",
+                type: 'multiple',
+                data: {
+                    'type': 'images',
+                    'items': []
+                }
+            },
+            'product': {
+                label: "Favourite Product",
+                type: 'single',
+                data: {
+                    'type': 'products',
+                    'item': null
+                }
+            },
+            'brand': {
+                label: "Favourite Brand",
+                type: 'single',
+                data: {
+                    'type': 'brands',
+                    'item': null
+                }
+            },
+            'products': {
+                label: "Product Showcase",
+                type: 'multiple',
+                data: {
+                    'type': 'products',
+                    'items': []
+                }
+            },
+            'review': {
+                label: "Review Showcase",
+                type: 'single',
+                data: {
+                    'type': 'posts',
+                    'item': null
+                }
+            },
+            'collection': {
+                label: "Collection Showcase",
+                type: 'multiple',
+                data: {
+                    'type': 'collections',
+                    'items': []
+                }
+            },
+        },
+        'selected': [
+        ]
     }
 }
 
@@ -103,7 +105,7 @@ export const profileEditForms = (profile) =>  {
 
     return {
         "general": profileGeneralForm(profile),
-        "showcase": profileShowcaseForm(profile),
+        "showcases": profileShowcaseForm(profile),
         "privacy": profilePrivacyForm(profile),
     }
 }
@@ -115,7 +117,7 @@ export const profileMenuOptions = {
         "label": "General",
     },
     "showcase": {
-        "id": "showcase",
+        "id": "showcases",
         "label": "Showcase",
     },
     "support": {

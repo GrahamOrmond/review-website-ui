@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { getCurrentUser, updateCurrentUser } from "../oauth/oauthSlice";
+import { getCurrentUser } from "../oauth/oauthSlice";
 import { UserProfile } from "./UserProfile";
 import { UserProfileEdit } from "./UserProfileEdit";
-import { clearUserView, fetchUser, getUserByDisplayName, getUserView, updateProfile } from "./usersSlice";
+import { clearUserView, fetchUser, getUserByDisplayName, getUserView } from "./usersSlice";
 
 export const UserPage = (props) => {
 
@@ -46,27 +46,13 @@ export const UserPage = (props) => {
     }
 
     const handleEditProfile = (e) => {
-        e.preventDefault()
         setShowEditView(!showEditView)
     }
-
-    const handleSaveProfile = (data) => {
-        dispatch(updateProfile(data))
-        .then(res => {
-            if(res.meta.requestStatus === "fulfilled"){
-                setShowEditView(false)
-                dispatch(updateCurrentUser(res.payload))
-                history.push(`/user/${res.payload.displayName}`)
-            }
-        })
-    }
-
 
     if(showEditView){
         return  <UserProfileEdit 
             user={currentUser}
             handleCancelEdit={handleEditProfile}
-            handleSaveProfile={handleSaveProfile}
         />
     }
 

@@ -1,10 +1,13 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { AppCard } from "../../components/AppCard";
 import { AppForm } from '../../components/AppForm';
 import { AppProfile } from "../../components/AppProfile";
 import { AppShowcase, ShowcaseItemSelector } from "../../components/AppShowcase";
+import { updateCurrentUser } from "../oauth/oauthSlice";
 import './profileEditForms'
 import { profileMenuOptions, profileEditForms } from "./profileEditForms";
+import { updateProfile, updateProfileShowcases } from "./usersSlice";
 
 const ProfileSupport = (props) => {
 
@@ -17,10 +20,8 @@ const ProfileSupport = (props) => {
 
 const ProfileShowcaseEdit = (props) => {
 
-    const [itemsDisplay, setItemsDisplay] = useState({
-        showDisplay: false,
-        type: null,
-        index: null
+    const [itemSelector, setItemSelector] = useState({
+        showcase: null,
     })
     const {
         user,
@@ -30,10 +31,10 @@ const ProfileShowcaseEdit = (props) => {
     } = props
 
     const handleRemoveShowcase = (showcase) => {
-        let index = formData.showcase.selected.indexOf(showcase)
+        let index = formData.selected.indexOf(showcase)
         if(index !== -1){
             let newData = {...formData}
-            newData.showcase.selected.splice(index, 1);
+            newData.selected.splice(index, 1);
             updateFormData(newData)
         }
     }
@@ -43,20 +44,25 @@ const ProfileShowcaseEdit = (props) => {
         const selectedOption = selectBox.options[selectBox.selectedIndex].id
         if(selectedOption !== ''){
             let newData = {...formData}
-            newData.showcase.selected.push(selectedOption)
+            newData.selected.push(selectedOption)
             updateFormData(newData)
             selectBox.value = ''
         }
     }
 
-    const handleShowItemSelect = (type, index) => {
-        setItemsDisplay({showDisplay: true, type: type, index: index})
+    const handleShowItemSelect = (showcaseId, index) => {
+        setItemSelector({
+            showcase: {
+                id: showcaseId,
+                index: index,
+            }
+        })
     }
 
     const renderOptions = () => {
         let data = []
-        for (const [key, option] of Object.entries(formData.showcase.options)) {
-            if(formData.showcase.selected.includes(key)){
+        for (const [key, option] of Object.entries(formData.options)) {
+            if(formData.selected.includes(key)){
                 continue
             }
             
@@ -71,14 +77,15 @@ const ProfileShowcaseEdit = (props) => {
     }
 
     const renderShowcases = () => {
-        let selectedShowcases = formData.showcase.selected
+        let selectedShowcases = formData.selected
         let showcases = []
         selectedShowcases.forEach(id => {
-            const showcase = formData.showcase.options[id]
+            const showcase = formData.options[id]
             showcases.push(
                 <AppShowcase
+                    showcaseId={id}
                     label={showcase.label}
-                    type={id}
+                    type={showcase.type}
                     data={showcase.data}
                     isActiveEdit={true}
                     handleRemoveShowcase={handleRemoveShowcase}
@@ -88,35 +95,34 @@ const ProfileShowcaseEdit = (props) => {
         return showcases
     }
 
-    const handleSelectItem = (showcase, item) => {
+    const handleSelectItem = (item) => {
         let newData = {...formData}
-
-        switch(showcase){
-            case "images":
-                let showcaseData = newData.showcase.options[showcase].data
-                if(itemsDisplay.index != null){
-                    let index = itemsDisplay.index
-                    if(index > showcaseData.items.length-1){
-                        index = showcaseData.items.length
-                    }
-                    showcaseData.items[index] = item
-                    newData.showcase.options[showcase].data = showcaseData
-                }else{
-                    showcaseData.main = item
+        const selectedShowcase = newData.options[itemSelector.showcase.id]
+        switch(selectedShowcase.type){
+            case "multiple": // multiple item showcase
+                let index = itemSelector.showcase.index
+                if(index > selectedShowcase.data.items.length-1){
+                    index = selectedShowcase.data.items.length
                 }
-                updateFormData(newData)
-            break;
+                selectedShowcase.data.items[index] = item
+                break
+            case "single": // single item showcase
+                selectedShowcase.data.item = item
+                break
             default:
                 break
-                
         }
-        setItemsDisplay({showDisplay: false, type: null, index: null})
+        newData.options[itemSelector.showcase.id].data = selectedShowcase.data
+        updateFormData(newData)
+        setItemSelector({ showcase: null })
     }
 
-    let itemSelector;
-    if(itemsDisplay.showDisplay){
-        itemSelector = <ShowcaseItemSelector 
-            type={itemsDisplay.type}
+    let itemSelectorContent;
+    if(itemSelector.showcase){
+        const showcase = formData.options[itemSelector.showcase.id]
+        itemSelectorContent = <ShowcaseItemSelector 
+            showcaseId={showcase.id}
+            type={showcase.data.type}
             user={user}
             handleSelectItem={handleSelectItem}
         />
@@ -139,7 +145,7 @@ const ProfileShowcaseEdit = (props) => {
                     </button>
                 </div>
             </form>
-            {itemSelector}
+            {itemSelectorContent}
         </div>
     )
 }
@@ -215,10 +221,10 @@ const ProfileEditForm = (props) => {
 // user profile edit
 export const UserProfileEdit = (props) => {
 
+    const dispatch = useDispatch()
     const {
         user, // takes in current user
         handleCancelEdit,
-        handleSaveProfile // saves the user profile
     } = props
 
     const [selectedMenuOption, setSelectedMenuOption] = useState(profileMenuOptions.general)
@@ -236,9 +242,27 @@ export const UserProfileEdit = (props) => {
         setEditForms(forms)
     }
 
+    const handleSaveProfile = (data) => {
+        dispatch(updateProfile(data))
+        .then(res => {
+            if(res.meta.requestStatus === "fulfilled"){
+                handleCancelEdit()
+                dispatch(updateCurrentUser(res.payload))
+            }
+        })
+    }
+
     const handleSaveShowcase = (e) => {
         e.preventDefault()
-        console.log(editForms)
+        let showcases = []
+        editForms.showcases.selected.forEach(selectedId => {
+            showcases.push(editForms.showcases.options[selectedId])
+        });
+        dispatch(updateProfileShowcases({showcases: showcases})).then(res => {
+            if(res.meta.requestStatus === "fulfilled"){
+                handleCancelEdit()
+            }
+        })
     }
 
     // determine content
@@ -247,7 +271,7 @@ export const UserProfileEdit = (props) => {
         case "support":
             content = <ProfileSupport />
             break
-        case "showcase":
+        case "showcases":
             content = <ProfileShowcaseEdit
                 user={user}
                 formData={editForms[selectedMenuOption.id]}

@@ -68,6 +68,19 @@ async (formData, { getState, rejectWithValue }) => {
     return response
 })
 
+// update profile
+export const updateProfileShowcases = createAsyncThunk('users/updateProfileShowcases',
+async (formData, { getState, rejectWithValue }) => {
+    const token = getOauthToken(getState())
+    let customConfig = {}
+    customConfig.headers = {
+        'Authorization': `Bearer ${token.token}`
+    }
+    const response = await client
+        .update('/api/profile/showcases', rejectWithValue, formData, customConfig)
+    return response
+})
+
 // return user view
 export const getUserView = (state) => {
     return state.users.view
@@ -163,6 +176,15 @@ export const usersSlice = createSlice({
             }
         },
         [updateProfile.rejected]: (state, action) => {
+        },
+
+        // UPDATE USER SHOWCASES
+        [updateProfileShowcases.pending]: (state, action) => {
+        },
+        [updateProfileShowcases.fulfilled]: (state, action) => {
+            console.log(action)
+        },
+        [updateProfileShowcases.rejected]: (state, action) => {
         },
     }
 })

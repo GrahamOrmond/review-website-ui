@@ -2,18 +2,17 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom'
 import { fetchImages, getImagesList, getImagesSearchParams, idleImagesList } from '../pages/images/imagesSlice';
+import { fetchProducts, getProductSearchParams, getProductsListInfo, idleProductList } from '../pages/products/productsSlice';
 import { AppCard } from './AppCard';
 import { AppModal } from './AppModal';
 
-export const ShowcaseItemSelector = (props) => {
+const SelectorImageItems = (props) => {
 
     const dispatch = useDispatch()
     const {
         user,
-        type,
         handleSelectItem,
     } = props
-
 
     const imagesList = useSelector(getImagesList);
     const existingParams = useSelector(s => getImagesSearchParams(s, {displayName: user.displayName}));
@@ -29,52 +28,92 @@ export const ShowcaseItemSelector = (props) => {
 
     }, [imagesList, existingParams, user, dispatch])
 
+    return imagesList.items.map(image => {
+        return (
+            <div className="selector-item" onClick={() => handleSelectItem(image)}>
+                <img src={"https://localhost:44303/uploads/" + image.fileId}
+                    alt=""
+                    key={image.fileId}
+                />
+            </div>
+        )
+    });
+}
 
-    const renderImages = () => {
+const SelectorProductItems = (props) => {
 
-        const maxHeight = 300, maxWidth = 300
+    const dispatch = useDispatch()
+    const {
+        handleSelectItem,
+    } = props
 
-        return imagesList.items.map(image => {
+    const productsList = useSelector(getProductsListInfo);
+    const existingParams = useSelector(s => getProductSearchParams(s, {}));
+    useEffect(() => {
+        if(productsList.status === 'idle'){
+            dispatch(fetchProducts({}))
+            return
+        }
+        if(productsList.status !== 'loading'
+            && !existingParams){
+            dispatch(idleProductList())
+        }
 
-            let width = image.width
-            let height = image.height
+    }, [productsList, existingParams, dispatch])
 
-            // handle image resizing here
-            if(height > maxHeight){
-                width = width/(height/maxHeight)
-                height = maxHeight
-            }
-            if(width > maxWidth){
-                height = height/(width/maxWidth)
-                width = maxWidth
-            }
+    return productsList.items.map(item => {
 
-            return (
-                <div className="selector-item" onClick={(e) => handleSelectItem(type, image)}>
-                    <img src={"https://localhost:44303/uploads/" + image.fileId}
-                        alt=""
-                        key={image.fileId}
-                    />
-                </div>
-            )
-        });
+        return (
+            <ShowcaseCardItem 
+                handleShowItemSelect={() => handleSelectItem(item)}
+                item={item}
+            />
+        )
+    });
+}
+
+export const ShowcaseItemSelector = (props) => {
+
+    const {
+        user,
+        type,
+        handleSelectItem,
+    } = props
+
+    let selectorContent, title
+    switch (type) {
+        case "images":
+            title = "Images"
+            selectorContent = <SelectorImageItems 
+                user={user}
+                handleSelectItem={handleSelectItem}
+            />
+            break;
+        case "products":
+            title = "Products"
+            selectorContent = <SelectorProductItems 
+                handleSelectItem={handleSelectItem}
+            />
+            break;
+        default:
+            break;
     }
 
     return (
         <AppModal>
             <div className="showcase-item-selector">
                 <div className="title">
-                    Images
+                    { title }
                 </div>
                 <div className="item-selector-items">
-                    { renderImages() }
+                    { selectorContent }
                 </div>
             </div>
         </AppModal>
     )
 }
 
-const ShowcaseItem = (props) => {
+const ShowcaseBadgeItem = (props) => {
 
     const {
         item
@@ -96,22 +135,54 @@ const ShowcaseItem = (props) => {
     )
 }
 
-
-export const FavouriteShowcase = (props) => {
+const ShowcaseCardItem = (props) => {
 
     const {
-        type,
+        item,
+        handleShowItemSelect
+    } = props
+
+    if(!item){
+        return (
+            <div className="showcase-card-item" 
+                onClick={handleShowItemSelect}>
+                <p>{item}</p>
+            </div>
+        )
+    }
+
+    return (
+        <div className="card-item" onClick={handleShowItemSelect}>
+            <div className="card-item-header">
+                <h4>{item.brandName}</h4>
+                <h3>{item.name}</h3>
+            </div>
+            <div className="card-item-rating">
+                <p>{"5 stars"}</p>
+            </div>
+            <div className="card-item-content">
+
+            </div>
+        </div>
+    )
+}
+
+
+export const SingleItemShowcase = (props) => {
+
+    const {
+        showcaseId,
         label,
         data,
         isActiveEdit,
         handleRemoveShowcase,
-        // handleShowItemSelect,
+        handleShowItemSelect,
     } = props
 
     let removeAction
     if(isActiveEdit){
         removeAction = (
-            <div className="app-button default-button" onClick={() => handleRemoveShowcase(type)}>
+            <div className="app-button default-button" onClick={() => handleRemoveShowcase(showcaseId)}>
                 Remove
             </div>
         )
@@ -125,7 +196,10 @@ export const FavouriteShowcase = (props) => {
             </div>
             <div className="showcase-display">
                 <div className="favourite-item">
-                    <ShowcaseItem item={data.main}/>
+                    <ShowcaseCardItem 
+                        handleShowItemSelect={() => handleShowItemSelect(showcaseId)}
+                        item={data.item}
+                    />
                 </div>
             </div>
         </div>
@@ -136,7 +210,7 @@ export const FavouriteShowcase = (props) => {
 const ImageShowcase = (props) => {
 
     const {
-        type,
+        showcaseId,
         label,
         data,
         isActiveEdit,
@@ -150,7 +224,7 @@ const ImageShowcase = (props) => {
         if(data.items.length > 0){
             return (
                 <div className="showcase-image edit" 
-                    onClick={() => handleShowItemSelect(type, 0)}>
+                    onClick={() => handleShowItemSelect(showcaseId, 0)}>
                     <div>
                         <img src={"https://localhost:44303/uploads/" +data.items[0].fileId}
                             key={data.items[0].fileId}
@@ -163,7 +237,7 @@ const ImageShowcase = (props) => {
 
         return (
             <div className="showcase-image edit" 
-                onClick={() => handleShowItemSelect(type, 0)}>
+                onClick={() => handleShowItemSelect(showcaseId, 0)}>
             </div>
         )
     }
@@ -178,7 +252,7 @@ const ImageShowcase = (props) => {
                 const item = data.items[i];
                 secondaryContent.push(
                 <div className="showcase-image edit" 
-                    onClick={() => handleShowItemSelect(type, i)}>
+                    onClick={() => handleShowItemSelect(showcaseId, i)}>
                     <div>
                         <img src={"https://localhost:44303/uploads/" + item.fileId}
                             key={item.fileId}
@@ -196,7 +270,7 @@ const ImageShowcase = (props) => {
         for (let i = 0; i < selectCount; i++) {
             secondaryContent.push(
                 <div className="showcase-image edit" 
-                    onClick={() => handleShowItemSelect(type, data.items.length + i)}>
+                    onClick={() => handleShowItemSelect(showcaseId, data.items.length + i)}>
                 </div>
             )
         }
@@ -206,7 +280,7 @@ const ImageShowcase = (props) => {
     let removeAction
     if(isActiveEdit){
         removeAction = (
-            <div className="app-button default-button" onClick={() => handleRemoveShowcase(type)}>
+            <div className="app-button default-button" onClick={() => handleRemoveShowcase(showcaseId)}>
                 Remove
             </div>
         )
@@ -232,10 +306,12 @@ const ImageShowcase = (props) => {
     )
 }
 
-const ItemShowcase = (props) => {
+const MultipleItemShowcase = (props) => {
 
     const {
         label,
+        // showcaseId,
+        // itemType,
         // data,
         // isActiveEdit,
         // handleRemoveShowcase,
@@ -245,7 +321,7 @@ const ItemShowcase = (props) => {
 
     const renderItems = () => {
         return items.map(i => {
-            return <ShowcaseItem item={i}/>
+            return <ShowcaseBadgeItem item={i}/>
         })
     }
 
@@ -282,6 +358,7 @@ const ShowcaseAction = (props) => {
 export const AppShowcase = (props) => {
 
     const {
+        showcaseId,
         label,
         type,
         data,
@@ -289,50 +366,45 @@ export const AppShowcase = (props) => {
         handleRemoveShowcase,
         handleShowItemSelect,
     } = props
-
     let action;
     if(!isActiveEdit)
         action = <ShowcaseAction />
 
-    let content;
-    switch(type)
-    {
-        case "images":
-            content = <ImageShowcase 
-                type={type}
-                label={label}
-                data={data}
-                isActiveEdit={isActiveEdit}
-                handleRemoveShowcase={handleRemoveShowcase}
-                handleShowItemSelect={handleShowItemSelect}
-            />
-            break
-        case "product":
-            content = <FavouriteShowcase 
-                type={type}
-                label={label}
-                data={data}
-                isActiveEdit={isActiveEdit}
-                handleRemoveShowcase={handleRemoveShowcase}
-                handleShowItemSelect={handleShowItemSelect}
-            />
-            break
-        default:
-            content = <ItemShowcase 
-                type={type}
-                label={label}
-                data={data}
-                isActiveEdit={isActiveEdit}
-                handleRemoveShowcase={handleRemoveShowcase}
-                handleShowItemSelect={handleShowItemSelect}
-            />
-            break
-    }
 
+    let showcaseContent;
+    if(type === "single"){ // single item showcase
+        showcaseContent = <SingleItemShowcase 
+                showcaseId={showcaseId}
+                label={label}
+                data={data}
+                isActiveEdit={isActiveEdit}
+                handleRemoveShowcase={handleRemoveShowcase}
+                handleShowItemSelect={handleShowItemSelect}
+            />
+    }else if (data.type === "images"){ // image showcase
+        showcaseContent = <ImageShowcase 
+                showcaseId={showcaseId}
+                label={label}
+                data={data}
+                isActiveEdit={isActiveEdit}
+                handleRemoveShowcase={handleRemoveShowcase}
+                handleShowItemSelect={handleShowItemSelect}
+            />
+    }else{ // multi item showcase
+        showcaseContent = <MultipleItemShowcase 
+            showcaseId={showcaseId}
+            label={label}
+            data={data}
+            isActiveEdit={isActiveEdit}
+            handleRemoveShowcase={handleRemoveShowcase}
+            handleShowItemSelect={handleShowItemSelect}
+        />
+    }
+    
     return (
         <AppCard>
              <div className="app-showcase">
-                { content }
+                { showcaseContent }
                 { action }
             </div>
         </AppCard>
