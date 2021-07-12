@@ -19,58 +19,52 @@ const profileGeneralForm = (profile) =>
     }
 }
 
-const profileShowcaseForm = (profile) =>
+const profileShowcaseForm = (profileShowcases) =>
 {
-    return {
+    let formData = {
         'options': {
             '': {
                 label: "-- select --"
             },
-            'images': {
-                label: "Image Showcase",
-                type: 'multiple',
+            'MULTIPLE-IMAGES': {
+                type: 'MULTIPLE',
                 data: {
-                    'type': 'images',
+                    'type': 'IMAGES',
                     'items': []
                 }
             },
-            'product': {
-                label: "Favourite Product",
-                type: 'single',
+            'SINGLE-PRODUCTS': {
+                type: 'SINGLE',
                 data: {
-                    'type': 'products',
-                    'item': null
-                }
-            },
-            'brand': {
-                label: "Favourite Brand",
-                type: 'single',
-                data: {
-                    'type': 'brands',
-                    'item': null
-                }
-            },
-            'products': {
-                label: "Product Showcase",
-                type: 'multiple',
-                data: {
-                    'type': 'products',
+                    'type': 'PRODUCTS',
                     'items': []
                 }
             },
-            'review': {
-                label: "Review Showcase",
-                type: 'single',
+            'SINGLE-BRANDS': {
+                type: 'SINGLE',
                 data: {
-                    'type': 'posts',
-                    'item': null
+                    'type': 'BRANDS',
+                    'items': []
                 }
             },
-            'collection': {
-                label: "Collection Showcase",
-                type: 'multiple',
+            'MULTIPLE-PRODUCTS': {
+                type: 'MULTIPLE',
                 data: {
-                    'type': 'collections',
+                    'type': 'PRODUCTS',
+                    'items': []
+                }
+            },
+            'SINGLE-POSTS': {
+                type: 'SINGLE',
+                data: {
+                    'type': 'POSTS',
+                    'items': []
+                }
+            },
+            'MULTIPLE-COLLECTIONS': {
+                type: 'MULTIPLE',
+                data: {
+                    'type': 'COLLECTIONS',
                     'items': []
                 }
             },
@@ -78,6 +72,13 @@ const profileShowcaseForm = (profile) =>
         'selected': [
         ]
     }
+
+    profileShowcases.forEach(s => {
+        let optionId = `${s.type}-${s.data.type}`
+        formData.options[optionId].data.items = [...s.data.items]
+        formData.selected.push(optionId)
+    });
+    return formData
 }
 
 const profilePrivacyForm = (profile) =>
@@ -105,7 +106,7 @@ export const profileEditForms = (profile) =>  {
 
     return {
         "general": profileGeneralForm(profile),
-        "showcases": profileShowcaseForm(profile),
+        "showcases": profileShowcaseForm(profile.showcases),
         "privacy": profilePrivacyForm(profile),
     }
 }

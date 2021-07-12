@@ -83,6 +83,9 @@ export const oauthSlice = createSlice({
             state.identity.user.displayName = action.payload.displayName
             state.identity.user.bio = action.payload.bio
         },
+        updateCurrentUserShowcases(state, action) {
+            state.identity.user.showcases = action.payload.showcases
+        },
     },
     extraReducers: {
         // LOGIN USER
@@ -177,6 +180,7 @@ export const oauthSlice = createSlice({
 export const { 
     logoutUser,
     updateCurrentUser,
+    updateCurrentUserShowcases,
 } = oauthSlice.actions
   
 export default oauthSlice.reducer

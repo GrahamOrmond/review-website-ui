@@ -182,7 +182,11 @@ export const usersSlice = createSlice({
         [updateProfileShowcases.pending]: (state, action) => {
         },
         [updateProfileShowcases.fulfilled]: (state, action) => {
-            console.log(action)
+            let index = state.list.items
+                .findIndex(u => u.profileId === action.payload.profileId);
+            if(index !== -1){
+                state.list.items[index].showcases = action.payload.showcases
+            }
         },
         [updateProfileShowcases.rejected]: (state, action) => {
         },

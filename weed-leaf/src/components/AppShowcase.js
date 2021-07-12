@@ -30,9 +30,9 @@ const SelectorImageItems = (props) => {
 
     return imagesList.items.map(image => {
         return (
-            <div className="selector-item" onClick={() => handleSelectItem(image)}>
+            <div className="selector-item" onClick={() => handleSelectItem(image.fileId)}>
                 <img src={"https://localhost:44303/uploads/" + image.fileId}
-                    alt=""
+                    alt={image.fileId}
                     key={image.fileId}
                 />
             </div>
@@ -65,7 +65,7 @@ const SelectorProductItems = (props) => {
 
         return (
             <ShowcaseCardItem 
-                handleShowItemSelect={() => handleSelectItem(item)}
+                handleShowItemSelect={() => handleSelectItem(item.productId)}
                 item={item}
             />
         )
@@ -82,14 +82,14 @@ export const ShowcaseItemSelector = (props) => {
 
     let selectorContent, title
     switch (type) {
-        case "images":
+        case "IMAGES":
             title = "Images"
             selectorContent = <SelectorImageItems 
                 user={user}
                 handleSelectItem={handleSelectItem}
             />
             break;
-        case "products":
+        case "PRODUCTS":
             title = "Products"
             selectorContent = <SelectorProductItems 
                 handleSelectItem={handleSelectItem}
@@ -198,7 +198,7 @@ export const SingleItemShowcase = (props) => {
                 <div className="favourite-item">
                     <ShowcaseCardItem 
                         handleShowItemSelect={() => handleShowItemSelect(showcaseId)}
-                        item={data.item}
+                        item={data.items[0]}
                     />
                 </div>
             </div>
@@ -220,14 +220,21 @@ const ImageShowcase = (props) => {
 
     const seconaryImageCount = 5
 
+    const className = isActiveEdit? "showcase-image edit" : "showcase-image";
+
     const renderMainImage = () => {
         if(data.items.length > 0){
+
+            let handleClick;
+            if(isActiveEdit){
+                handleClick = () => handleShowItemSelect(showcaseId, 0)
+            }
             return (
-                <div className="showcase-image edit" 
-                    onClick={() => handleShowItemSelect(showcaseId, 0)}>
+                <div className={className} 
+                    onClick={handleClick}>
                     <div>
-                        <img src={"https://localhost:44303/uploads/" +data.items[0].fileId}
-                            key={data.items[0].fileId}
+                        <img src={"https://localhost:44303/uploads/" +data.items[0].referenceId}
+                            key={data.items[0].referenceId}
                             alt=""
                         />
                     </div>
@@ -250,27 +257,35 @@ const ImageShowcase = (props) => {
 
             for (let i = 1; i < data.items.length; i++) {
                 const item = data.items[i];
+
+                let handleClick;
+                if(isActiveEdit){
+                    handleClick = () => handleShowItemSelect(showcaseId, i)
+                }
+
                 secondaryContent.push(
-                <div className="showcase-image edit" 
-                    onClick={() => handleShowItemSelect(showcaseId, i)}>
+                <div className={className}
+                    onClick={handleClick}>
                     <div>
-                        <img src={"https://localhost:44303/uploads/" + item.fileId}
-                            key={item.fileId}
+                        <img src={"https://localhost:44303/uploads/" + item.referenceId}
+                            key={item.referenceId}
                             alt=""
                         />
                     </div>
                 </div>)
             }
-
-            data.items.forEach((image, index) => {
-               
-            });
         }
 
         for (let i = 0; i < selectCount; i++) {
+
+            let handleClick;
+            if(isActiveEdit){
+                handleClick = () => handleShowItemSelect(showcaseId, data.items.length + i)
+            }
+
             secondaryContent.push(
-                <div className="showcase-image edit" 
-                    onClick={() => handleShowItemSelect(showcaseId, data.items.length + i)}>
+                <div className={className}
+                    onClick={handleClick}>
                 </div>
             )
         }
@@ -345,13 +360,11 @@ const ShowcaseAction = (props) => {
     } = props
 
     return (
-        <div className="showcase-action">
-            <Link to={actionLink}>
-                <div className="showcase-action app-button">
-                    {actionTitle}
-                </div>
-            </Link>
-        </div>
+        <Link to={actionLink}>
+            <div className="showcase-action">
+                {actionTitle}
+            </div>
+        </Link>
     )
 }
 
@@ -359,47 +372,77 @@ export const AppShowcase = (props) => {
 
     const {
         showcaseId,
-        label,
         type,
         data,
         isActiveEdit,
         handleRemoveShowcase,
         handleShowItemSelect,
     } = props
-    let action;
-    if(!isActiveEdit)
-        action = <ShowcaseAction />
 
+    let showcaseLabel;
+    switch (`${type}-${data.type}`) {
+        case "MULTIPLE-IMAGES":
+            showcaseLabel = "Images Showcase"
+            break;
+        case "SINGLE-PRODUCTS":
+            showcaseLabel = "Favourite Product"
+            break;
+        case "SINGLE-BRANDS":
+            showcaseLabel = "Favourite Brand"
+            break;
+        case "MULTIPLE-PRODUCTS":
+            showcaseLabel = "Product Showcase"
+            break;
+        case "SINGLE-POSTS":
+            showcaseLabel = "Review Showcase"
+            break;
+        case "MULTIPLE-COLLECTIONS":
+            showcaseLabel = "Collection Showcase"
+            break;
+        default:
+            showcaseLabel = "Showcase"
+            break;
+    }
 
-    let showcaseContent;
-    if(type === "single"){ // single item showcase
+    let showcaseContent, actionTitle;
+    if(type === "SINGLE"){ // single item showcase
         showcaseContent = <SingleItemShowcase 
                 showcaseId={showcaseId}
-                label={label}
+                label={showcaseLabel}
                 data={data}
                 isActiveEdit={isActiveEdit}
                 handleRemoveShowcase={handleRemoveShowcase}
                 handleShowItemSelect={handleShowItemSelect}
             />
-    }else if (data.type === "images"){ // image showcase
+        actionTitle = "View Details";
+    }else if (data.type === "IMAGES"){ // image showcase
         showcaseContent = <ImageShowcase 
                 showcaseId={showcaseId}
-                label={label}
+                label={showcaseLabel}
                 data={data}
                 isActiveEdit={isActiveEdit}
                 handleRemoveShowcase={handleRemoveShowcase}
                 handleShowItemSelect={handleShowItemSelect}
             />
+        actionTitle = "View Images";
     }else{ // multi item showcase
         showcaseContent = <MultipleItemShowcase 
             showcaseId={showcaseId}
-            label={label}
+            label={showcaseLabel}
             data={data}
             isActiveEdit={isActiveEdit}
             handleRemoveShowcase={handleRemoveShowcase}
             handleShowItemSelect={handleShowItemSelect}
         />
+        actionTitle = "View More";
     }
+
+    let action
+    if(!isActiveEdit)
+        action = <ShowcaseAction 
+            actionLink="/"
+            actionTitle={actionTitle}
+        />
     
     return (
         <AppCard>

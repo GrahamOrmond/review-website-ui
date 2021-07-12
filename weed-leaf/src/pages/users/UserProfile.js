@@ -2,6 +2,7 @@ import { AppProfile } from  "../../components/AppProfile"
 import AppThreadDisplay from "../../components/AppThreadDisplay";
 import { useDispatch } from "react-redux";
 import { followProfile, unfollowProfile, } from "./usersSlice";
+import { AppShowcase } from "../../components/AppShowcase";
 
 export const UserProfile = (props) => {
 
@@ -38,6 +39,16 @@ export const UserProfile = (props) => {
         actionName = "Unfollow"
     }
 
+
+    const renderShowcases = () => {
+        return user.showcases.map(s => {
+            return <AppShowcase
+                type={s.type}
+                data={s.data}
+            />
+        })
+    }
+
     return (
         <div className="app-content">
             <AppProfile
@@ -46,6 +57,7 @@ export const UserProfile = (props) => {
                 profileAction={profileAction}
                 actionName={actionName}
             >
+            { renderShowcases() }
             <AppThreadDisplay 
                 postType={postsType}
                 urlBase={`/user/${user.displayName}/`}

@@ -1104,7 +1104,7 @@ button {
 .showcase-action {
     border: solid 1px #D6D6D7;
     border-bottom: none;
-    height: 25px !important;
+    height: 35px !important;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1178,27 +1178,30 @@ button {
     min-height: 75px;
 }
 
+.showcase-images .secondary div:not(:last-child) {
+    border-right: solid 1px #D6D6D7;
+}
+
 .showcase-images .showcase-image img{
     width: 100%;
     height: 100%;
 }
 
 .showcase-images .showcase-image div{
-    background-color: #202124;
     width: 100%;
     height: 100%;
 }
 
-.showcase-images .showcase-image img:hover{
-    opacity: 0.9;
-}
-
-.showcase-images .secondary div:not(:last-child) {
-    border-right: solid 1px #D6D6D7;
-}
-
 .showcase-image.edit{
     cursor: pointer;
+}
+
+.showcase-images .showcase-image.edit div{
+    background-color: #202124;
+}
+
+.showcase-images .showcase-image.edit img:hover{
+    opacity: 0.9;
 }
 
 .showcase-item-selector {

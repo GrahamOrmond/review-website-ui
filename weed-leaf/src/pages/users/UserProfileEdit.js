@@ -4,7 +4,7 @@ import { AppCard } from "../../components/AppCard";
 import { AppForm } from '../../components/AppForm';
 import { AppProfile } from "../../components/AppProfile";
 import { AppShowcase, ShowcaseItemSelector } from "../../components/AppShowcase";
-import { updateCurrentUser } from "../oauth/oauthSlice";
+import { updateCurrentUser, updateCurrentUserShowcases } from "../oauth/oauthSlice";
 import './profileEditForms'
 import { profileMenuOptions, profileEditForms } from "./profileEditForms";
 import { updateProfile, updateProfileShowcases } from "./usersSlice";
@@ -79,12 +79,12 @@ const ProfileShowcaseEdit = (props) => {
     const renderShowcases = () => {
         let selectedShowcases = formData.selected
         let showcases = []
+
         selectedShowcases.forEach(id => {
             const showcase = formData.options[id]
             showcases.push(
                 <AppShowcase
                     showcaseId={id}
-                    label={showcase.label}
                     type={showcase.type}
                     data={showcase.data}
                     isActiveEdit={true}
@@ -95,22 +95,21 @@ const ProfileShowcaseEdit = (props) => {
         return showcases
     }
 
-    const handleSelectItem = (item) => {
+    const handleSelectItem = (itemId) => {
         let newData = {...formData}
         const selectedShowcase = newData.options[itemSelector.showcase.id]
-        switch(selectedShowcase.type){
-            case "multiple": // multiple item showcase
-                let index = itemSelector.showcase.index
-                if(index > selectedShowcase.data.items.length-1){
-                    index = selectedShowcase.data.items.length
-                }
-                selectedShowcase.data.items[index] = item
-                break
-            case "single": // single item showcase
-                selectedShowcase.data.item = item
-                break
-            default:
-                break
+        if(selectedShowcase.type.includes("SINGLE")){
+            selectedShowcase.data.items[0] = {
+                referenceId : itemId
+            }
+        }else{
+            let index = itemSelector.showcase.index
+            if(index > selectedShowcase.data.items.length-1){
+                index = selectedShowcase.data.items.length
+            }
+            selectedShowcase.data.items[index] = {
+                referenceId : itemId
+            }
         }
         newData.options[itemSelector.showcase.id].data = selectedShowcase.data
         updateFormData(newData)
@@ -256,10 +255,15 @@ export const UserProfileEdit = (props) => {
         e.preventDefault()
         let showcases = []
         editForms.showcases.selected.forEach(selectedId => {
-            showcases.push(editForms.showcases.options[selectedId])
+            const showcase = editForms.showcases.options[selectedId]
+            showcases.push({
+                type: showcase.type,
+                data: showcase.data
+            })
         });
         dispatch(updateProfileShowcases({showcases: showcases})).then(res => {
             if(res.meta.requestStatus === "fulfilled"){
+                dispatch(updateCurrentUserShowcases(res.payload))
                 handleCancelEdit()
             }
         })
