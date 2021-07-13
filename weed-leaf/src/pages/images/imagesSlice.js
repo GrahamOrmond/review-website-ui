@@ -4,7 +4,7 @@ import {
     createAsyncThunk,
 } from '@reduxjs/toolkit'
 
-import { getOauthToken } from '../oauth/oauthSlice'
+import { getAccessToken } from '../oauth/oauthSlice'
 import { client } from '../../api/client'
 
 // setup inital state
@@ -26,10 +26,10 @@ const initialState = {
 export const fetchImages = createAsyncThunk('images/fetchImages', 
 async (formData, { getState, rejectWithValue }) => {
     const state = getState()
-    const token = getOauthToken(state)
+    const token = getAccessToken(state)
     let customConfig = {}
     customConfig.headers = {
-        'Authorization': `Bearer ${token.token}`
+        'Authorization': `Bearer ${token}`
     }
 
     Object.keys(formData).forEach(k => formData[k] === undefined 

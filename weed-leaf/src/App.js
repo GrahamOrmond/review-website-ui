@@ -28,7 +28,7 @@ import { ProductsPage } from './pages/products/ProductsPage'
 import { CommunityPage } from './pages/community/CommunityPage'
 
 // redux store
-import { checkLogin, checkUserAge, fetchCurrentUser, isUserLoggedIn, isUserValidAge } from './pages/oauth/oauthSlice';
+import { checkLogin, checkUserAge, fetchCurrentUser, getOauthAccess, isUserValidAge } from './pages/oauth/oauthSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { PostsPage } from './pages/posts/PostsPage';
 import { ValidateAgePage } from './pages/oauth/ValidateAgePage';
@@ -36,8 +36,8 @@ import { ValidateAgePage } from './pages/oauth/ValidateAgePage';
 function App() {
 
   const dispatch = useDispatch()
-  const isUserOfAge = useSelector(isUserValidAge)
-  const isLoggedIn = useSelector(isUserLoggedIn);
+  const isValidAge = useSelector(isUserValidAge)
+  const oauthAccess = useSelector(getOauthAccess);
   useEffect(() => {
       dispatch(checkLogin())
       .then(res => {
@@ -49,7 +49,10 @@ function App() {
       })
   }, [dispatch])
   
-  if(!isUserOfAge){ // age not determined
+  if(!isValidAge
+    && oauthAccess.status !== "loading"
+    && !oauthAccess.isLoggedIn
+  ){ // age not determined
     return (
       <div className="app">
         <ValidateAgePage />
@@ -59,7 +62,7 @@ function App() {
 
   return (
     <Router>
-      <AppHeader isLoggedIn={isLoggedIn}/>
+      <AppHeader isLoggedIn={oauthAccess.isLoggedIn}/>
       <div className="app">
         <Switch>
         <Route exact path="/:location?/:brandId?/:productUrl?/submit/:postType?/" component={PostsPage} />

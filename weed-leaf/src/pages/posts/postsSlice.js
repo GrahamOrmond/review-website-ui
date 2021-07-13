@@ -4,7 +4,7 @@ import {
 } from '@reduxjs/toolkit'
 
 import { client } from '../../api/client'
-import { getOauthToken } from '../oauth/oauthSlice'
+import { getAccessToken } from '../oauth/oauthSlice'
 
 // setup inital state
 const initialState = {
@@ -24,10 +24,10 @@ const initialState = {
 
 // create post
 export const createPost = createAsyncThunk('posts/createPosts', async (formData, { getState, rejectWithValue }) => {
-    const token = getOauthToken(getState())
+    const token = getAccessToken(getState())
     let customConfig = {}
     customConfig.headers = {
-        'Authorization': `Bearer ${token.token}`
+        'Authorization': `Bearer ${token}`
     }
 
     // create form data
@@ -77,10 +77,10 @@ async (fetchData, { rejectWithValue }) => {
 // rate post
 export const ratePost = createAsyncThunk('posts/ratePost', 
 async (formData, { getState, rejectWithValue }) => {
-    const token = getOauthToken(getState())
+    const token = getAccessToken(getState())
     let customConfig = {}
     customConfig.headers = {
-        'Authorization': `Bearer ${token.token}`
+        'Authorization': `Bearer ${token}`
     }
     const response = await client
         .post('/api/posts/rate', rejectWithValue, formData, customConfig)

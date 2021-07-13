@@ -4,7 +4,7 @@ import {
 } from '@reduxjs/toolkit'
 
 import { client } from '../../api/client'
-import { getOauthToken } from '../oauth/oauthSlice'
+import { getAccessToken } from '../oauth/oauthSlice'
 
 // setup inital state
 const initialState = {
@@ -32,10 +32,10 @@ export const fetchUser = createAsyncThunk('users/fetchUser',
 // follow profile
 export const followProfile = createAsyncThunk('users/followProfile',
 async (formData, { getState, rejectWithValue }) => {
-    const token = getOauthToken(getState())
+    const token = getAccessToken(getState())
     let customConfig = {}
     customConfig.headers = {
-        'Authorization': `Bearer ${token.token}`
+        'Authorization': `Bearer ${token}`
     }
     const response = await client
         .post('/api/profile/follow', rejectWithValue, formData, customConfig)
@@ -45,10 +45,10 @@ async (formData, { getState, rejectWithValue }) => {
 // unfollow profile
 export const unfollowProfile = createAsyncThunk('users/unfollowProfile',
 async (profileId, { getState, rejectWithValue }) => {
-    const token = getOauthToken(getState())
+    const token = getAccessToken(getState())
     let customConfig = {}
     customConfig.headers = {
-        'Authorization': `Bearer ${token.token}`
+        'Authorization': `Bearer ${token}`
     }
     const response = await client
         .delete('/api/profile/follow/' + profileId, rejectWithValue, customConfig)
@@ -58,10 +58,10 @@ async (profileId, { getState, rejectWithValue }) => {
 // update profile
 export const updateProfile = createAsyncThunk('users/updateProfile',
 async (formData, { getState, rejectWithValue }) => {
-    const token = getOauthToken(getState())
+    const token = getAccessToken(getState())
     let customConfig = {}
     customConfig.headers = {
-        'Authorization': `Bearer ${token.token}`
+        'Authorization': `Bearer ${token}`
     }
     const response = await client
         .update('/api/profile/', rejectWithValue, formData, customConfig)
@@ -71,10 +71,10 @@ async (formData, { getState, rejectWithValue }) => {
 // update profile
 export const updateProfileShowcases = createAsyncThunk('users/updateProfileShowcases',
 async (formData, { getState, rejectWithValue }) => {
-    const token = getOauthToken(getState())
+    const token = getAccessToken(getState())
     let customConfig = {}
     customConfig.headers = {
-        'Authorization': `Bearer ${token.token}`
+        'Authorization': `Bearer ${token}`
     }
     const response = await client
         .update('/api/profile/showcases', rejectWithValue, formData, customConfig)

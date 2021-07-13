@@ -41,14 +41,25 @@ export const checkLogin = createAsyncThunk('oauth/checkLogin', async (data, { re
         return rejectWithValue("No Token");
 
     const token = JSON.parse(tokenString);
-    if(new Date().getTime() > new Date(token.expiration).getTime())
-        return rejectWithValue("Token Expired");
+    const timeNow = new Date().getTime();
+    if(timeNow > new Date(token.expires).getTime()){
+        if(timeNow > new Date(token.refreshExpires).getTime()){
+            return rejectWithValue("Token Expired");
+        }
+        const formData = {
+            token: token.refreshToken
+        }
+        const newToken = await client
+            .post('/api/account/refresh-token', rejectWithValue, formData)
+        window.localStorage.setItem('session', JSON.stringify(newToken));
+        return token;
+    }
     return token;
 })
 
 // user login
 export const loginUser = createAsyncThunk('oauth/login', async (formData, { rejectWithValue }) => {
-    const response = await client.post('/api/account/login', rejectWithValue, formData)
+    const response = await client.post('/api/account/authorize', rejectWithValue, formData)
     window.localStorage.setItem('session', JSON.stringify(response));
     return response
 })
@@ -61,10 +72,10 @@ export const registerUser = createAsyncThunk('oauth/register', async (formData, 
 
 // fetch current user
 export const fetchCurrentUser = createAsyncThunk('users/fetchCurrent', async (formData, { getState, rejectWithValue }) => {
-    const token = getOauthToken(getState())
+    const accessToken = getAccessToken(getState())
     let customConfig = {}
     customConfig.headers = {
-        'Authorization': `Bearer ${token.token}`
+        'Authorization': `Bearer ${accessToken}`
     }
     const response = await client
         .get('/api/profile/', rejectWithValue, customConfig)
@@ -79,8 +90,16 @@ export const getCurrentUser = (state) => {
     return state.oauth.identity.user
 }
 
+export const getOauthAccess = (state) => {
+    return state.oauth.access
+}
+
 export const getOauthToken = (state) => {
     return state.oauth.access.token
+}
+
+export const getAccessToken = (state) => {
+    return state.oauth.access.token.accessToken
 }
 
 export const isUserValidAge = (state) => {

@@ -4,7 +4,7 @@ import {
   } from '@reduxjs/toolkit'
   
 import { client } from '../../api/client'
-import { getOauthToken } from '../oauth/oauthSlice'
+import { getAccessToken } from '../oauth/oauthSlice'
 
 // setup inital state
 const initialState = {
@@ -24,10 +24,10 @@ const initialState = {
 // fetch list of brands
 export const createComment = createAsyncThunk('comments/createComment',
  async (data, { getState, rejectWithValue }) => {
-    const token = getOauthToken(getState())
+    const token = getAccessToken(getState())
     let customConfig = {}
     customConfig.headers = {
-        'Authorization': `Bearer ${token.token}`
+        'Authorization': `Bearer ${token}`
     }
     const response = await client
         .post('/api/comments/', rejectWithValue, data, customConfig)
@@ -60,10 +60,10 @@ export const fetchComments = createAsyncThunk('comments/fetchComments',
 // rate comment
 export const rateComment = createAsyncThunk('comments/rateComment', 
 async (formData, { getState, rejectWithValue }) => {
-    const token = getOauthToken(getState())
+    const token = getAccessToken(getState())
     let customConfig = {}
     customConfig.headers = {
-        'Authorization': `Bearer ${token.token}`
+        'Authorization': `Bearer ${token}`
     }
     const response = await client
         .post('/api/comments/rate', rejectWithValue, formData, customConfig)
