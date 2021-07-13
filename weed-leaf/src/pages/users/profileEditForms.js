@@ -27,6 +27,7 @@ const profileShowcaseForm = (profileShowcases) =>
                 label: "-- select --"
             },
             'MULTIPLE-IMAGES': {
+                label: "Image Showcase",
                 type: 'MULTIPLE',
                 data: {
                     'type': 'IMAGES',
@@ -34,6 +35,7 @@ const profileShowcaseForm = (profileShowcases) =>
                 }
             },
             'SINGLE-PRODUCTS': {
+                label: "Favourite Product",
                 type: 'SINGLE',
                 data: {
                     'type': 'PRODUCTS',
@@ -41,6 +43,7 @@ const profileShowcaseForm = (profileShowcases) =>
                 }
             },
             'SINGLE-BRANDS': {
+                label: "Favourite Brand",
                 type: 'SINGLE',
                 data: {
                     'type': 'BRANDS',
@@ -48,6 +51,7 @@ const profileShowcaseForm = (profileShowcases) =>
                 }
             },
             'MULTIPLE-PRODUCTS': {
+                label: "Product Showcase",
                 type: 'MULTIPLE',
                 data: {
                     'type': 'PRODUCTS',
@@ -55,6 +59,7 @@ const profileShowcaseForm = (profileShowcases) =>
                 }
             },
             'SINGLE-POSTS': {
+                label: "Review Showcase",
                 type: 'SINGLE',
                 data: {
                     'type': 'POSTS',
@@ -62,6 +67,7 @@ const profileShowcaseForm = (profileShowcases) =>
                 }
             },
             'MULTIPLE-COLLECTIONS': {
+                label: "Collection Showcase",
                 type: 'MULTIPLE',
                 data: {
                     'type': 'COLLECTIONS',

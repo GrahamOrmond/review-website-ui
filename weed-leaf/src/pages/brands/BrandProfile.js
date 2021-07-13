@@ -40,6 +40,15 @@ export const BrandProfile = (props) => {
     
     if(!brand)
         return (<div></div>)
+
+    let showcaseData = {
+        type: "MULTIPLE",
+        data: {
+            type: "PRODUCTS",
+            items: []
+        }
+    }
+
     return (
             <AppProfile
             id={brand.brandId}
@@ -50,6 +59,8 @@ export const BrandProfile = (props) => {
             >
             <AppShowcase
                 title="Products"
+                type={showcaseData.type}
+                data={showcaseData.data}
                 actionTitle="View"
                 actionLink={"/products?brands=" + brand.name}
                 />
