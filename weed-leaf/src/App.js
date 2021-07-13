@@ -28,23 +28,35 @@ import { ProductsPage } from './pages/products/ProductsPage'
 import { CommunityPage } from './pages/community/CommunityPage'
 
 // redux store
-import { checkLogin, fetchCurrentUser, isUserLoggedIn } from './pages/oauth/oauthSlice';
+import { checkLogin, checkUserAge, fetchCurrentUser, isUserLoggedIn, isUserValidAge } from './pages/oauth/oauthSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { PostsPage } from './pages/posts/PostsPage';
+import { ValidateAgePage } from './pages/oauth/ValidateAgePage';
 
 function App() {
 
   const dispatch = useDispatch()
+  const isUserOfAge = useSelector(isUserValidAge)
+  const isLoggedIn = useSelector(isUserLoggedIn);
   useEffect(() => {
       dispatch(checkLogin())
       .then(res => {
-        if(res.meta.requestStatus === "fulfilled"){
+        if(res.meta.requestStatus === "fulfilled"){ // logged in (assume of age)
           dispatch(fetchCurrentUser())
+        }else{ // user not logged in (check age)
+          dispatch(checkUserAge())
         }
       })
   }, [dispatch])
-  const isLoggedIn = useSelector(isUserLoggedIn);
   
+  if(!isUserOfAge){ // age not determined
+    return (
+      <div className="app">
+        <ValidateAgePage />
+      </div>
+    )
+  }
+
   return (
     <Router>
       <AppHeader isLoggedIn={isLoggedIn}/>

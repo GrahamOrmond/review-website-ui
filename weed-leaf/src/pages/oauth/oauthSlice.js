@@ -9,6 +9,7 @@ import { client } from '../../api/client'
 const initialState = {
     identity: { // tracks logged in user
         user: null,
+        isValidAge: null,
         status: 'idle',
         error: null
     },
@@ -19,6 +20,19 @@ const initialState = {
         error: null
     },
 }
+
+// check user age
+export const checkUserAge = createAsyncThunk('oauth/checkUserAge', async (data, { rejectWithValue }) => {
+    const ageString = window.localStorage.getItem('user-age');
+    if(!ageString)
+        return rejectWithValue("No Age");
+
+    const age = JSON.parse(ageString);
+    if(new Date().getTime()) // check time here
+        return rejectWithValue("Invalid age");
+    return true;
+})
+
 
 // check user login
 export const checkLogin = createAsyncThunk('oauth/checkLogin', async (data, { rejectWithValue }) => {
@@ -68,6 +82,10 @@ export const getCurrentUser = (state) => {
 export const getOauthToken = (state) => {
     return state.oauth.access.token
 }
+
+export const isUserValidAge = (state) => {
+    return state.oauth.identity.isValidAge
+}
   
 // setup slice
 export const oauthSlice = createSlice({
@@ -86,8 +104,19 @@ export const oauthSlice = createSlice({
         updateCurrentUserShowcases(state, action) {
             state.identity.user.showcases = action.payload.showcases
         },
+        setValidAgeTrue(state, action) {
+            state.identity.isValidAge = true
+        },
     },
     extraReducers: {
+        // USER AGE
+        [fetchCurrentUser.fulfilled]: (state) => {
+            state.identity.isValidAge = true
+        },
+        [fetchCurrentUser.rejected]: (state) => {
+            state.identity.isValidAge = false
+        },
+
         // LOGIN USER
         [loginUser.pending]: (state, action) => {
             state.access.status = 'loading'
@@ -162,16 +191,15 @@ export const oauthSlice = createSlice({
         [fetchCurrentUser.fulfilled]: (state, action) => {
             state.identity = {
                 user: action.payload,
+                isValidAge: true,
                 status: 'succeeded',
                 error: null
             }
         },
         [fetchCurrentUser.rejected]: (state, action) => {
-            state.identity = {
-                user: null,
-                status: 'failed',
-                error: action.error.message
-            }
+            state.identity.user = null
+            state.identity.status = 'failed'
+            state.identity.error = action.error.message
         },
 
     }
@@ -181,6 +209,7 @@ export const {
     logoutUser,
     updateCurrentUser,
     updateCurrentUserShowcases,
+    setValidAgeTrue,
 } = oauthSlice.actions
   
 export default oauthSlice.reducer
