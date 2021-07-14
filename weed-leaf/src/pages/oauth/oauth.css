@@ -101,14 +101,58 @@
     border: solid 1px #707274;
     width: 100%;
     max-width: 320px;
+    cursor:default;
 }
 
-.verify-button:hover{
-    border: solid 1px #1c1d1d;
-    background-color: #f5f5f5;
+.verify-button.enabled {
+    background-color: #4caf50;
+    cursor: pointer;
 }
 
-.verify-button:active{
-    border: solid 1px #000000;
-    background-color: #ebebeb;
+.verify-button.enabled:hover{
+    border: solid 1px #707274;
+    background-color: #81c784;
+}
+
+.verify-button.enabled:active{
+    border: solid 1px #707274;
+    background-color: #4caf50;
+}
+
+.verification-error p { 
+    font-size: 14px;
+    color: red;
+}
+
+.remember-verification{
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    place-items: center;
+    width: 100%;
+}
+
+.remember-verification .remember-input{
+    display: flex;
+    justify-content: center;
+    place-items: center;
+    cursor: pointer;
+    padding: 0px 5px;
+}
+
+.remember-input div {
+    display: flex;
+    justify-content: center;
+    width: 20px;
+}
+
+.remember-input input {
+    width: 15px;
+    outline: none;
+    cursor: pointer;
+}
+
+.remember-input label {
+    padding-left: 5px;
+    cursor: pointer;
 }

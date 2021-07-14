@@ -6,6 +6,8 @@ import { setValidAgeTrue } from "./oauthSlice"
 const ValidationContent = () => {
 
     const dispatch = useDispatch()
+    const [formError, setFormError] = useState("")
+    const [canSubmit, setCanSubmit] = useState(false)
     const [formData, setFormData] = useState({
         month: {
             max: 2,
@@ -19,6 +21,7 @@ const ValidationContent = () => {
             max: 4,
             value: ""
         },
+        remember: false // default 1 day
     })
     
 
@@ -29,23 +32,144 @@ const ValidationContent = () => {
             return
 
         // check for max input count
-        if(formData[target.name].value.length < formData[target.name].max){
-            let data = {...formData}
-            data[target.name].value = target.value
-            setFormData(data)
+        if(target.value.length > formData[target.name].max + 1){ // +1 to remove starting 0's
+            return
+        } 
+
+        let dateNow = new Date()
+        let data = {...formData}
+        if(target.value)
+        {
+            // 1 more than max (check for 0's)
+            if(target.value.length > formData[target.name].max){
+                if(target.value.charAt(0) === '0')
+                    target.value = target.value.substring(1);
+                else
+                    return
+            }
+
+            if(target.name === "month"){ // month check
+                if(parseInt(target.value) > 12){
+                    target.value = 12
+                }
+            }else if (target.name === "year"){ // year check
+                let yearNow =  dateNow.getFullYear();
+                if(parseInt(target.value) > yearNow){
+                    target.value = yearNow
+                }
+            }
+            target.value = target.value.toString()
         }
+        data[target.name].value = target.value
+
+        // check days
+        if(data.day.value){
+            let year = data.year.value ? data.year.value : 0
+            let month = data.month.value ? data.month.value : 0
+            let maxDays = new Date(year, parseInt(month), "").getDate()
+            if(data.day.value > maxDays){
+                data.day.value = maxDays
+            }
+        }
+        setFormError("")
+        setFormData(data)
+
+        // allow user to submit form if inputs are entered
+        if(getDateErrors()){
+            setCanSubmit(false)
+        }else {
+            setCanSubmit(true)
+        }
+    }
+
+    const handleInputBlur = () => {
+        let data = {...formData}
+        if(data.month.value
+            && data.month.value.length === 1){
+                data.month.value = "0" + data.month.value
+        }
+
+        if(data.day.value
+            && data.day.value.length === 1){
+                data.day.value = "0" + data.day.value
+        }
+
+        if(data.year.value
+            && data.year.value.length !== 4){
+                let val = '0'
+                data.year.value = val.repeat(4 - data.year.value.length) + data.year.value
+        }
+        setFormData(data)
+    }
+
+    const getDateErrors = () => {
+        // check for empty values
+        if(!formData.year.value || 
+            !formData.month.value ||
+            !formData.day.value ||
+            formData.year.value.length !== 4 ) {
+            return "Please enter a valid date";
+        } 
+        return;
+    }
+
+    const getAgeErrors = () => {
+        // check date
+        let birthDate = new Date(formData.year.value, parseInt(formData.month.value), parseInt(formData.day.value))
+        let minDateRequired  = new Date()
+        minDateRequired.setFullYear(minDateRequired.getFullYear() - 19)
+        if(birthDate.getTime() > minDateRequired.getTime()){ // not of age
+            return "You must be over the age of 19 to access this website"
+        }else if(parseInt(formData.year.value) < minDateRequired.getFullYear() - 81){ //  more than 100 years old
+            return "Please enter a valid date";
+        }
+        return;
     }
 
     const handleValidateAge = (e) => {
         e.preventDefault()
-        dispatch(setValidAgeTrue())
+
+        if(!canSubmit) return
+
+        // check date
+        let dateError = getDateErrors();
+        if (dateError){
+            setFormError(dateError)
+            return;
+        }
+
+        // check age
+        let ageError = getAgeErrors();
+        if (ageError){
+            setFormError(ageError)
+            return
+        }
+
+        // submit form
+        let date = new Date()
+        if(formData.remember){ // remember for 30 days
+            date.setDate(date.getDate() + 30);
+        }else{ // remeber for 1 day
+            date.setDate(date.getDate() + 1);
+        }
+        var ageData = {
+            expires: date.getTime().toString()
+        }
+        dispatch(setValidAgeTrue(ageData))
     }
-    
+
+    const handleRemeberInputChange = () => {
+        let data = {...formData}
+        data.remember = !data.remember
+        setFormData(data)
+    }
+
+    const submitButtonClass = canSubmit? "verify-button enabled" : "verify-button"
     return (
         <div className="validation-area">
             <form onSubmit={(e) => handleValidateAge(e)}>
 
-                <p>Date of birth</p>
+                {/* <p>Date of birth</p> */}
                 <div className="age-input">
                     <div>
                         <input 
@@ -55,6 +179,7 @@ const ValidationContent = () => {
                             placeholder="MM" 
                             autoComplete="off"
                             onChange={(e) => handleInputChange(e)}
+                            onBlur={() => handleInputBlur()}
                         ></input>
                         <label>Month</label>
                     </div>
@@ -66,6 +191,7 @@ const ValidationContent = () => {
                             placeholder="DD" 
                             autoComplete="off"
                             onChange={(e) => handleInputChange(e)}
+                            onBlur={() => handleInputBlur()}
                         ></input>
                         <label>Day</label>
                     </div>
@@ -77,13 +203,29 @@ const ValidationContent = () => {
                             placeholder="YYYY"
                             autoComplete="off" 
                             onChange={(e) => handleInputChange(e)}
+                            onBlur={() => handleInputBlur()}
                         ></input>
                         <label>Year</label>
                     </div>
                 </div>
-
+                <div className="remember-verification">
+                    <div className="remember-input" onClick={() => handleRemeberInputChange()}>
+                        <div>
+                            <input 
+                                name="remember" 
+                                onChange={()=>{}}
+                                checked={formData.remember} 
+                                type="checkbox" />
+                        </div>
+                        <label>Remember for 30 days</label>
+                    </div>
+                </div>
+                
                 <div className="verify-button-section">
-                    <button className="verify-button" type="submit">VERIFY</button>
+                    <button className={submitButtonClass} type="submit">VERIFY</button>
+                </div>
+                <div className="verification-error">
+                    <p>{formError}</p>
                 </div>
             </form>
         </div>

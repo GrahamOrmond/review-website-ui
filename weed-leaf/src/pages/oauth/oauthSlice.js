@@ -23,13 +23,19 @@ const initialState = {
 
 // check user age
 export const checkUserAge = createAsyncThunk('oauth/checkUserAge', async (data, { rejectWithValue }) => {
+    // check age from storage
     const ageString = window.localStorage.getItem('user-age');
     if(!ageString)
         return rejectWithValue("No Age");
 
+    // get check json value
     const age = JSON.parse(ageString);
-    if(new Date().getTime()) // check time here
+    if(isNaN(age.expires)) // should be a number saved as string
         return rejectWithValue("Invalid age");
+    
+    // check expire time
+    if(parseInt(age.expires) > new Date().getTime())
+        return rejectWithValue("Expired age");
     return true;
 })
 
@@ -124,15 +130,19 @@ export const oauthSlice = createSlice({
             state.identity.user.showcases = action.payload.showcases
         },
         setValidAgeTrue(state, action) {
+            window.localStorage.setItem('user-age',
+                 JSON.stringify(action.payload));
             state.identity.isValidAge = true
         },
     },
     extraReducers: {
         // USER AGE
-        [fetchCurrentUser.fulfilled]: (state) => {
+        [checkUserAge.pending]: (state) => {
+        },
+        [checkUserAge.fulfilled]: (state) => {
             state.identity.isValidAge = true
         },
-        [fetchCurrentUser.rejected]: (state) => {
+        [checkUserAge.rejected]: (state) => {
             state.identity.isValidAge = false
         },
 
