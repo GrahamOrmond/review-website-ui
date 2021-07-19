@@ -122,6 +122,7 @@ export const AppCommentCreate = (props) => {
                         editId={postId}
                         name="comment"
                         placeHolder="Add a comment"
+                        value=""
                     />
                 </div>
                 <div className="comment-create-toolbar">

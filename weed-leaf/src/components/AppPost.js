@@ -229,8 +229,9 @@ export const AppPost = (props) => {
         dispatch(ratePost(formData))
     }
 
+    // setup post url
     let postUrl;
-    if(props.display !== "full"){
+    if(props.display !== "full"){ // partial view
         postUrl = `/community/user/${displayName}/${postUrlId}`;
         if(post.product.productId != null)
             postUrl = `/products/${post.brand.brandId}/${post.product.urlId}/${postType}s/${displayName}/${postUrlId}`

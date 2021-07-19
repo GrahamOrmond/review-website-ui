@@ -27,19 +27,19 @@ const ValidationContent = () => {
 
     const handleInputChange = (e) => {
         const target = e.target
-
+        
         if(isNaN(target.value)) // only numbers allowed
             return
-
-        // check for max input count
-        if(target.value.length > formData[target.name].max + 1){ // +1 to remove starting 0's
-            return
-        } 
 
         let dateNow = new Date()
         let data = {...formData}
         if(target.value)
         {
+            // check for max input count
+            if(target.value.length > formData[target.name].max + 1){ // +1 to remove starting 0's
+                return
+            } 
+
             // 1 more than max (check for 0's)
             if(target.value.length > formData[target.name].max){
                 if(target.value.charAt(0) === '0')
@@ -47,10 +47,14 @@ const ValidationContent = () => {
                 else
                     return
             }
-
+            
             if(target.name === "month"){ // month check
                 if(parseInt(target.value) > 12){
                     target.value = 12
+                }
+
+                if(target.value.length >= target.max){ // focus next input
+                    target.form.elements["day"].focus()
                 }
             }else if (target.name === "year"){ // year check
                 let yearNow =  dateNow.getFullYear();
@@ -70,6 +74,10 @@ const ValidationContent = () => {
             if(data.day.value > maxDays){
                 data.day.value = maxDays
             }
+
+            if(data.day.value.length >= target.max){ // focus next input
+                target.form.elements["year"].focus()
+            }
         }
         setFormError("")
         setFormData(data)
@@ -83,21 +91,12 @@ const ValidationContent = () => {
     }
 
     const handleInputBlur = () => {
-        let data = {...formData}
-        if(data.month.value
-            && data.month.value.length === 1){
-                data.month.value = "0" + data.month.value
-        }
-
-        if(data.day.value
-            && data.day.value.length === 1){
-                data.day.value = "0" + data.day.value
-        }
-
-        if(data.year.value
-            && data.year.value.length !== 4){
-                let val = '0'
-                data.year.value = val.repeat(4 - data.year.value.length) + data.year.value
+        let data = {...formData};
+        for (const [key, input] of Object.entries(data)) {
+            if(input.value
+                && input.value.length === 1){
+                    input.value = '0'.repeat(input.max - input.value.length) + input.value
+            }
         }
         setFormData(data)
     }
@@ -175,6 +174,7 @@ const ValidationContent = () => {
                         <input 
                             name="month"
                             value={formData.month.value}
+                            max={formData.month.max}
                             type="text" 
                             placeholder="MM" 
                             autoComplete="off"
@@ -187,6 +187,7 @@ const ValidationContent = () => {
                         <input 
                             name="day"
                             value={formData.day.value}
+                            max={formData.month.max}
                             type="text" 
                             placeholder="DD" 
                             autoComplete="off"
@@ -199,6 +200,7 @@ const ValidationContent = () => {
                         <input 
                             name="year"
                             value={formData.year.value}
+                            max={formData.month.max}
                             type="text" 
                             placeholder="YYYY"
                             autoComplete="off" 

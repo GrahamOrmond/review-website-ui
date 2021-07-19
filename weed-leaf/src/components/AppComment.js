@@ -216,6 +216,7 @@ export const CommentReply = (props) => {
                         editId={commentId}
                         name="comment"
                         placeHolder="Add a Reply"
+                        value=""
                     />
                 </div>
                 <div className="comment-create-toolbar">

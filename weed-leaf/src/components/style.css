@@ -472,6 +472,7 @@ button {
     padding: 10px 0px;
     white-space: pre-line;  
     max-height: 200px;
+    width: 100%;
 }
 
 .post-body-images {
