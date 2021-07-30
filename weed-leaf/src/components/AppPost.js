@@ -61,6 +61,44 @@ const PostUserInfo = (props) => {
 
 
 const PostHeader = (props) => {
+
+    const {
+        brand,
+        product,
+    } = props
+
+    let navLinks = []
+    if(brand.brandId) {
+        navLinks.push(<div>
+            <Link to={`/brands/${props.brand.brandId}`} >
+                <p>{props.brand.name}</p>
+            </Link>
+        </div>)
+
+        if(product.productId){
+            navLinks.push(<div className="reference-seperator">
+                <p>/</p>
+            </div>)
+
+            navLinks.push(<div>
+                <Link to={`/products/${props.brand.brandId}/${props.product.urlId}`} >
+                    <p>{props.product.name}</p>
+                </Link>
+            </div>)
+        }
+
+    }else{
+
+        navLinks.push(<div>
+            <Link to={`/community`} >
+                <p>Community</p>
+            </Link>
+        </div>)
+
+    }
+
+    
+
     return (
         <div className="post-header">
             <PostUserInfo 
@@ -68,24 +106,12 @@ const PostHeader = (props) => {
                 date={props.date}
             />
             <div className="post-content-info">
-                    <div className="post-reference">
-                        <div>
-                            <Link to={`/brands/${props.brand.brandId}`} >
-                                <p>{props.brand.name}</p>
-                            </Link>
-                        </div>
-                        <div className="reference-seperator">
-                            <p>/</p>
-                        </div>
-                        <div>
-                            <Link to={`/products/${props.brand.brandId}/${props.product.urlId}`} >
-                                <p>{props.product.name}</p>
-                            </Link>
-                        </div>
-                    </div>
-                    <div className="post-type">
-                        <p>{props.type}</p>
-                    </div>
+                <div className="post-reference">
+                    { navLinks }
+                </div>
+                <div className="post-type">
+                    <p>{props.type}</p>
+                </div>
             </div>
             <div className="title">
                 <h2>{props.title}</h2>
