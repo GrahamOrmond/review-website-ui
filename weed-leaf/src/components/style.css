@@ -64,6 +64,13 @@ a {
     color: #404041;
 }
 
+img {
+    image-rendering: -moz-crisp-edges; /* Firefox */
+    image-rendering: -o-crisp-edges; /* Opera */
+    image-rendering: -webkit-optimize-contrast; /* Webkit (non-standard naming) */
+    image-rendering: crisp-edges;
+    -ms-interpolation-mode: nearest-neighbor; /* IE (non-standard property) */
+}
 
 /* 
     2. HEADER
@@ -1152,14 +1159,14 @@ button {
     margin: 5px;
     width: 100%;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    min-height: 200px;
+    height: 500px;
 }
 
 .showcase-images .main {
-    width: 100%;
-    min-height: 200px;
-    max-height: 400px;
-    border-bottom: solid 1px #D6D6D7;
+    width: 85%;
+    height: 100%;
 }
 
 .showcase-images .main .showcase-image {
@@ -1168,30 +1175,31 @@ button {
 }
 
 .showcase-images .secondary {
-    width: 100%;
+    width: 15%;
+    height: 100%;
     display: flex;
     flex-wrap: nowrap;
-    max-height: 175px;
+    flex-direction: column;
 }
 
 .showcase-images .secondary .showcase-image{
     width: 100%;
-    min-height: 75px;
-}
-
-.showcase-images .secondary div:not(:last-child) {
-    border-right: solid 1px #D6D6D7;
+    max-height: 25%;
+    line-height: 50px;
 }
 
 .showcase-images .showcase-image img{
     width: 100%;
     height: 100%;
+    vertical-align: middle;
 }
 
 .showcase-images .showcase-image div{
     width: 100%;
     height: 100%;
 }
+
+
 
 .showcase-image.edit{
     cursor: pointer;
