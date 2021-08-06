@@ -44,12 +44,12 @@ export const AppTextEditor = (props) => {
     }, [editId, value])
 
     return (
-        <div className="app-text-editor" >
+        <div className="app-editor" >
             <input name={name} hidden defaultValue="textEditor" />
-            <div className="text-editor-label">
+            <div className="editor-label">
                 <label>{label}</label>
             </div>
-            <div className="text-editor-content">
+            <div className="text-editor">
                 <div id={editId}
                     className="edit-content" 
                     contentEditable="true"
@@ -65,16 +65,36 @@ export const AppTextEditor = (props) => {
 
 export const AppMarkupEditor = (props) => {
 
+    const {
+        editId,
+        name,
+        value,
+        placeHolder,
+    } = props
+
     const handleFormatChange = (command, value) => {
         document.execCommand(command, false, value);
     }
 
-    return (
-        <div className="app-text-editor" >
-            <EditToolbar handleFormatChange={handleFormatChange}/>
-            <input name={props.name} hidden defaultValue="markupEditor" />
-            <div id="edit_content" className="edit-content" contentEditable="true">
+    useEffect(() => {
+        if(value){
+            let editor = document.getElementById(editId);
+            editor.innerText = value
+        }
+    }, [editId, value])
 
+    return (
+        <div className="app-editor" >
+            {/* <EditToolbar handleFormatChange={handleFormatChange}/> */}
+            <input name={name} hidden defaultValue="markupEditor" />
+            <div className="markup-editor">
+                <div id={editId}
+                    className="edit-content" 
+                    contentEditable="true"
+                    data-placeholder={placeHolder}
+                    defaultValue={value}
+                    >
+                </div>
             </div>
         </div>
     )

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { AppCard } from "../../components/AppCard"
 import { AppFileInput, AppInput, AppSelect } from "../../components/AppForm"
 import { postOptions } from './submitPostOptions';
-import { AppTextEditor } from '../../components/AppTextEditor';
+import { AppMarkupEditor } from '../../components/AppTextEditor';
 
 // handle submitting posts
 export const SubmitPostForm = (props) => {
@@ -65,55 +65,71 @@ export const SubmitPostForm = (props) => {
                 </div>
 
                 <div className="form-content">
-                    <AppSelect 
-                        name="type"
-                        label="Type"
-                        selectedValue={formData.type}
-                        options={postOptions.type}
-                        handleOnChange={handleSelectChange}
-                    />
-                    <AppSelect 
-                        name="status"
-                        label="Status"
-                        selectedValue={formData.status}
-                        options={postOptions.status}
-                        handleOnChange={handleSelectChange}
-                    />
-                    <AppSelect 
-                        name="brandId"
-                        label="Brand"
-                        selectedValue={formData.brandId}
-                        options={postOptions.brands}
-                        handleOnChange={handleSelectChange}
-                    />
-                    <AppSelect 
-                        name="productId"
-                        label="Product"
-                        selectedValue={formData.productId}
-                        options={postOptions.products}
-                        handleOnChange={handleSelectChange}
-                    />
-                    <AppInput 
-                        name="title"
-                        label="Title" 
-                        type="text"
-                        placeholder=''
-                        value={formData.title}
-                        handleChange={handleInputChange}
-                    />
-                    <AppFileInput
-                        name="mediaFiles" 
-                        label="Media"
-                        handleOnChange={handleFileChange}
-                        files={formData.files}
-                    />
-                    <AppTextEditor 
-                        name="content"
-                        editId="content"
-                        label=""
-                        placeholder=""
-                        value={formData.content}
-                    />
+
+                    <div className="form-input-group">
+                        <AppSelect 
+                            name="type"
+                            label="Type"
+                            selectedValue={formData.type}
+                            options={postOptions.type}
+                            handleOnChange={handleSelectChange}
+                        />
+                        <AppSelect 
+                            name="status"
+                            label="Status"
+                            selectedValue={formData.status}
+                            options={postOptions.status}
+                            handleOnChange={handleSelectChange}
+                        />
+                    </div>
+
+                    <div className="form-input-group">
+                        <AppSelect 
+                            name="brandId"
+                            label="Brand"
+                            selectedValue={formData.brandId}
+                            options={postOptions.brands}
+                            handleOnChange={handleSelectChange}
+                        />
+                        <AppSelect 
+                            name="productId"
+                            label="Product"
+                            selectedValue={formData.productId}
+                            options={postOptions.products}
+                            handleOnChange={handleSelectChange}
+                        />
+                    </div>
+
+                    <div className="form-input-group">
+                        <AppInput 
+                            name="title"
+                            label="Title" 
+                            type="text"
+                            placeholder=''
+                            value={formData.title}
+                            handleChange={handleInputChange}
+                        />
+                    </div>
+
+                    <div className="form-input-group">
+                        <AppFileInput
+                            name="mediaFiles" 
+                            label="Media"
+                            handleOnChange={handleFileChange}
+                            files={formData.files}
+                        />
+                    </div>
+
+                    <div className="form-input-group">
+                        <AppMarkupEditor 
+                            name="content"
+                            editId="content"
+                            label=""
+                            placeholder="Whats on your mind?"
+                            value={formData.content}
+                        />
+                    </div>
+ 
                 </div>
 
                 <div className="form-footer">

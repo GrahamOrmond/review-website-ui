@@ -15,7 +15,7 @@
     13. PROFILE EDIT
     14. SHOWCASE
     15. FILTER
-    16. TEXT EDITOR
+    16. TEXT EDITORS
     17. POST CREATE
     18. COMMENTS
     19. EXTRAS
@@ -718,7 +718,7 @@ button {
 */
 
 .app-form {
-    padding: 5px
+    padding: 5px;
 }
 
 .form-header {
@@ -734,12 +734,24 @@ button {
 
 .form-content {
     width: 100%;
-    padding: 10px 0px;
 }
 
+.form-input-group {
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.form-input-group .form-input {
+    padding: 5px;
+    width: 100%;
+}
+
+.form-input-group .app-editor {
+    padding: 5px;
+}
 
 .form-input {
-    margin-bottom: 10px;
 }
 
     .form-input label {
@@ -750,11 +762,10 @@ button {
 
     .form-input input {
         font-size: 14px;
-        display: block;
     }
 
     .form-input select {
-        
+        width: 100%;
     }
 
     .form-input .input-dynamic {
@@ -774,14 +785,14 @@ button {
         background-color: #e6e6e6;
     }
 
-    
-
     .form-footer {
+        padding: 10px 0px;
         display: flex;
         justify-content: flex-end;
     }
 
     .form-footer button {
+        margin: 5px;
         width: 100%;
     }
 
@@ -1339,33 +1350,43 @@ button {
 }
 
 /* 
-    16. TEXT EDITOR
+    16. TEXT EDITORS
 */
 
-.app-text-editor {
+.app-editor {
+    width: 100%;
 }
 
-.text-editor-label {
-    margin-bottom: 5px;
-    font-size: 16px;
-    display: block;
-}
-
-.text-editor-content {
+.text-editor  {
     background-color: #FFF;
     border-radius: 5px;
     border: solid #b6b6b7 1px;
+    
 }
 
-.app-comment-editor {
+    .text-editor .edit-content {
+        font-size: 14px;
+        padding: 5px;
+        overflow: auto;
+    }
+
+.markup-editor  {
     background-color: #FFF;
-    min-height: 60px;
     border-radius: 5px;
+    border: solid #b6b6b7 1px;
+    
 }
+    .markup-editor .edit-content {
+        font-size: 14px;
+        padding: 5px;
+        overflow: auto;
+        min-height: 100px;
+    }
 
-.app-comment-editor .edit-content {
-    min-height: 40px;
-    padding: 10px;
+.editor-label {
+    margin-bottom: 5px;
+    font-size: 16px;
+    display: block;
 }
 
 [contenteditable]:empty:before {
@@ -1404,12 +1425,6 @@ button {
 
 .toolbar-button:active {
     background-color: #e6e6e6;
-}
-
-.edit-content {
-    font-size: 14px;
-    padding: 5px;
-    overflow: auto;
 }
 
 .edit-content:focus {
