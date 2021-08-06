@@ -743,8 +743,6 @@ button {
 }
 
 .form-input-group .form-input {
-    padding: 5px;
-    width: 100%;
 }
 
 .form-input-group .app-editor {
@@ -752,6 +750,8 @@ button {
 }
 
 .form-input {
+    margin: 5px;
+    width: calc(100% - 10px)
 }
 
     .form-input label {
@@ -795,6 +795,10 @@ button {
         margin: 5px;
         width: 100%;
     }
+
+.form-dynamic-select {
+    width: 100%;
+}
 
 .input-error {
     padding: 5px 0px;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AppCard } from "../../components/AppCard"
-import { AppFileInput, AppInput, AppSelect } from "../../components/AppForm"
+import { AppDynamicSelect, AppFileInput, AppInput, AppSelect } from "../../components/AppForm"
 import { postOptions } from './submitPostOptions';
 import { AppMarkupEditor } from '../../components/AppTextEditor';
 
@@ -55,6 +55,28 @@ export const SubmitPostForm = (props) => {
     // handle saving post draft
     const handleSavePost = () => {
         console.log(formData)
+    }
+
+    // add review inputs to the form
+    let reviewContent;
+    if(formData.type === "review"){
+        reviewContent = [
+            <div className="form-input-group">
+                <AppSelect 
+                    name="rating"
+                    label="Rating"
+                    selectedValue={formData.rating}
+                    options={postOptions.rating}
+                    handleOnChange={handleSelectChange}
+                />
+            </div>,
+            <div className="form-input-group">
+                <AppDynamicSelect
+                    label="Properties"
+                    options={postOptions.properties}
+                />
+            </div>,
+        ]
     }
 
     return (
@@ -119,6 +141,8 @@ export const SubmitPostForm = (props) => {
                             files={formData.files}
                         />
                     </div>
+
+                    { reviewContent }
 
                     <div className="form-input-group">
                         <AppMarkupEditor 

@@ -96,8 +96,9 @@ export const AppSelect = (props) => {
     const renderSelectOptions = (options, selectedValue) => {
     
         let data = []
+        let valueSelected = selectedValue? selectedValue : '' 
         for (const [key, option] of Object.entries(options)) {
-            let selected = selectedValue === key? true : false
+            let selected = valueSelected === key? true : false
             data.push(
                 <option id={key} selected={selected}>
                     {option.label}
@@ -159,7 +160,11 @@ export const AppHiddenInput = (props) => {
 
 export const AppDynamicSelect = (props) => {
 
-    const [ dynamicOptions, setOptions ] = useState({...props.options});
+    const {
+        options
+    } = props
+
+    const [ dynamicOptions, setOptions ] = useState({...options});
     const [ dynamicInputs, setInputs ] = useState({});
 
     const handleAddInput = (event) => {
@@ -212,12 +217,24 @@ export const AppDynamicSelect = (props) => {
         return data
     }
 
+    const renderSelectOptions = () => {
+        let data = []
+        for (const [key, option] of Object.entries(dynamicOptions)) {
+            data.push(
+                <option id={key}>
+                    {option.label}
+                </option>
+            )
+        }
+        return data
+    }
+
     return (
-        <div>
+        <div className="form-dynamic-select">
             <div className="form-input">
                 <label>{props.label}</label>
                 <select onChange={handleAddInput}>
-                    {/* { renderSelectOptions(dynamicOptions, '') } */}
+                    { renderSelectOptions(dynamicOptions) }
                 </select>
             </div>
             { renderInputs() }
