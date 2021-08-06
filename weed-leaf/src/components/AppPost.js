@@ -4,7 +4,6 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ChatIcon from '@material-ui/icons/Chat';
 
-import AppButton from './AppButton';
 import { AppDropdown } from './AppDropdown';
 import { AppCard } from './AppCard';
 import { AppFilesDisplay } from './AppFilesDisplay';
@@ -13,6 +12,7 @@ import { Link } from 'react-router-dom'
 import { determineTimePosted } from '../helpers/generalHelper';
 import { useDispatch } from 'react-redux';
 import { ratePost } from '../pages/posts/postsSlice';
+import { AppButton } from './AppButton';
 
 const PostUserInfo = (props) => {
 

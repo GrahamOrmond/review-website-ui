@@ -37,8 +37,10 @@ export const AppTextEditor = (props) => {
     } = props
 
     useEffect(() => {
-        let editor = document.getElementById(editId);
-        editor.innerText = value
+        if(value){
+            let editor = document.getElementById(editId);
+            editor.innerText = value
+        }
     }, [editId, value])
 
     return (

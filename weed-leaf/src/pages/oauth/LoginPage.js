@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom'
-import { AppForm } from '../../components/AppForm';
+import { AppInput } from '../../components/AppForm';
 import { AppModal } from "../../components/AppModal"
 
 import { fetchCurrentUser, loginUser } from './oauthSlice'
@@ -23,13 +23,23 @@ const LoginExtra = () => {
     );
 }
 
-
 const LoginForm = () => {
 
     const dispatch = useDispatch()
     const history = useHistory()
 
-    const handleLogin = (formData) => {
+    const [formData, setFormData] = useState({
+        email: "",
+        password: "",
+    })
+
+    const handleInputChange = (e) => {
+        const newState = {...formData}
+        newState[e.target.name] = e.target.value
+        setFormData(newState)
+    }
+
+    const handleLogin = () => {
         dispatch(loginUser(formData))
         .then((res) => {
             const status = res.meta.requestStatus
@@ -44,49 +54,45 @@ const LoginForm = () => {
         })
     }
 
-    const updateFormData = (newState) => {
-        setFormData(newState)
-    }
-
-    let loginForm = {
-        'email': {
-            'label': 'Email',
-            'type': 'email',
-            'placehoder': '',
-            'required': true,
-            'value': ''
-        },
-        'password': {
-            'label': 'Password',
-            'type': 'password',
-            'placehoder': '',
-            'required': true,
-            'value': ''
-        }
-    }
-
-    const submitButtons = {
-        "post": {
-            label: "Login",
-            handleSubmit: handleLogin
-        }
-    }
-    const [ formData, setFormData ] = useState(loginForm)
-
-
     return (
-        <AppForm 
-            title="Login"
-            submitTitle="Log In"
-            method="POST"
-            formData={formData}
-            submitButtons={submitButtons}
-            updateFormData={updateFormData}
-        />
+        <div>
+            <div className="form-header">
+                <h4>Create Post</h4>
+            </div>
+
+            <div className="form-content">
+                <AppInput 
+                    name="email"
+                    label="Email" 
+                    type="text"
+                    placeholder=''
+                    value={formData.email}
+                    handleChange={handleInputChange}
+                />
+
+                <AppInput 
+                    name="password"
+                    label="Password" 
+                    type="password"
+                    placeholder=''
+                    value={formData.password}
+                    handleChange={handleInputChange}
+                />
+            </div>
+
+            <div className="form-footer">
+                <button type="submit" 
+                    className="button-blue" 
+                    onClick={handleLogin}>
+                    Login
+                </button>
+            </div>
+
+        </div>
     );
 }
 
-export const LoginPage = (props) => {
+export const LoginPage = () => {
 
     return (
         <div className="app-content">

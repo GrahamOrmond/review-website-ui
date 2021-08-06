@@ -1,19 +1,16 @@
-import React, { Component } from 'react';
 
-class AppButton extends Component {
+export const AppButton = (props) => {
 
-    constructor(props) {
-        super(props);
-        this.handleOnClick = props.handleOnClick.bind(this);
-    }
+    const {
+        handleOnClick,
+        children,
+        className,
+    } = props
 
-    render () {
-        
-        return (
-            <div onClick={this.handleOnClick} className="app-button">
-                {this.props.children}
-            </div>
-        );
-    }
-}
-export default AppButton;
+    return (
+        <div onClick={handleOnClick} 
+            className={`app-button ${className? className : ""}`}>
+            {children}
+        </div>
+    )
+} 

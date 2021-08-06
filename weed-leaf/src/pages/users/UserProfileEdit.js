@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppCard } from "../../components/AppCard";
-import { AppForm } from '../../components/AppForm';
+import { AppInput } from '../../components/AppForm';
 import { AppProfile } from "../../components/AppProfile";
 import { AppShowcase, ShowcaseItemSelector } from "../../components/AppShowcase";
+import { AppTextEditor } from "../../components/AppTextEditor";
 import { updateCurrentUser, updateCurrentUserShowcases } from "../oauth/oauthSlice";
 import './profileEditForms'
-import { profileMenuOptions, profileEditForms } from "./profileEditForms";
 import { updateProfile, updateProfileShowcases } from "./usersSlice";
 
 const ProfileSupport = (props) => {
@@ -157,30 +157,48 @@ const ProfileEditMenu = (props) => {
         handleMenuChange
     } = props
 
+    const menuOptions = {
+        "general": {
+            "label": "General",
+        },
+        "showcase": {
+            "label": "Showcase",
+        },
+        "support": {
+            "label": "Support",
+        },
+        "privacy": {
+            "label": "Privacy",
+        },
+    }
+
     // renders menu options
     const renderMenuOptions = () => {
         let options = []
 
-        for (const [key, value] of Object.entries(profileMenuOptions)) { //
-            let className = "edit-menu-option"
-            if(selectedOption.id === value.id)
-                className += " active"
+        // render menu options
+        for (const [key, value] of Object.entries(menuOptions)) {
+            // determine className
+            let className = "edit-menu-option" 
+            if(selectedOption.id === value.id) // options is selected
+                className += " active" // add to className
 
+            // add option to list
             options.push(
-                <div key={value.id}
+                <div key={key}
                     className={className}
                     onClick={() => handleMenuChange(key)}>
                     <p>{value.label}</p>
                 </div>
             )
         }
-        return options
+        return options // return list of options
     }
 
     return (
         <div className="profile-edit-menu">
             <div className="edit-menu-options">
-                {renderMenuOptions()}
+                { renderMenuOptions() }
             </div>
         </div>
     )
@@ -191,28 +209,41 @@ const ProfileEditForm = (props) => {
 
     const {
         formData,
-        updateFormData,
         handleSave,
     } = props
 
-    const submitButtons = {
-        "post": {
-            label: "Save",
-            handleSubmit: handleSave
-        }
+    const handleInputChange = (e) => {
+        const newState = {...formData.current}
+        newState[e.target.name] = e.target.value
+        formData.current = newState
     }
 
     return (
         <div className="profile-edit-content">
-            <AppForm
-                title=""
-                submitTitle="Save Profile"
-                method="POST"
-                formData={formData}
-                submitButtons={submitButtons}
-                updateFormData={updateFormData}
-            >
-            </AppForm>
+            <div className="form-content">
+                <AppInput 
+                    name="displayName"
+                    label="Display Name" 
+                    type="text"
+                    placeholder=''
+                    value={formData.displayName}
+                    handleChange={handleInputChange}
+                />
+                <AppTextEditor 
+                    name="bio"
+                    editId="bio"
+                    label="Bio"
+                    placeholder=""
+                    value={formData.bio}
+                />
+            </div>
+            <div className="form-footer">
+                <button type="submit" 
+                    className="button-blue" 
+                    onClick={handleSave}>
+                    Save
+                </button>
+            </div>
         </div>
     )
 }
@@ -226,23 +257,24 @@ export const UserProfileEdit = (props) => {
         handleCancelEdit,
     } = props
 
-    const [selectedMenuOption, setSelectedMenuOption] = useState(profileMenuOptions.general)
-    const [editForms, setEditForms] = useState(profileEditForms(user))
+    const [selectedMenuOption, setSelectedMenuOption] = useState("general")
+    const [formData, setFormData] = useState({
+        profileData: {
+            displayName: user.displayName,
+            bio: user.bio,
+        },
+        showcaseData: {
+            selected: []
+        },
+    })
 
     // handle menu option change
-    const handleMenuChange = (key) => {
-        setSelectedMenuOption(profileMenuOptions[key])
+    const handleMenuChange = (option) => {
+        setSelectedMenuOption(option)
     }
 
-    // handle form update
-    const updateFormData = (newState) => {
-        let forms = {...editForms}
-        forms[selectedMenuOption.id] = newState
-        setEditForms(forms)
-    }
-
-    const handleSaveProfile = (data) => {
-        dispatch(updateProfile(data))
+    const handleSaveProfile = () => {
+        dispatch(updateProfile(formData.profileData))
         .then(res => {
             if(res.meta.requestStatus === "fulfilled"){
                 handleCancelEdit()
@@ -253,40 +285,38 @@ export const UserProfileEdit = (props) => {
 
     const handleSaveShowcase = (e) => {
         e.preventDefault()
-        let showcases = []
-        editForms.showcases.selected.forEach(selectedId => {
-            const showcase = editForms.showcases.options[selectedId]
-            showcases.push({
-                type: showcase.type,
-                data: showcase.data
-            })
-        });
-        dispatch(updateProfileShowcases({showcases: showcases})).then(res => {
-            if(res.meta.requestStatus === "fulfilled"){
-                dispatch(updateCurrentUserShowcases(res.payload))
-                handleCancelEdit()
-            }
-        })
+        // let showcases = []
+        // editForms.showcases.selected.forEach(selectedId => {
+        //     const showcase = editForms.showcases.options[selectedId]
+        //     showcases.push({
+        //         type: showcase.type,
+        //         data: showcase.data
+        //     })
+        // });
+        // dispatch(updateProfileShowcases({showcases: showcases})).then(res => {
+        //     if(res.meta.requestStatus === "fulfilled"){
+        //         dispatch(updateCurrentUserShowcases(res.payload))
+        //         handleCancelEdit()
+        //     }
+        // })
     }
 
     // determine content
     let content;
-    switch(selectedMenuOption.id) {
+    switch(selectedMenuOption) {
         case "support":
             content = <ProfileSupport />
             break
         case "showcases":
             content = <ProfileShowcaseEdit
                 user={user}
-                formData={editForms[selectedMenuOption.id]}
-                updateFormData={updateFormData}
+                formData={formData.showcaseData}
                 handleSave={handleSaveShowcase}
             />
             break
         default:
             content = (<ProfileEditForm
-                    formData={editForms[selectedMenuOption.id]}
-                    updateFormData={updateFormData}
+                    formData={formData.profileData}
                     handleSave={handleSaveProfile}
                 />)
             break
@@ -298,7 +328,6 @@ export const UserProfileEdit = (props) => {
                 title={user.displayName}
                 profileAction={handleCancelEdit}
                 actionName="Cancel"
-                
             >
                 <AppCard>
                     <div className="profile-edit">

@@ -1,256 +1,134 @@
 import React, { useState } from 'react';
-import { useHistory } from "react-router-dom"
 import { AppCard } from "../../components/AppCard"
-import { AppForm } from "../../components/AppForm"
-import { useDispatch, useSelector } from "react-redux"
-import { createPost } from "./postsSlice"
-import { getAllBrands } from "../brands/brandsSlice"
-import { sortListByName } from "../../helpers/generalHelper"
-import { postProperties } from "./PostProperties"
+import { AppFileInput, AppInput, AppSelect } from "../../components/AppForm"
+import { postOptions } from './submitPostOptions';
+import { AppTextEditor } from '../../components/AppTextEditor';
 
-const generateBrandOptions = (brandsList) => {
-    let brandSorted = sortListByName(brandsList, "name")
-    let options = {}
-    brandSorted.forEach(brand => {
-        options[brand.brandId] = {
-            label: brand.name
-        }
-    });
-    return options
-};
-
-const generateProductOptions = (productsList) => {
-    let productsSorted = sortListByName(productsList, "name")
-    let options = {}
-    productsSorted.forEach(product => {
-        options[product.urlId] = {
-            label: product.name
-        }
-    });
-    return options
-};
-
-const renderProductOptions = async (brandId) => {
-    let productOptions = []//generateProductOptions(productsInfo.products);
-
-    let productSelectBox = document.getElementById("post-form")
-        .elements["productUrlId"];
-    for(let i = productSelectBox.options.length; i >= 0; i--) {
-        productSelectBox.remove(i);
-    }
-
-    let selectOption = document.createElement("option");
-    selectOption.text = '-- Select --';
-    productSelectBox.add(selectOption);
-
-    for (const [key, option] of Object.entries(productOptions)) {
-        let optionDom = document.createElement("option");
-        optionDom.id = key;
-        optionDom.text = option.label;
-        productSelectBox.add(optionDom);
-    }
-}
-
-const determineBaseUrl = (brandId, productUrlId) => {
-
-    if(productUrlId){
-        return `/products/${brandId}/${productUrlId}`
-    }else if (brandId){
-        return `/brands/${brandId}`
-    }else {
-        return '/community'
-    }
-}
-
-export const SubmitPost = (props) => {
-
-    const history = useHistory();
-    const dispatch = useDispatch();
+// handle submitting posts
+export const SubmitPostForm = (props) => {
 
     const {
         brandId,
-        productUrl,
+        // productUrl,
         postType,
-    } = props
+    } = props // get urls params to declare default values
 
-    const updateFormData = (newState) => {
-        const type = newState.type.value
-        if(type !== "review"){
-            newState['rating'].type = "hidden"
-            newState['properties'] = "hidden"
+    // delare form data with default values (grows as data is inputted into form)
+    const [formData, setFormData] = useState({
+        "type": postType,
+        "status": "private",
+        "brandId": brandId
+    })
+
+    // handle select box change
+    const handleSelectChange = (e) => {
+        let newState = {...formData}
+        const selectedOption = e.target.options[e.target.selectedIndex].id
+        newState[e.target.name] = selectedOption
+        setFormData(newState)
+    }
+
+    // handle input box change
+    const handleInputChange = (e) => {
+        let newState = {...formData}
+        newState[e.target.name] = e.target.value
+        setFormData(newState)
+    }
+
+    // handle file input box change
+    const handleFileChange = (fileList, file, removeFile = false) => {
+        let newState = {...formData};
+        if(removeFile){
+            const fileIndex = newState[fileList].files.indexOf(file);
+            newState[fileList].files.splice(fileIndex, 1);
         }else{
-            newState['rating'].type = "select"
-            newState['properties'] = "properties"
-            for (const [key, value] of Object.entries(postProperties())) {
-                newState[key] = value
-            }
+            newState[fileList].files.push(file)
         }
         setFormData(newState)
     }
 
-    
-    const handleSubmitPost = (postParams) => {
-        const postDto = ["content", "title", "type", 
-        "status", "productUrlId", "brandId", "rating", "mediaFiles"];
-        let properties = [] 
-        for (const [key, param] of Object.entries(postParams)) {
-            if(!postDto.includes(key)){
-                properties.push({
-                    'property': key,
-                    'value': param
-                })
-                delete postParams[key]
-            }
-        }
-        postParams.productProperties = properties
-        postParams.productEffects = []
-        dispatch(createPost(postParams))
-        .then(res => {
-            if(res.meta.requestStatus === "fulfilled")
-                history.push(determineBaseUrl(postParams.brandId, postParams.productUrlId))
-        })
+    // handle submitting post
+    const handleSubmitPost = () => {
+        console.log(formData)
     }
 
-    const handleSavePost = (postParams) => {
-        postParams.Status = "Draft"
-        dispatch(createPost(postParams))
-        .then(res => {
-            if(res.meta.requestStatus === "fulfilled")
-            history.push(determineBaseUrl(postParams.brandId, postParams.productUrlId))
-        })
+    // handle saving post draft
+    const handleSavePost = () => {
+        console.log(formData)
     }
-
-    const handleReviewTypeChange = (formData, selectedOption) => {
-        const brand = formData.brandId.value
-        const product = formData.productUrlId.value
-        history.push(`${determineBaseUrl(brand, product)}/submit/${selectedOption}`)
-    }
-
-    const handleBrandChange = async (formData, selectedOption) => {
-        const selectedType = formData.type.value
-        history.push(`/brands/${selectedOption}/submit/${selectedType}`)
-        await renderProductOptions(selectedOption);
-    }
-
-    const handleProductChange = (formData, selectedOption) => {
-        const selectedBrand = formData.brandId.value
-        const selectedType = formData.type.value
-
-        if(selectedOption){
-            history.push(`/products/${selectedBrand}/${selectedOption}/submit/${selectedType}`)
-        }else{
-            history.push(`/brands/${selectedBrand}/submit/${selectedType}`)
-        }
-    }
-
-    const brandsList = useSelector(getAllBrands)
-    let formDataTemplate = {
-        "type": {
-            'label': 'Post Type',
-            'type': 'select',
-            'options': {
-                "review": {
-                    'label': "Review"
-                },
-                "question": {
-                    'label': "Question"
-                },
-                "thread": {
-                    'label': "Thread"
-                },
-            },
-            'placeholder': '',
-            'required': true,
-            'value': postType,
-            handleOnChange: handleReviewTypeChange
-        },
-        "status": {
-            'label': 'Post Status',
-            'type': 'select',
-            'options': {
-                'public': {
-                    'label': "Public"
-                },
-                'private': {
-                    'label': "Private"
-                }
-            },
-            'placeholder': '',
-            'required': true,
-            'value': 'public',
-        },
-        "brandId": {
-            'label': 'Brand',
-            'type': 'select',
-            'options': generateBrandOptions(brandsList),
-            'placeholder': '',
-            'value': brandId,
-            handleOnChange: handleBrandChange
-        },
-        "productUrlId": {
-            'label': 'Brand',
-            'type': 'select',
-            'options': [],
-            'placeholder': '',
-            'value': productUrl,
-            handleOnChange: handleProductChange
-        },
-        "title": {
-            'label': 'Title',
-            'type': 'text',
-            'placeholder': '',
-            'required': true,
-            'value': ''
-        },
-        "mediaFiles": {
-            'label': 'Media',
-            'type': 'file',
-            'placeholder': '',
-            'files': []
-        }
-    }
-    
-    if(postType === "review"){
-        for (const [key, value] of Object.entries(postProperties())) {
-            formDataTemplate[key] = value
-        }
-    }
-    
-    const content = {
-        'label': 'Post',
-        'type': 'textEditor',
-        'placeholder': '',
-        'required': true,
-        'value': 'textEditor'
-    }
-    formDataTemplate.content = content
-    const submitButtons = {
-        "save": {
-            label: "Save Draft",
-            handleSubmit: handleSavePost
-        },
-        "post": {
-            label: "Post",
-            handleSubmit: handleSubmitPost
-        }
-    }
-
-    const [ formData, setFormData ] = useState(formDataTemplate)
 
     return (
         <div className="app-content">
-            <AppCard >
-                <AppForm 
-                    id="post-form"
-                    title="Create Post"
-                    submitTitle="Create Post"
-                    method="POST"
-                    formData={formData}
-                    submitButtons={submitButtons}
-                    updateFormData={updateFormData}
-                />
+            <AppCard>
+                <div className="form-header">
+                    <h4>Create Post</h4>
+                </div>
+
+                <div className="form-content">
+                    <AppSelect 
+                        name="type"
+                        label="Type"
+                        selectedValue={formData.type}
+                        options={postOptions.type}
+                        handleOnChange={handleSelectChange}
+                    />
+                    <AppSelect 
+                        name="status"
+                        label="Status"
+                        selectedValue={formData.status}
+                        options={postOptions.status}
+                        handleOnChange={handleSelectChange}
+                    />
+                    <AppSelect 
+                        name="brandId"
+                        label="Brand"
+                        selectedValue={formData.brandId}
+                        options={postOptions.brands}
+                        handleOnChange={handleSelectChange}
+                    />
+                    <AppSelect 
+                        name="productId"
+                        label="Product"
+                        selectedValue={formData.productId}
+                        options={postOptions.products}
+                        handleOnChange={handleSelectChange}
+                    />
+                    <AppInput 
+                        name="title"
+                        label="Title" 
+                        type="text"
+                        placeholder=''
+                        value={formData.title}
+                        handleChange={handleInputChange}
+                    />
+                    <AppFileInput
+                        name="mediaFiles" 
+                        label="Media"
+                        handleOnChange={handleFileChange}
+                        files={formData.files}
+                    />
+                    <AppTextEditor 
+                        name="content"
+                        editId="content"
+                        label=""
+                        placeholder=""
+                        value={formData.content}
+                    />
+                </div>
+
+                <div className="form-footer">
+                    <button type="submit" 
+                        className="button-blue" 
+                        onClick={handleSavePost}>
+                        Save Draft
+                    </button>
+                    <button type="submit" 
+                        className="button-blue" 
+                        onClick={handleSubmitPost}>
+                        Post
+                    </button>
+                </div>
             </AppCard>
-            
         </div>
     )
 }

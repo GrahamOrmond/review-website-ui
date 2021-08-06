@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 import { closeAllDropDownMenus } from '../helpers/generalHelper';
-
-import AppButton from './AppButton';
+import { AppButton } from './AppButton';
 
 const DropdownNav = (props) => {
 

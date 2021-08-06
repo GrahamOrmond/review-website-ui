@@ -1,4 +1,4 @@
-import { SubmitPost } from "./SubmitPost";
+import { SubmitPostForm } from "./SubmitPost";
 
 export const PostsPage = (props) => {
 
@@ -11,7 +11,7 @@ export const PostsPage = (props) => {
     const postType = type? type.toLowerCase() : "review"  
 
     return (
-        <SubmitPost
+        <SubmitPostForm
             productUrl={productUrl}
             brandId={brandId}
             postType={postType}

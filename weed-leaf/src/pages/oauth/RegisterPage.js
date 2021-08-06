@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom'
-import { AppForm } from '../../components/AppForm';
 import { AppModal } from "../../components/AppModal"
 import { fetchCurrentUser, loginUser, registerUser } from './oauthSlice';
 
 import './oauth.css'
+import { AppInput } from '../../components/AppForm';
 
+// extra info for the registration page
 const RegisterExtra = () => {
 
     return (
@@ -21,20 +22,37 @@ const RegisterExtra = () => {
     );
 }
 
-
+// handle registering new users
 const RegisterForm = () => {
 
     const dispatch = useDispatch()
     const history = useHistory()
 
-    const register = (formData) => {
+    // set form data
+    const [formData, setFormData] = useState({
+        email: "",
+        username: "",
+        password: "",
+        confirmPassword: "",
+    })
+
+    // handle form data input change
+    const handleInputChange = (e) => {
+        const newState = {...formData}
+        newState[e.target.name] = e.target.value
+        setFormData(newState)
+    }
+
+    // handle registering the user
+    const handleRegisterUser = () => {
         dispatch(registerUser(formData))
         .then((res) => {
             const status = res.meta.requestStatus
-            if(status === "rejected")
+            if(status === "rejected") // failed to register
                 return res.payload.message
-            else if (status === "fulfilled")
+            else if (status === "fulfilled") // success
             {
+                // log the user in
                 let loginData = {
                     'email': formData.email,
                     'password': formData.password
@@ -50,62 +68,64 @@ const RegisterForm = () => {
         })
     }
 
-    const updateFormData = (newState) => {
-        setFormData(newState)
-    }
-
-    let registerForm = {
-        'email': {
-            'label': 'Email',
-            'type': 'email',
-            'placehoder': '',
-            'required': true,
-            'value': ''
-        },
-        'username': {
-            'label': 'Username',
-            'type': 'text',
-            'placehoder': '',
-            'required': true,
-            'value': ''
-        },
-        'password': {
-            'label': 'Password',
-            'type': 'password',
-            'placehoder': '',
-            'required': true,
-            'value': ''
-        },
-        'confirmPassword': {
-            'label': 'Confirm Password',
-            'type': 'password',
-            'placehoder': '',
-            'required': true,
-            'value': ''
-        }
-    }
-    const [ formData, setFormData ] = useState(registerForm)
-
-    const submitButtons = {
-        "post": {
-            label: "Register",
-            handleSubmit: register
-        }
-    }
-
+    // return form data
     return (
-        <AppForm 
-            title="Sign Up"
-            submitTitle="Sign Up"
-            method="POST"
-            formData={formData}
-            submitButtons={submitButtons}
-            updateFormData={updateFormData}
-        />
+        <div>
+            <div className="form-header">
+                <h4>Sign Up</h4>
+            </div>
+
+            <div className="form-content">
+                <AppInput 
+                    name="email"
+                    label="Email" 
+                    type="text"
+                    placeholder=''
+                    value={formData.email}
+                    handleChange={handleInputChange}
+                />
+
+                <AppInput 
+                    name="username"
+                    label="Username" 
+                    type="text"
+                    placeholder=''
+                    value={formData.username}
+                    handleChange={handleInputChange}
+                />
+
+                <AppInput 
+                    name="password"
+                    label="Password" 
+                    type="password"
+                    placeholder=''
+                    value={formData.password}
+                    handleChange={handleInputChange}
+                />
+
+                <AppInput 
+                    name="confirmPassword"
+                    label="Confirm Password" 
+                    type="password"
+                    placeholder=''
+                    value={formData.confirmPassword}
+                    handleChange={handleInputChange}
+                />
+            </div>
+
+            <div className="form-footer">
+                <button type="submit" 
+                    className="button-blue" 
+                    onClick={handleRegisterUser}>
+                    Register
+                </button>
+            </div>
+
+        </div>
     );
 }
 
-export const RegisterPage = (props) => {
+export const RegisterPage = () => {
 
     return (
         <div className="app-content">
