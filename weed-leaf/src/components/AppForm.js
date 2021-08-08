@@ -93,14 +93,14 @@ export const AppSelect = (props) => {
         options,
     } = props
 
-    const renderSelectOptions = (options, selectedValue) => {
+    const valueSelected = selectedValue? selectedValue : '' 
+    const renderSelectOptions = () => {
     
         let data = []
-        let valueSelected = selectedValue? selectedValue : '' 
         for (const [key, option] of Object.entries(options)) {
-            let selected = valueSelected === key? true : false
+
             data.push(
-                <option id={key} selected={selected}>
+                <option id={key} selected={valueSelected === key}>
                     {option.label}
                 </option>
             )
@@ -112,9 +112,9 @@ export const AppSelect = (props) => {
         <div className="form-input">
             <label>{label}</label>
             <select name={name}
-                defaultValue={selectedValue}
+
                 onChange={(e) => handleOnChange(e)}>
-                { renderSelectOptions(options, selectedValue) }
+                { renderSelectOptions() }
             </select>
         </div>
     );

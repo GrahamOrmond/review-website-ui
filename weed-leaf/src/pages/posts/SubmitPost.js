@@ -3,9 +3,15 @@ import { AppCard } from "../../components/AppCard"
 import { AppDynamicSelect, AppFileInput, AppInput, AppSelect } from "../../components/AppForm"
 import { postOptions } from './submitPostOptions';
 import { AppMarkupEditor } from '../../components/AppTextEditor';
+import { useDispatch } from 'react-redux';
+import { createPost } from './postsSlice';
+import { useHistory } from 'react-router-dom';
 
 // handle submitting posts
 export const SubmitPostForm = (props) => {
+
+    const dispatch = useDispatch()
+    const history = useHistory()
 
     const {
         brandId,
@@ -17,7 +23,7 @@ export const SubmitPostForm = (props) => {
     const [formData, setFormData] = useState({
         "type": postType,
         "status": "private",
-        "brandId": brandId
+        "brandId": brandId,
     })
 
     // handle select box change
@@ -47,14 +53,63 @@ export const SubmitPostForm = (props) => {
         setFormData(newState)
     }
 
+    // returns post data from the form
+    const getPostData = () => {
+        // get post params from data
+        const postDto = ["type", "status", "content", "title",
+            "productUrlId", "brandId", "rating", "mediaFiles"];
+        let postData = { // post data with list delaired by default
+            properties: [],
+            productEffects: [],
+            mediaFiles: [],
+        }
+        for (const [key, param] of Object.entries(formData)) {
+            if(postDto.includes(key)){ // post data
+                postData[key] = param
+            }else{ // post property data
+                postData.properties.push({ 
+                    'property': key,
+                    'value': param
+                })
+            }
+        }
+
+        postData.content = document.getElementById("content").innerText;
+        return postData;
+    }
+
+    // determins url to return to after posting
+    const determineBaseUrl = (brandId, productUrlId) => {
+        if(productUrlId){
+            return `/products/${brandId}/${productUrlId}`
+        }else if (brandId){
+            return `/brands/${brandId}`
+        }else {
+            return '/community'
+        }
+    }
+
     // handle submitting post
     const handleSubmitPost = () => {
-        console.log(formData)
+        const postData = getPostData() // get post data from the form
+        // submit the post
+        dispatch(createPost(postData))
+        .then(res => {
+            if(res.meta.requestStatus === "fulfilled")
+                history.push(determineBaseUrl(postData.brandId, postData.productUrlId))
+        })
     }
 
     // handle saving post draft
     const handleSavePost = () => {
-        console.log(formData)
+        let postData = getPostData() // get post data from the form
+        postData.status = "Draft" // set status to draft for easy acces
+        // save the draft
+        dispatch(createPost(postData))
+        .then(res => {
+            if(res.meta.requestStatus === "fulfilled")
+            history.push(determineBaseUrl(postData.brandId, postData.productUrlId))
+        })
     }
 
     // add review inputs to the form
