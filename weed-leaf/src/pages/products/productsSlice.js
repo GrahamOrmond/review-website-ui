@@ -65,6 +65,11 @@ export const getProductById = (state, brandId, urlId) => {
             && p.urlId === urlId);
 }
 
+export const getProductsByBrandId = (state, brandId) => {
+    return state.products.list.items
+        .filter(p => p.brandId === brandId);
+}
+
 export const getProductSearchParams = (state, params) => {
     Object.keys(params).forEach(k => params[k] === undefined 
             && delete params[k])
