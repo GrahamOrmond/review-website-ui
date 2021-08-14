@@ -91,6 +91,11 @@ export const getPostsList = (state) => {
     return state.posts.list;
 }
 
+export const getPostByFilter = (state, filter) => {
+    return state.posts.list.items
+        .filter(p => p.type === filter.type.toUpperCase())
+}
+
 export const getPostView = (state) => {
     return state.posts.view
 } 
