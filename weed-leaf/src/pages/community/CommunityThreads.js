@@ -3,14 +3,15 @@ import AppThreadDisplay from "../../components/AppThreadDisplay";
 export const CommunityThreads = (props) =>  {
 
     const {
-        postType
+        postType,
+        sortBy
     } = props
 
     return (
         <div className="app-content">
             <AppThreadDisplay
                 postType={postType}
-                urlBase={`/community/`}
+                sortBy={sortBy}
             />
         </div>
     );

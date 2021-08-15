@@ -14,9 +14,10 @@ const AppThreadDisplay = (props) => {
     const history = useHistory()
     const isLoggedIn = useSelector(isUserLoggedIn);
     const {
-        postType,
         brandId,
         productId,
+        postType,
+        sortBy,
     } = props
 
     // set post filter data
@@ -24,6 +25,7 @@ const AppThreadDisplay = (props) => {
         type: postType,
         brandId: brandId,
         productId: productId,
+        sortBy: sortBy,
     })
 
     
@@ -63,10 +65,17 @@ const AppThreadDisplay = (props) => {
         setFilterData(newState) // set form data
         handleHistoryChange(newState) // change url
     }
+    
+    const handleSortChange = (e) => {
+        let newState = {...filterData}
+        newState['sortBy'] = e.target.id
+        setFilterData(newState) // set form data
+        handleHistoryChange(newState) // change url
+    }
 
     // handle url changes
     const handleHistoryChange = (newState) => {
-        history.push(`/community/${newState.type}`)
+        history.push(`/community/${newState.type}/${newState.sortBy}`)
     }
 
     // return posts thread with filter
@@ -76,6 +85,7 @@ const AppThreadDisplay = (props) => {
             <AppThreadFilter
                 filterData={filterData}
                 handleSelectChange={handleSelectChange}
+                handleSortChange={handleSortChange}
             />
             {posts.length > 0? renderPosts() : ''}
             <div className="thread-end">

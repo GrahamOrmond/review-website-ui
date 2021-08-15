@@ -6,26 +6,45 @@ import { AppSelect } from './AppForm';
 const FilterButtons = (props) => {
 
     const {
-        handleOnClick
+        handleSortChange,
+        activeSort
     } = props
+
+    // sort buttons
+    const buttons = [
+        {
+            'id': 'new',
+            'label': 'New'
+        },
+        {
+            'id': 'trending',
+            'label': 'Trending'
+        },
+        {
+            'id': 'top',
+            'label': 'Top'
+        }
+    ]
+
+
 
     return (
         <div className="filter-buttons" id="filter_buttons">
-            <div
-                className="app-button filter-button"
-                onClick={handleOnClick}>
-                New
-            </div>
-            <div
-                className="app-button filter-button"
-                onClick={handleOnClick}>
-                Trending
-            </div>
-            <div
-                className="app-button filter-button"
-                onClick={handleOnClick}>
-                Top
-            </div>
+            {
+                // render sort buttons
+                buttons.map(b => {
+                    // check for active sort button to extend class
+                    const activeClass = activeSort === b.id? ' active' : ''
+                    return (
+                        <div
+                            className={"app-button filter-button" + activeClass}
+                            onClick={handleSortChange}
+                            id={b.id}>
+                            {b.label}
+                        </div>
+                    )
+                })
+            }
         </div>
     )
 }
@@ -47,7 +66,8 @@ export const AppThreadFilter = (props) => {
     
     const {
         filterData,
-        handleSelectChange
+        handleSelectChange,
+        handleSortChange
     } = props
 
     return (
@@ -75,7 +95,10 @@ export const AppThreadFilter = (props) => {
                     </div> 
 
                     <div className="filter-view">
-                        <FilterButtons />
+                        <FilterButtons 
+                            activeSort={filterData.sortBy}
+                            handleSortChange={handleSortChange}
+                        />
                     </div>
                 </div>
             </div>
