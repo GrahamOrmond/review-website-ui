@@ -7,17 +7,22 @@ import { client } from '../../api/client'
   
 // setup inital state
 const initialState = {
-    view: {
-        urlId: null,
-        brandId: null,
-        status: 'idle',
-        error: null
+    view: { // single product loaded view 
+        urlId: null, // product url Id
+        brandId: null, // product brandId
+        status: 'idle', // status of product being loaded
+        error: null // any errors that occurred
     },
-    list: {
-        params: [],
-        items: [],
-        status: 'idle',
-        error: null
+    list: { // list of all products loaded
+        params: [], // tracks search params used to load the list
+        items: [], // list of all items loaded
+        status: 'idle', // status of loaded items
+        error: null // track any errors
+    },
+    filter: { // filter options used to sort products
+        filters: [], // list of filters
+        status: 'idle', // status of loaded filters
+        error: null // track any errors
     }
 }
 
@@ -51,6 +56,14 @@ async (fetchData, { rejectWithValue }) => {
     return response
 })
 
+// fetch product filter options used to sort product list
+// used to load the filter options to the product state, that populates the list filter options
+export const fetchProductFilters = createAsyncThunk('products/fetchProductFilters',
+async (fetchData, { rejectWithValue }) => {
+    let response = await client.get(`/api/products/filters`, { rejectWithValue })
+    return response
+})
+
 export const getProductsListInfo = (state) => {
     return state.products.list;
 }
@@ -76,6 +89,13 @@ export const getProductSearchParams = (state, params) => {
     const paramsString = new URLSearchParams(params).toString()
     return state.products.list.params
     .find(p => p.params === paramsString);
+}
+
+
+// get loaded product filter option info
+// ** used to populate the filter options when displaying a list of products **
+export const getProductFilterInfo = (state) => {
+    return state.products.filter
 }
   
 // setup slice
@@ -138,6 +158,27 @@ export const productSlice = createSlice({
         [fetchProduct.rejected]: (state, action) => {
             state.view.status = 'failed'
             state.view.error = action.error.message
+        },
+
+        // FETCH PRODUCT FILTERS
+        [fetchProductFilters.pending]: (state, action) => {
+            state.filter = {
+                filters: [],
+                status: 'loading',
+                error: null
+            }
+        },
+        [fetchProductFilters.fulfilled]: (state, action) => {
+            let filtersList = [...action.payload]
+            state.filter = {
+                filters: filtersList,
+                status: 'succeeded',
+                error: null
+            }
+        },
+        [fetchProductFilters.rejected]: (state, action) => {
+            state.filter.status = 'failed'
+            state.filter.error = action.error.message
         },
     }
 })

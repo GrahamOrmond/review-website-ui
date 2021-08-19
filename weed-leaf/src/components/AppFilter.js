@@ -1,5 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchBrands, getBrandsListInfo } from '../pages/brands/brandsSlice';
 import { postOptions } from '../pages/posts/submitPostOptions';
+import { fetchProductFilters, getProductFilterInfo } from '../pages/products/productsSlice';
 import { AppCard } from './AppCard'
 import { AppSelect } from './AppForm';
 
@@ -50,22 +53,60 @@ const FilterSortButtons = (props) => {
     )
 }
 
-
+// mutltiple select options for filter button
+// used to display filter button along side multiple filter options to select
 const FilterMultiSelect = (props) => {
 
+    const dispatch = useDispatch()
     const {
-
+        // handleSelectChange
     } = props
 
-    const [showFilterOptions, setShowSelectOptions] = useState()
+    // tracks the selected filter option
+    const [selectedFilterOption, setSelectedFilterOption] = useState()
+
+    // get filter options
+    const brandsListInfo = useSelector(getBrandsListInfo)
+    const productFilterInfo = useSelector(getProductFilterInfo)
+    useEffect(() => {
+        if(brandsListInfo.status === "idle"){ // no brands loaded
+            dispatch(fetchBrands({})) // get all brands
+        }
+
+        if(productFilterInfo.status === "idle"){
+            dispatch(fetchProductFilters({})) // get all product filter options
+        }
+    }, [brandsListInfo, productFilterInfo, dispatch])
 
     // handles select options toggle
     const handleToggleSelect = (selectedOption) => {
-        if(showFilterOptions === selectedOption){ // same as selected option
-            setShowSelectOptions() // remove selected option
+        if(selectedFilterOption === selectedOption){ // same as selected option
+            setSelectedFilterOption() // remove selected option
         }else { // different filter options
-            setShowSelectOptions(selectedOption) // show options for that filter
+            setSelectedFilterOption(selectedOption) // show options for that filter
         }
+    }
+
+    // render selected filter button options
+    const renderFilterOptions = () => {
+        if(selectedFilterOption === 'brands'){ // selected brand filter
+            return brandsListInfo.items.map(f => // display list of brand options
+                <button key={f.brandId} 
+                    className="app-button filter-button">
+                    {f.name}
+                </button>
+            )
+        }
+
+        // find the product filter by id
+        const filter = productFilterInfo.filters
+            .find(f => f.id === selectedFilterOption)
+        return filter.options.map(f => // return filter option buttons
+            <button key={f.id} 
+                className="app-button filter-button">
+                {f.label}
+            </button>
+        )
     }
 
     // list of filter buttons
@@ -78,24 +119,32 @@ const FilterMultiSelect = (props) => {
             'id': 'productType',
             'label': 'Product Type +'
         },
+        {
+            'id': 'category',
+            'label': 'Product Category +'
+        },
     ]
-
+    
     return (
         <div className="filter-multi-select">
             <div className="multi-select-buttons">
                 {
+                    // display filter buttons
                     filterButtons.map(f => 
-                    <button key={f.id} 
-                        className={showFilterOptions === f.id? 'app-button filter-button active' : 'app-button filter-button'} 
-                        onClick={() => handleToggleSelect(f.id)}>
-                        {f.label}
-                    </button>)
+                        <button key={f.id} 
+                            className={selectedFilterOption === f.id? 'app-button filter-button active' : 'app-button filter-button'} 
+                            onClick={() => handleToggleSelect(f.id)}>
+                            {f.label}
+                        </button>)
                 }
             </div>
             {
-                showFilterOptions ? 
+                selectedFilterOption ? 
                 <div className="multi-select-content">
-                    Options
+                    {
+                        // display selected filter button options
+                        renderFilterOptions()
+                    }
                 </div>
                 :
                 ''
@@ -110,7 +159,7 @@ export const AppProductFilter = (props) => {
     
     const {
         filterData,
-        // handleSelectChange,
+        handleSelectChange,
         handleSortChange
     } = props
 
@@ -119,7 +168,9 @@ export const AppProductFilter = (props) => {
             <div className="app-filter">
                 <div className="filter-content">
                     <div className="form-input-group">
-                        <FilterMultiSelect />
+                        <FilterMultiSelect 
+                            handleSelectChange={handleSelectChange}
+                        />
                     </div> 
 
                     <div className="filter-view">
