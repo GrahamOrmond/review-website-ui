@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchProducts, getProductSearchParams, getProductsListInfo, idleProductList } from './productsSlice';
 import { AppProduct } from '../../components/AppProduct'
@@ -8,14 +8,20 @@ export const ProductsList = (props) => {
 
     const dispatch = useDispatch();
     const {
-        fetchData
+        brands,
     } = props
 
+
+    const [filterData, setFilterData] = useState({
+        brands: brands
+    })
+
+
     const productsList = useSelector(getProductsListInfo);
-    const existingParams = useSelector(s => getProductSearchParams(s, fetchData));
+    const existingParams = useSelector(s => getProductSearchParams(s, filterData));
     useEffect(() => {
         if(productsList.status === 'idle'){
-            dispatch(fetchProducts(fetchData))
+            dispatch(fetchProducts(filterData))
             return
         }
 
@@ -23,25 +29,19 @@ export const ProductsList = (props) => {
             && !existingParams){
             dispatch(idleProductList())
         }
-    }, [productsList, fetchData, existingParams, dispatch])
-    
-    const renderList = () => {
-        return productsList.items.map(p => {
-            return (
-                <AppProduct 
-                    key={p.brandId + '-' + p.urlId}
-                    product={p}>
-                </AppProduct>
-            )
-        })
-    }
+    }, [productsList, filterData, existingParams, dispatch])
 
     return (
         <div className="app-content">
-            <div className="app-products-display">
-                <AppProductFilter />
-                {renderList()}
-            </div>
+            <AppProductFilter filterData />
+            {
+                productsList.items.map(p => (
+                    <AppProduct 
+                        key={p.brandId + '-' + p.urlId}
+                        product={p}>
+                    </AppProduct>
+                ))
+            }
         </div>
     );
 }

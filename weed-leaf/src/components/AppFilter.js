@@ -1,9 +1,10 @@
+import { useState } from 'react';
 import { postOptions } from '../pages/posts/submitPostOptions';
 import { AppCard } from './AppCard'
 import { AppSelect } from './AppForm';
 
 
-const FilterButtons = (props) => {
+const FilterSortButtons = (props) => {
 
     const {
         handleSortChange,
@@ -49,15 +50,86 @@ const FilterButtons = (props) => {
     )
 }
 
+
+const FilterMultiSelect = (props) => {
+
+    const {
+
+    } = props
+
+    const [showFilterOptions, setShowSelectOptions] = useState()
+
+    // handles select options toggle
+    const handleToggleSelect = (selectedOption) => {
+        if(showFilterOptions === selectedOption){ // same as selected option
+            setShowSelectOptions() // remove selected option
+        }else { // different filter options
+            setShowSelectOptions(selectedOption) // show options for that filter
+        }
+    }
+
+    // list of filter buttons
+    const filterButtons = [
+        {
+            'id': 'brands',
+            'label': 'Brand +'
+        },
+        {
+            'id': 'productType',
+            'label': 'Product Type +'
+        },
+    ]
+
+    return (
+        <div className="filter-multi-select">
+            <div className="multi-select-buttons">
+                {
+                    filterButtons.map(f => 
+                    <button key={f.id} 
+                        className={showFilterOptions === f.id? 'app-button filter-button active' : 'app-button filter-button'} 
+                        onClick={() => handleToggleSelect(f.id)}>
+                        {f.label}
+                    </button>)
+                }
+            </div>
+            {
+                showFilterOptions ? 
+                <div className="multi-select-content">
+                    Options
+                </div>
+                :
+                ''
+            }
+        </div>
+    )
+}
+
+
+
 export const AppProductFilter = (props) => {
     
     const {
-        // filterData,
-        // handleSelectChange
+        filterData,
+        // handleSelectChange,
+        handleSortChange
     } = props
 
     return (
         <AppCard>
+            <div className="app-filter">
+                <div className="filter-content">
+                    <div className="form-input-group">
+                        <FilterMultiSelect />
+                    </div> 
+
+                    <div className="filter-view">
+                        <FilterSortButtons 
+                            activeSort={filterData.sortBy}
+                            handleSortChange={handleSortChange}
+                        />
+                    </div>
+                </div>
+            </div>
         </AppCard>
     )
 }
@@ -95,7 +167,7 @@ export const AppThreadFilter = (props) => {
                     </div> 
 
                     <div className="filter-view">
-                        <FilterButtons 
+                        <FilterSortButtons 
                             activeSort={filterData.sortBy}
                             handleSortChange={handleSortChange}
                         />

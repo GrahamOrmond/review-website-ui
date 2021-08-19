@@ -43,8 +43,7 @@ export const ProductsPage = (props) => {
     }
     let urlString = queryString.parse(props.location.search);
     
-    const fetchData = {
-        brands: urlString.brands
-    }
-    return (<ProductsList fetchData={fetchData}/>)
+    return (<ProductsList 
+            brands={urlString.brands}
+        />)
 }

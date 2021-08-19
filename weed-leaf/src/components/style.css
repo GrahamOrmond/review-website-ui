@@ -855,20 +855,12 @@ button {
     11. PRODUCT DISPLAY
 */
 
-.app-products-display{
-    display: flex;
-    flex-wrap: wrap;
-}
-
 .app-product {
     background-color: #FFF;
     border: solid #b6b6b7 1px;
     border-radius: 5px;
     margin: 10px 0px;
-    padding: 5px 5px 10px 5px;
-    width: 100%;
 }
-
 
 .app-product:hover {
     cursor: pointer;
@@ -1310,7 +1302,7 @@ button {
 
 .app-filter {
     display: flex;
-
+    width: 100%;
 }
 
 .filter-content {
@@ -1351,6 +1343,22 @@ button {
     padding: 5px 10px;
     border: solid 1px #D6D6D7;
     border-radius: 25px;
+}
+
+.filter-multi-select {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.multi-select-buttons {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.multi-select-content {
+    width: 100%;
 }
 
 /* 
