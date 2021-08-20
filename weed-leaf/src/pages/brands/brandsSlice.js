@@ -4,6 +4,7 @@ import {
 } from '@reduxjs/toolkit'
 
 import { client } from '../../api/client'
+import { sortListByName } from '../../helpers/generalHelper'
 
 // setup inital state
 const initialState = {
@@ -40,6 +41,8 @@ export const fetchBrands = createAsyncThunk('brands/fetchBrands',
     if(index !== -1)
         response.brands.splice(index, 1)
   })
+
+  response.brands = sortListByName(response.brands, "name") // sort brands before saving
   return response
 })
 

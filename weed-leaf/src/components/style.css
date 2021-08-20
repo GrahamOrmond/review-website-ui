@@ -1361,6 +1361,10 @@ button {
     width: 100%;
 }
 
+.multi-select-content .filter-button{
+    margin: 5px 2px;
+}
+
 /* 
     16. TEXT EDITORS
 */
