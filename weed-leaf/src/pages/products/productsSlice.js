@@ -91,6 +91,24 @@ export const getProductSearchParams = (state, params) => {
     .find(p => p.params === paramsString);
 }
 
+// get a list of products by filter
+// used to return a list of products filtered by product filter
+export const getProductsByFilter = (state, filter) => {
+    let items = state.products.list.items;
+    
+    if(filter.brands.length > 0 ){ // filter by brands
+        items = items.filter(p => filter.brands.includes(p.brandId))
+    }
+
+    if(filter.productType.length > 0 ){ // filter by type
+        items = items.filter(p => filter.productType.includes(p.type))
+    }
+
+    if(filter.category.length > 0 ){ // filter by category
+        items = items.filter(p => filter.category.includes(p.category))
+    }
+    return items
+}
 
 // get loaded product filter option info
 // ** used to populate the filter options when displaying a list of products **

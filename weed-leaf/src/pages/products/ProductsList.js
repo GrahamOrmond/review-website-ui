@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchProducts, getProductSearchParams, getProductsListInfo, idleProductList } from './productsSlice';
+import { fetchProducts, getProductsByFilter, getProductSearchParams, getProductsListInfo, idleProductList } from './productsSlice';
 import { AppProduct } from '../../components/AppProduct'
 import { AppProductFilter } from '../../components/AppFilter';
 import { useHistory } from 'react-router-dom';
@@ -10,58 +10,69 @@ export const ProductsList = (props) => {
     const dispatch = useDispatch()
     const history = useHistory()
     const {
-        brands,
-        sortBy,
+        sort,
+        // brands,
+        // productType,
+        // category,
     } = props
 
+    // holds the current sort by state
+    // used to track sortby seperate from filters
+    const [sortBy, setSortBy] = useState(sort)
 
+    // holds the current state of the products applied filter 
+    // used to track and load product list results
     const [filterData, setFilterData] = useState({
-        brands: brands,
-        sortBy: sortBy
+        brands: [],
+        productType: [],
+        category: [],
     })
 
-    const productsList = useSelector(getProductsListInfo);
+    // get product lists 
+    // used to fetch products by the given filter
+    const productsListInfo = useSelector(getProductsListInfo);
+    const productsList = useSelector(s => getProductsByFilter(s, filterData));
     const existingParams = useSelector(s => getProductSearchParams(s, filterData));
     useEffect(() => {
-        if(productsList.status === 'idle'){
+        if(productsListInfo.status === 'idle'){
             dispatch(fetchProducts(filterData))
             return
         }
 
-        if(productsList.status !== 'loading'
+        if(productsListInfo.status !== 'loading'
             && !existingParams){
             dispatch(idleProductList())
         }
-    }, [productsList, filterData, existingParams, dispatch])
+    }, [productsListInfo, filterData, existingParams, dispatch])
 
     // handle filter select box change
-    const handleSelectChange = (e) => {
-        console.log(e.target)
+    // used to update the current filter state
+    const handleApplyFilter = (newFilterData) => {
+        setFilterData(newFilterData)
     }
     
     // handles filter sort button change
     // used to change the url to match the selected filter options
     const handleSortChange = (e) => {
-        let newState = {...filterData}
-        newState['sortBy'] = e.target.id
-        setFilterData(newState) // set form data
-        handleHistoryChange(newState) // change url
+        setSortBy(e.target.id) // set sort by state
+        handleHistoryChange({}, e.target.id) // change url
     }
 
     // handle url changes
-    const handleHistoryChange = (newState) => {
-        history.push(`/products/${newState.sortBy}`)
+    const handleHistoryChange = (newState, sort) => {
+        history.push(`/products/${sort}`)
     }
 
     return (
         <div className="app-content">
             <AppProductFilter 
+                sortBy={sortBy}
                 filterData={filterData}
-                handleSelectChange={handleSelectChange}
+                handleApplyFilter={handleApplyFilter}
                 handleSortChange={handleSortChange}
              />
             {
-                productsList.items.map(p => (
+                productsList.map(p => (
                     <AppProduct 
                         key={p.brandId + '-' + p.urlId}
                         product={p}>

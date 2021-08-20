@@ -45,5 +45,7 @@ export const ProductsPage = (props) => {
     
     return (<ProductsList 
             brands={urlString.brands}
+            productType={urlString.productType}
+            category={urlString.category}
         />)
 }

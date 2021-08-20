@@ -59,18 +59,28 @@ const FilterMultiSelect = (props) => {
 
     const dispatch = useDispatch()
     const {
-        // handleSelectChange
+        filterData,
+        handleApplyFilter
     } = props
 
     // tracks the selected filter option
-    const [selectedFilter, setSelectedFilter] = useState()
+    // used to show filter options for specific filter
+    const [selectedFilter, setSelectedFilter] = useState() 
+
+    // tracks if the filter has changed
+    // used to determine if the results need to be updated or not
+    const [hasFilterChanged, setHasFilterChanged] = useState(false) 
+
+    // holds selected filter options
+    // used to track the selected filter options for each filter
     const [selectedFilterOptions, setSelectedOptions] = useState({
-        'brands': [],
-        'productType': [],
-        'category': [],
+        'brands': [...filterData.brands],
+        'productType': [...filterData.productType],
+        'category': [...filterData.category],
     })
 
-    // get filter options
+    // setup filter options
+    // used to populate the brands list and dynamic filter options
     const brandsListInfo = useSelector(getBrandsListInfo)
     const productFilterInfo = useSelector(getProductFilterInfo)
     useEffect(() => {
@@ -84,6 +94,7 @@ const FilterMultiSelect = (props) => {
     }, [brandsListInfo, productFilterInfo, dispatch])
 
     // handles select options toggle
+    // used to toggle on and off filter options
     const handleToggleSelect = (selected) => {
         if(selected === selectedFilter){ // same as selected filter
             setSelectedFilter() // remove selected option
@@ -95,17 +106,21 @@ const FilterMultiSelect = (props) => {
     // handles selecting filter options
     // used to add id's to a list of selected filter options for later filtering
     const handleSelectOption = (id) => {
-        let selectedOps = {...selectedFilterOptions}
-        selectedOps[selectedFilter].push(id)
-        setSelectedOptions(selectedOps)
+        let selectedOps = {...selectedFilterOptions} // copy options
+        selectedOps[selectedFilter] = selectedOps[selectedFilter].concat([id]) // add seleced option
+        setSelectedOptions(selectedOps) // update selected options
+        setHasFilterChanged(true) // update that the filter has changed
     }
 
     // handles deselecting filter options
     // used to removed id's from a list of selected filter options
     const handleDeselectOption = (index) => {
-        let selectedOps = {...selectedFilterOptions}
-        selectedOps[selectedFilter].splice(index, 1)
-        setSelectedOptions(selectedOps)
+        let selectedOps = {...selectedFilterOptions} // copy filters
+        let options = [...selectedOps[selectedFilter]] // copy options
+        options.splice(index, 1) // remove seleced option
+        selectedOps[selectedFilter] = options // update selected options
+        setSelectedOptions(selectedOps) // update selected options state state
+        setHasFilterChanged(true) // update that the filter has changed
     }
     
     // render selected filter button options
@@ -181,19 +196,37 @@ const FilterMultiSelect = (props) => {
     return (
         <div className="filter-multi-select">
             <div className="multi-select-buttons">
+                <div className="select-filter-buttons">
+                    {
+                        // display filter buttons with its selected filter options
+                        filterButtons.map(f => 
+                            <button key={f.id} 
+                                className={selectedFilter === f.id? 'app-button filter-button active' : 'app-button filter-button'} 
+                                onClick={() => handleToggleSelect(f.id)}>
+                                {f.label}
+                                <div className="selected-options">
+                                    {selectedFilterOptions[f.id].map(p => <label>
+                                        {p}
+                                    </label>)}
+                                </div>
+                            </button>)
+                    }
+                </div>
                 {
-                    // display filter buttons with its selected filter options
-                    filterButtons.map(f => 
-                        <button key={f.id} 
-                            className={selectedFilter === f.id? 'app-button filter-button active' : 'app-button filter-button'} 
-                            onClick={() => handleToggleSelect(f.id)}>
-                            {f.label}
-                            <div className="selected-options">
-                                {selectedFilterOptions[f.id].map(p => <label>
-                                    {p}
-                                </label>)}
-                            </div>
-                        </button>)
+                    hasFilterChanged ? // filter has changed
+                        // show apply filter button
+                        <div className="apply-filter-button">
+                            <button className="button-blue filter-button"
+                                onClick={() => {
+                                    setHasFilterChanged(false) // remove apply button
+                                    handleApplyFilter(selectedFilterOptions) // apply filters
+                                }}
+                            >
+                                Filter
+                            </button>
+                        </div>
+                        : // no filter change
+                        '' // hide apply button
                 }
             </div>
             {
@@ -217,8 +250,9 @@ const FilterMultiSelect = (props) => {
 export const AppProductFilter = (props) => {
     
     const {
+        sortBy,
         filterData,
-        handleSelectChange,
+        handleApplyFilter,
         handleSortChange
     } = props
 
@@ -228,13 +262,14 @@ export const AppProductFilter = (props) => {
                 <div className="filter-content">
                     <div className="form-input-group">
                         <FilterMultiSelect 
-                            handleSelectChange={handleSelectChange}
+                            filterData={filterData}
+                            handleApplyFilter={handleApplyFilter}
                         />
                     </div> 
 
                     <div className="filter-view">
                         <FilterSortButtons 
-                            activeSort={filterData.sortBy}
+                            activeSort={sortBy}
                             handleSortChange={handleSortChange}
                         />
                     </div>
