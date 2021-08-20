@@ -63,7 +63,12 @@ const FilterMultiSelect = (props) => {
     } = props
 
     // tracks the selected filter option
-    const [selectedFilterOption, setSelectedFilterOption] = useState()
+    const [selectedFilter, setSelectedFilter] = useState()
+    const [selectedFilterOptions, setSelectedOptions] = useState({
+        'brands': [],
+        'productType': [],
+        'category': [],
+    })
 
     // get filter options
     const brandsListInfo = useSelector(getBrandsListInfo)
@@ -79,34 +84,82 @@ const FilterMultiSelect = (props) => {
     }, [brandsListInfo, productFilterInfo, dispatch])
 
     // handles select options toggle
-    const handleToggleSelect = (selectedOption) => {
-        if(selectedFilterOption === selectedOption){ // same as selected option
-            setSelectedFilterOption() // remove selected option
+    const handleToggleSelect = (selected) => {
+        if(selected === selectedFilter){ // same as selected filter
+            setSelectedFilter() // remove selected option
         }else { // different filter options
-            setSelectedFilterOption(selectedOption) // show options for that filter
+            setSelectedFilter(selected) // show options for that filter
         }
     }
 
+    // handles selecting filter options
+    // used to add id's to a list of selected filter options for later filtering
+    const handleSelectOption = (id) => {
+        let selectedOps = {...selectedFilterOptions}
+        selectedOps[selectedFilter].push(id)
+        setSelectedOptions(selectedOps)
+    }
+
+    // handles deselecting filter options
+    // used to removed id's from a list of selected filter options
+    const handleDeselectOption = (index) => {
+        let selectedOps = {...selectedFilterOptions}
+        selectedOps[selectedFilter].splice(index, 1)
+        setSelectedOptions(selectedOps)
+    }
+    
     // render selected filter button options
+    // used to render filter options when switching between filters
     const renderFilterOptions = () => {
-        if(selectedFilterOption === 'brands'){ // selected brand filter
-            return brandsListInfo.items.map(f => // display list of brand options
-                <button key={f.brandId} 
-                    className="app-button filter-button">
+
+        const selectedOptions = selectedFilterOptions[selectedFilter] // list of all selected options
+
+        // selected brand filter
+        if(selectedFilter === 'brands'){ 
+            return brandsListInfo.items.map(f => { // display list of brand options
+                const index = selectedOptions.indexOf(f.brandId) // check if option is selected
+                if(index !== -1) // option is selected
+                {
+                    // return active button class with deselect option
+                    return <button key={f.brandId} 
+                            className="app-button filter-button active"
+                            onClick={() => handleDeselectOption(index)}>
+                        {f.name}
+                    </button>
+                }
+
+                // option not selected return normal
+                return <button key={f.brandId} 
+                        className="app-button filter-button"
+                        onClick={() => handleSelectOption(f.brandId)}>
                     {f.name}
                 </button>
-            )
+            })
         }
 
+        // other filter options
         // find the product filter by id
         const filter = productFilterInfo.filters
-            .find(f => f.id === selectedFilterOption)
-        return filter.options.map(f => // return filter option buttons
-            <button key={f.id} 
-                className="app-button filter-button">
+            .find(f => f.id === selectedFilter)
+        return filter.options.map(f => { // return filter options
+            const index = selectedOptions.indexOf(f.id) // check if option is selected
+            if(index !== -1) // option is selected
+            {
+                 // return active button class with deselect option
+                 return <button key={f.id} 
+                        className="app-button filter-button active"
+                        onClick={() => handleDeselectOption(index)}>
+                    {f.label}
+                </button>
+            }
+
+            // option not selected return normal
+            return <button key={f.id} 
+                    className="app-button filter-button"
+                    onClick={() => handleSelectOption(f.id)}>
                 {f.label}
             </button>
-        )
+        })
     }
 
     // list of filter buttons
@@ -129,17 +182,23 @@ const FilterMultiSelect = (props) => {
         <div className="filter-multi-select">
             <div className="multi-select-buttons">
                 {
-                    // display filter buttons
+                    // display filter buttons with its selected filter options
                     filterButtons.map(f => 
                         <button key={f.id} 
-                            className={selectedFilterOption === f.id? 'app-button filter-button active' : 'app-button filter-button'} 
+                            className={selectedFilter === f.id? 'app-button filter-button active' : 'app-button filter-button'} 
                             onClick={() => handleToggleSelect(f.id)}>
                             {f.label}
+                            <div className="selected-options">
+                                {selectedFilterOptions[f.id].map(p => <label>
+                                    {p}
+                                </label>)}
+                            </div>
                         </button>)
                 }
             </div>
             {
-                selectedFilterOption ? 
+                // display filter options for any seleced filter
+                selectedFilter ? 
                 <div className="multi-select-content">
                     {
                         // display selected filter button options

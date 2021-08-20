@@ -1345,6 +1345,20 @@ button {
     border-radius: 25px;
 }
 
+
+.filter-button .selected-options {
+    font-size: 10px;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 150px;
+    text-overflow: ellipsis;
+}
+
+.filter-button .selected-options label {
+    padding-left: 5px;
+}
+
 .filter-multi-select {
     width: 100%;
     display: flex;
