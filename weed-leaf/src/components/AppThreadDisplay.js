@@ -76,7 +76,7 @@ const AppThreadDisplay = (props) => {
 
     // handle url changes
     const handleHistoryChange = (newState) => {
-        history.push(`/community/${newState.type}/${newState.sortBy}`)
+        history.push(`${urlBase}${newState.type}/${newState.sortBy}`)
     }
 
     // return posts thread with filter

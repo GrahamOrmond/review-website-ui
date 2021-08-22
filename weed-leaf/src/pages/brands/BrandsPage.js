@@ -16,7 +16,7 @@ export const BrandsPage = (props) => {
         postLink 
     } = props.match.params;
     const type = props.match.params.postsType
-    const postsType = type === undefined? "reviews" : type.toLowerCase();
+    const postsType = type === undefined? "review" : type.toLowerCase();
     if(brandId){
         if(postLink){
             return (

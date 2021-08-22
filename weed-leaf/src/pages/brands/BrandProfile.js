@@ -5,6 +5,7 @@ import React, { useEffect } from 'react'
 import { getBrandView, fetchBrand, clearBrandView, getBrandById, setBrandView } from './brandsSlice'
 import AppThreadDisplay from '../../components/AppThreadDisplay';
 import { AppShowcase } from '../../components/AppShowcase';
+import { getPostsByBrand } from '../posts/postsSlice';
   
 export const BrandProfile = (props) => {
 
@@ -18,9 +19,8 @@ export const BrandProfile = (props) => {
         window.scrollTo(0, 0)
     }, [])
 
-    let view = useSelector(getBrandView);
-    let brand = useSelector(s => getBrandById(s, brandId))
-
+    const view = useSelector(getBrandView);
+    const brand = useSelector(s => getBrandById(s, brandId))
     useEffect(() => {
         if(view.status === 'idle'){
             if(!brand){ // no brand found
@@ -65,9 +65,9 @@ export const BrandProfile = (props) => {
                 actionLink={"/products?brands=" + brand.name}
                 />
             <AppThreadDisplay 
+                brandId={brand.brandId}
                 postType={postsType}
                 urlBase={`/brands/${brand.brandId}/`}
-                posts={[]}
             />
         </AppProfile>
     )

@@ -91,9 +91,16 @@ export const getPostsList = (state) => {
     return state.posts.list;
 }
 
+
+// returns posts list by given filter
+// used to populate posts lists
 export const getPostByFilter = (state, filter) => {
+    // return list using filter
     return state.posts.list.items
-        .filter(p => p.type === filter.type.toUpperCase())
+        .filter((p) => {
+            return (!filter.brandId || filter.brandId === p.brand.brandId)
+            && (!filter.type || filter.type.toUpperCase() === p.type)
+        })
 }
 
 export const getPostView = (state) => {
