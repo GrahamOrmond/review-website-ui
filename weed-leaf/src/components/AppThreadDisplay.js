@@ -88,9 +88,20 @@ const AppThreadDisplay = (props) => {
                 handleSelectChange={handleSelectChange}
                 handleSortChange={handleSortChange}
             />
-            {posts.length > 0? renderPosts() : ''}
+            {existingParams && postsList.status !== 'loading'? 
+                renderPosts() 
+                :
+                ''
+            }
             <div className="thread-end">
-                <h3>End Of Content</h3>
+                <h3>
+                    {
+                        postsList.status !== 'loading'?
+                            "Loading"
+                            :
+                            "End Of Content"
+                    }
+                </h3>
             </div>
         </div>
     );

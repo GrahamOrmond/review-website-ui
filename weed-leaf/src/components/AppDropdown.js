@@ -1,45 +1,42 @@
 import { Link } from 'react-router-dom'
-import { closeAllDropDownMenus } from '../helpers/generalHelper';
 import { AppButton } from './AppButton';
 
-const DropdownNav = (props) => {
+export const DropdownNav = (props) => {
 
-    const closeDropdown = (event) => {
-        let dropdown = event.target.closest('.dropdown-content');;
+    const {
+        label,
+        handleOnClick,
+        isMobileOnly
+    } = props
+
+    // handles clicking the drop down nav button
+    // used to close the drop down menu before handling the buttons action
+    const handleOnNavClick = (e) => {
+        let dropdown = e.target.closest('.dropdown-content');;
         dropdown.classList.remove("active");
-        props.handleOnClick()
-    }
-
-    const className = props.mobileOnly? "dropdown-nav mobile-nav" : "dropdown-nav"
-    if(props.handleOnClick){
-        return (
-            <div className={className} onClick={(e) => closeDropdown(e)}>
-                {props.text}
-            </div>
-        )
+        handleOnClick() // run buttons action
     }
 
     return (
-        <Link to={props.link} onClick={(e) => closeAllDropDownMenus(e)}>
-            <div className={className}>
-                {props.text}
+        <Link onClick={(e) => handleOnNavClick(e)}>
+            <div className={isMobileOnly? "dropdown-nav mobile-nav" : "dropdown-nav" }>
+                {label}
             </div>
         </Link>
     )
 }
 
-const DropdownContent = (props) => {
-
-    return (
-        <div className="dropdown-content">
-            {props.children}
-        </div>
-    );
-}
 
 export const AppDropdown = (props) => {
 
+    const {
+        icon,
+        children,
+    } = props
+
     // toggles the drop down when clicked
+    // used to toggle drop down menu though classname instead of state 
+    // this avoids multiple menus being open
     const toggleDropDown = (event) => {
         event.preventDefault()
         // get the drop down DOM and toggle it
@@ -52,32 +49,14 @@ export const AppDropdown = (props) => {
         }
     }
 
-    const renderOptions = () => {
-        let data = []
-        props.linkData.linkSections.forEach(section => {
-            section.links.forEach(link => {
-                data.push(
-                    <DropdownNav 
-                        key={link.link}
-                        mobileOnly={section.mobileOnly}
-                        handleOnClick={link.onClick}
-                        text={link.label} 
-                        link={link.link}
-                    />
-                )
-            })
-        })
-       return data
-    }
-
     return (
         <div className="app-dropdown">
             <AppButton handleOnClick={toggleDropDown}>
-                {props.children}
+                { icon }
             </AppButton>
-            <DropdownContent>
-                {renderOptions()}
-            </DropdownContent>
+            <div className="dropdown-content">
+                { children }
+            </div>
         </div>
     );
 }

@@ -155,6 +155,12 @@ export const postsSlice = createSlice({
         idlePostList(state, action) {
             state.list.status = 'idle'
         },
+        // clears post search params
+        // used to refresh all of the posts to start loading again
+        clearPostParams(state, action) {
+            state.list.status = 'idle'
+            state.list.params = []
+        },
     },
     extraReducers: {
         // FETCH LIST OF POST
@@ -221,7 +227,8 @@ export const {
     clearPostView,
     addToPostCommentCount,
     setPostView,
-    idlePostList
+    idlePostList,
+    clearPostParams,
 } = postsSlice.actions
   
 export default postsSlice.reducer

@@ -80,12 +80,15 @@ export const ProductsList = (props) => {
              />
             <div className="product-list">
                 {
-                    productsList.map(p => (
-                        <AppProduct 
-                            key={p.brandId + '-' + p.urlId}
-                            product={p}>
-                        </AppProduct>
-                    ))
+                    existingParams && productsList.status !== 'loading'?
+                        productsList.map(p => (
+                            <AppProduct 
+                                key={p.brandId + '-' + p.urlId}
+                                product={p}>
+                            </AppProduct>
+                        ))
+                    :
+                        ''
                 }
             </div>
         </div>
