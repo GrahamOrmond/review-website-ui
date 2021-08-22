@@ -122,8 +122,10 @@ const ProductContent = (props) => {
         type,
         content,
         productName,
+        productImage,
     } = props
-
+    
+    // used to render extra product content/properties
     const renderContent = () => {
         let renderedContent = []
         switch(type){
@@ -147,11 +149,17 @@ const ProductContent = (props) => {
     return (
         <div className="product-content">
             <div className="product-image">
-                <img alt={productName}></img>
+                { productImage? 
+                    <img alt={productName}></img>
+                    :
+                    <div className="product-image-placeholder">
+                        No Image To Show
+                    </div>
+                }
             </div>
-            <div className="product-info">
+            {/* <div className="product-info">
                 {renderContent()}
-            </div>
+            </div> */}
         </div>
     );
 

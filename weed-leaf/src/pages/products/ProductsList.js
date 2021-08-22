@@ -78,14 +78,16 @@ export const ProductsList = (props) => {
                 handleApplyFilter={handleApplyFilter}
                 handleSortChange={handleSortChange}
              />
-            {
-                productsList.map(p => (
-                    <AppProduct 
-                        key={p.brandId + '-' + p.urlId}
-                        product={p}>
-                    </AppProduct>
-                ))
-            }
+            <div className="product-list">
+                {
+                    productsList.map(p => (
+                        <AppProduct 
+                            key={p.brandId + '-' + p.urlId}
+                            product={p}>
+                        </AppProduct>
+                    ))
+                }
+            </div>
         </div>
     );
 }
