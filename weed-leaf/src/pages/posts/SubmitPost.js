@@ -1,256 +1,303 @@
-import React, { useState } from 'react';
-import { useHistory } from "react-router-dom"
+import React, { useEffect, useState } from 'react';
 import { AppCard } from "../../components/AppCard"
-import { AppForm } from "../../components/AppForm"
-import { useDispatch, useSelector } from "react-redux"
-import { createPost } from "./postsSlice"
-import { getAllBrands } from "../brands/brandsSlice"
-import { sortListByName } from "../../helpers/generalHelper"
-import { postProperties } from "./PostProperties"
+import { AppDynamicSelect, AppFileInput, AppInput, AppSelect } from "../../components/AppForm"
+import { postOptions } from './submitPostOptions';
+import { AppMarkupEditor } from '../../components/AppTextEditor';
+import { useDispatch, useSelector } from 'react-redux';
+import { createPost } from './postsSlice';
+import { useHistory } from 'react-router-dom';
+import { sortListByName } from '../../helpers/generalHelper'
+import { fetchBrands, getBrandsListInfo } from '../brands/brandsSlice'
+import { fetchProducts, getProductsByBrandId, getProductSearchParams } from '../products/productsSlice'
 
-const generateBrandOptions = (brandsList) => {
-    let brandSorted = sortListByName(brandsList, "name")
-    let options = {}
-    brandSorted.forEach(brand => {
-        options[brand.brandId] = {
-            label: brand.name
-        }
-    });
-    return options
-};
+// handle submitting posts
+export const SubmitPostForm = (props) => {
 
-const generateProductOptions = (productsList) => {
-    let productsSorted = sortListByName(productsList, "name")
-    let options = {}
-    productsSorted.forEach(product => {
-        options[product.urlId] = {
-            label: product.name
-        }
-    });
-    return options
-};
-
-const renderProductOptions = async (brandId) => {
-    let productOptions = []//generateProductOptions(productsInfo.products);
-
-    let productSelectBox = document.getElementById("post-form")
-        .elements["productUrlId"];
-    for(let i = productSelectBox.options.length; i >= 0; i--) {
-        productSelectBox.remove(i);
-    }
-
-    let selectOption = document.createElement("option");
-    selectOption.text = '-- Select --';
-    productSelectBox.add(selectOption);
-
-    for (const [key, option] of Object.entries(productOptions)) {
-        let optionDom = document.createElement("option");
-        optionDom.id = key;
-        optionDom.text = option.label;
-        productSelectBox.add(optionDom);
-    }
-}
-
-const determineBaseUrl = (brandId, productUrlId) => {
-
-    if(productUrlId){
-        return `/products/${brandId}/${productUrlId}`
-    }else if (brandId){
-        return `/brands/${brandId}`
-    }else {
-        return '/community'
-    }
-}
-
-export const SubmitPost = (props) => {
-
-    const history = useHistory();
-    const dispatch = useDispatch();
-
+    const dispatch = useDispatch()
+    const history = useHistory()
+    
     const {
         brandId,
         productUrl,
         postType,
-    } = props
+    } = props // get urls params to declare default values
 
-    const updateFormData = (newState) => {
-        const type = newState.type.value
-        if(type !== "review"){
-            newState['rating'].type = "hidden"
-            newState['properties'] = "hidden"
-        }else{
-            newState['rating'].type = "select"
-            newState['properties'] = "properties"
-            for (const [key, value] of Object.entries(postProperties())) {
-                newState[key] = value
+    // delare form data with default values (grows as data is inputted into form)
+    const [formData, setFormData] = useState({
+        "type": postType,
+        "status": "private",
+        "brandId": brandId,
+        "productUrlId": productUrl
+    })
+
+    // load brand and product options
+    const brandsListInfo = useSelector(getBrandsListInfo) // get all brands
+    const brandsList = brandsListInfo.items
+    const productList = useSelector(s => getProductsByBrandId(s, formData.brandId)) // get products by brand
+    const existingParams = useSelector(s => getProductSearchParams(s, {'brandId': formData.brandId})); // get search params
+    useEffect(() => {
+        if(!existingParams){ // if user has not search for these products before
+            dispatch(fetchProducts({'brandId': formData.brandId})) // get products by brand
+        }
+
+        if(brandsListInfo.status === "idle"){ // brands have not been loaded
+            dispatch(fetchBrands({})) // load all brands
+        }
+    }, [existingParams, formData, brandsListInfo, dispatch])
+
+    // generate list of brand options
+    const generateBrandOptions = () => {
+        let brandSorted = sortListByName(brandsList, "name")
+        let options = {
+            '': {
+                'label': '-- Select --'
             }
+        }
+        brandSorted.forEach(brand => {
+            options[brand.brandId] = {
+                label: brand.name
+            }
+        });
+        return options
+    };
+
+    // generate list of product options
+    const generateProductOptions = () => {
+        let productSorted = sortListByName(productList, "name")
+        let options = {
+            '': {
+                'label': '-- Select --'
+            }
+        }
+        productSorted.forEach(product => {
+            options[product.urlId] = {
+                label: product.name
+            }
+        });
+        return options
+    };
+
+    // handle select box change
+    const handleSelectChange = (e) => {
+        let newState = {...formData}
+        const selectedOption = e.target.options[e.target.selectedIndex].id
+        newState[e.target.name] = selectedOption
+        if(newState['brandId'] !== formData.brandId) // brand changed
+            delete newState['productUrlId'] // remove selected product
+
+        setFormData(newState) // set form data
+        handleHistoryChange(newState) // change url
+    }
+
+    // handle history change
+    const handleHistoryChange = (newState) => {
+        // return if form matches url
+        if(newState.type === postType 
+            && newState.brandId === brandId
+            && newState.productUrlId === productUrl){
+                return
+        }
+
+        // change url-
+        if(newState.productUrlId){ // product selected
+            history.push(`/products/${newState.brandId}/${newState.productUrlId}/submit/${newState.type}`)
+        }else if (newState.brandId) { // brand selected
+            history.push(`/brands/${newState.brandId}/submit/${newState.type}`)
+        }else { // no brand selected
+            history.push(`/community/submit/${newState.type}`)
+        }
+    }
+
+    // handle input box change
+    const handleInputChange = (e) => {
+        let newState = {...formData}
+        newState[e.target.name] = e.target.value
+        setFormData(newState)
+    }
+
+    // handle file input box change
+    const handleFileChange = (fileList, file, removeFile = false) => {
+        let newState = {...formData};
+        if(removeFile){
+            const fileIndex = newState[fileList].files.indexOf(file);
+            newState[fileList].files.splice(fileIndex, 1);
+        }else{
+            newState[fileList].files.push(file)
         }
         setFormData(newState)
     }
 
-    
-    const handleSubmitPost = (postParams) => {
-        const postDto = ["content", "title", "type", 
-        "status", "productUrlId", "brandId", "rating", "mediaFiles"];
-        let properties = [] 
-        for (const [key, param] of Object.entries(postParams)) {
-            if(!postDto.includes(key)){
-                properties.push({
+    // returns post data from the form
+    const getPostData = () => {
+        // get post params from data
+        const postDto = ["type", "status", "content", "title",
+            "productUrlId", "brandId", "rating", "mediaFiles"];
+        let postData = { // post data with list delaired by default
+            properties: [],
+            productEffects: [],
+            mediaFiles: [],
+        }
+        for (const [key, param] of Object.entries(formData)) {
+            if(postDto.includes(key)){ // post data
+                postData[key] = param
+            }else{ // post property data
+                postData.properties.push({ 
                     'property': key,
                     'value': param
                 })
-                delete postParams[key]
             }
         }
-        postParams.productProperties = properties
-        postParams.productEffects = []
-        dispatch(createPost(postParams))
+
+        postData.content = document.getElementById("content").innerText;
+        return postData;
+    }
+
+    // determins url to return to after posting
+    const determineBaseUrl = (brandId, productUrlId) => {
+        if(productUrlId){
+            return `/products/${brandId}/${productUrlId}`
+        }else if (brandId){
+            return `/brands/${brandId}`
+        }else {
+            return '/community'
+        }
+    }
+
+    // handle submitting post
+    const handleSubmitPost = () => {
+        const postData = getPostData() // get post data from the form
+        // submit the post
+        dispatch(createPost(postData))
         .then(res => {
             if(res.meta.requestStatus === "fulfilled")
-                history.push(determineBaseUrl(postParams.brandId, postParams.productUrlId))
+                history.push(determineBaseUrl(postData.brandId, postData.productUrlId))
         })
     }
 
-    const handleSavePost = (postParams) => {
-        postParams.Status = "Draft"
-        dispatch(createPost(postParams))
+    // handle saving post draft
+    const handleSavePost = () => {
+        let postData = getPostData() // get post data from the form
+        postData.status = "Draft" // set status to draft for easy acces
+        // save the draft
+        dispatch(createPost(postData))
         .then(res => {
             if(res.meta.requestStatus === "fulfilled")
-            history.push(determineBaseUrl(postParams.brandId, postParams.productUrlId))
+            history.push(determineBaseUrl(postData.brandId, postData.productUrlId))
         })
     }
 
-    const handleReviewTypeChange = (formData, selectedOption) => {
-        const brand = formData.brandId.value
-        const product = formData.productUrlId.value
-        history.push(`${determineBaseUrl(brand, product)}/submit/${selectedOption}`)
+    // add review inputs to the form
+    let reviewContent;
+    if(formData.type === "review"){
+        reviewContent = [
+            <div className="form-input-group">
+                <AppSelect 
+                    name="rating"
+                    label="Rating"
+                    selectedValue={formData.rating}
+                    options={postOptions.rating}
+                    handleOnChange={handleSelectChange}
+                />
+            </div>,
+            <div className="form-input-group">
+                <AppDynamicSelect
+                    label="Properties"
+                    options={postOptions.properties}
+                />
+            </div>,
+        ]
     }
-
-    const handleBrandChange = async (formData, selectedOption) => {
-        const selectedType = formData.type.value
-        history.push(`/brands/${selectedOption}/submit/${selectedType}`)
-        await renderProductOptions(selectedOption);
-    }
-
-    const handleProductChange = (formData, selectedOption) => {
-        const selectedBrand = formData.brandId.value
-        const selectedType = formData.type.value
-
-        if(selectedOption){
-            history.push(`/products/${selectedBrand}/${selectedOption}/submit/${selectedType}`)
-        }else{
-            history.push(`/brands/${selectedBrand}/submit/${selectedType}`)
-        }
-    }
-
-    const brandsList = useSelector(getAllBrands)
-    let formDataTemplate = {
-        "type": {
-            'label': 'Post Type',
-            'type': 'select',
-            'options': {
-                "review": {
-                    'label': "Review"
-                },
-                "question": {
-                    'label': "Question"
-                },
-                "thread": {
-                    'label': "Thread"
-                },
-            },
-            'placeholder': '',
-            'required': true,
-            'value': postType,
-            handleOnChange: handleReviewTypeChange
-        },
-        "status": {
-            'label': 'Post Status',
-            'type': 'select',
-            'options': {
-                'public': {
-                    'label': "Public"
-                },
-                'private': {
-                    'label': "Private"
-                }
-            },
-            'placeholder': '',
-            'required': true,
-            'value': 'public',
-        },
-        "brandId": {
-            'label': 'Brand',
-            'type': 'select',
-            'options': generateBrandOptions(brandsList),
-            'placeholder': '',
-            'value': brandId,
-            handleOnChange: handleBrandChange
-        },
-        "productUrlId": {
-            'label': 'Brand',
-            'type': 'select',
-            'options': [],
-            'placeholder': '',
-            'value': productUrl,
-            handleOnChange: handleProductChange
-        },
-        "title": {
-            'label': 'Title',
-            'type': 'text',
-            'placeholder': '',
-            'required': true,
-            'value': ''
-        },
-        "mediaFiles": {
-            'label': 'Media',
-            'type': 'file',
-            'placeholder': '',
-            'files': []
-        }
-    }
-    
-    if(postType === "review"){
-        for (const [key, value] of Object.entries(postProperties())) {
-            formDataTemplate[key] = value
-        }
-    }
-    
-    const content = {
-        'label': 'Post',
-        'type': 'textEditor',
-        'placeholder': '',
-        'required': true,
-        'value': 'textEditor'
-    }
-    formDataTemplate.content = content
-    const submitButtons = {
-        "save": {
-            label: "Save Draft",
-            handleSubmit: handleSavePost
-        },
-        "post": {
-            label: "Post",
-            handleSubmit: handleSubmitPost
-        }
-    }
-
-    const [ formData, setFormData ] = useState(formDataTemplate)
 
     return (
         <div className="app-content">
-            <AppCard >
-                <AppForm 
-                    id="post-form"
-                    title="Create Post"
-                    submitTitle="Create Post"
-                    method="POST"
-                    formData={formData}
-                    submitButtons={submitButtons}
-                    updateFormData={updateFormData}
-                />
+            <AppCard>
+                <div className="form-header">
+                    <h4>Create Post</h4>
+                </div>
+
+                <div className="form-content">
+
+                    <div className="form-input-group">
+                        <AppSelect 
+                            name="type"
+                            label="Type"
+                            selectedValue={formData.type}
+                            options={postOptions.type}
+                            handleOnChange={handleSelectChange}
+                        />
+                        <AppSelect 
+                            name="status"
+                            label="Status"
+                            selectedValue={formData.status}
+                            options={postOptions.status}
+                            handleOnChange={handleSelectChange}
+                        />
+                    </div>
+
+                    <div className="form-input-group">
+                        <AppSelect 
+                            name="brandId"
+                            label="Brand"
+                            selectedValue={formData.brandId}
+                            options={generateBrandOptions()}
+                            handleOnChange={handleSelectChange}
+                        />
+                        <AppSelect 
+                            name="productUrlId"
+                            label="Product"
+                            selectedValue={formData.productId}
+                            options={generateProductOptions()}
+                            handleOnChange={handleSelectChange}
+                        />
+                    </div>
+
+                    <div className="form-input-group">
+                        <AppInput 
+                            name="title"
+                            label="Title" 
+                            type="text"
+                            placeholder=''
+                            value={formData.title}
+                            handleChange={handleInputChange}
+                        />
+                    </div>
+
+                    <div className="form-input-group">
+                        <AppFileInput
+                            name="mediaFiles" 
+                            label="Media"
+                            handleOnChange={handleFileChange}
+                            files={formData.files}
+                        />
+                    </div>
+
+                    { reviewContent }
+
+                    <div className="form-input-group">
+                        <AppMarkupEditor 
+                            name="content"
+                            editId="content"
+                            label=""
+                            placeholder="Whats on your mind?"
+                            value={formData.content}
+                        />
+                    </div>
+ 
+                </div>
+
+                <div className="form-footer">
+                    <button type="submit" 
+                        className="button-blue" 
+                        onClick={handleSavePost}>
+                        Save Draft
+                    </button>
+                    <button type="submit" 
+                        className="button-blue" 
+                        onClick={handleSubmitPost}>
+                        Post
+                    </button>
+                </div>
             </AppCard>
-            
         </div>
     )
 }

@@ -1,23 +1,4 @@
 
-const profileGeneralForm = (profile) =>
-{
-    return {
-        'displayName': {
-            'label': 'Display Name',
-            'type': 'text',
-            'placehoder': '',
-            'required': true,
-            'value': profile.displayName
-        },
-        'bio': {
-            'label': 'Bio',
-            'type': 'textEditor',
-            'placehoder': '',
-            'required': false,
-            'value': profile.bio
-        }
-    }
-}
 
 const profileShowcaseForm = (profileShowcases) =>
 {
@@ -111,28 +92,7 @@ const profilePrivacyForm = (profile) =>
 export const profileEditForms = (profile) =>  {
 
     return {
-        "general": profileGeneralForm(profile),
         "showcases": profileShowcaseForm(profile.showcases),
         "privacy": profilePrivacyForm(profile),
     }
-}
-
-
-export const profileMenuOptions = {
-    "general": {
-        "id": "general",
-        "label": "General",
-    },
-    "showcase": {
-        "id": "showcases",
-        "label": "Showcase",
-    },
-    "support": {
-        "id": "support",
-        "label": "Support",
-    },
-    "privacy": {
-        "id": "privacy",
-        "label": "Privacy",
-    },
 }

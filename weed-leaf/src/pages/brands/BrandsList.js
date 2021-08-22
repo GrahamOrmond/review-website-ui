@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchBrands, getBrandsListInfo, getBrandsSearchParams, idleBrandsList } from './brandsSlice';
-import { sortListByName } from '../../helpers/generalHelper';
 import { ListSection } from '../../components/AppList';
 
 const BrandLabel = (props) => {
@@ -28,11 +27,9 @@ const BrandsListDisplay = (props) => {
     } = props
 
     const renderBrands = () => {
-        let brandSorted = sortListByName(brands, "name") // sort brands
-
         let previousLetter; // tracks previous letter
         let brandContent = [], sectionTitle, sectionContent = [];
-        brandSorted.forEach(brand => {
+        brands.forEach(brand => {
             // determine brand section letter
             let letter = brand.name[0];
             if(letter.match(/[a-z]/i)){

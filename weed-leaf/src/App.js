@@ -70,7 +70,7 @@ function App() {
             component={BrandsPage} />
           <Route exact path="/products/:brandId?/:productUrlId?/:postsType?/:displayName?/:postLink?" 
             component={ProductsPage} />
-          <Route exact path="/community/:type?/:displayName?/:postLink?" component={CommunityPage} />
+          <Route exact path="/community/:type?/:sort?/:postLink?" component={CommunityPage} />
           <Route exact path="/account/" component={UserPage} />
           <Route exact path="/user/:displayName?/:postType?" component={UserPage} />
           <Route exact path="/login" component={LoginPage} />

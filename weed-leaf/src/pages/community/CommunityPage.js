@@ -7,18 +7,16 @@ export const CommunityPage = props =>  {
         type,
         displayName,
         postLink,
+        sort,
     } = props.match.params;
-    const postsType = type === undefined? "reviews" : type.toLowerCase();
+    const postType = type === undefined? "review" : type.toLowerCase();
+    const sortBy = sort === undefined? "new" : sort.toLowerCase();
     
-    const fetchData = {
-        postsType: postsType
-    }
-
-
     if(!postLink){
         return (
             <CommunityThreads
-                fetchData={fetchData} 
+                postType={postType}
+                sortBy={sortBy}
             />
         )
     }

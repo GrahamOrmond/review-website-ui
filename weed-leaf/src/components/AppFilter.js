@@ -1,207 +1,325 @@
-import { useHistory } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchBrands, getBrandsListInfo } from '../pages/brands/brandsSlice';
+import { postOptions } from '../pages/posts/submitPostOptions';
+import { fetchProductFilters, getProductFilterInfo } from '../pages/products/productsSlice';
 import { AppCard } from './AppCard'
+import { AppSelect } from './AppForm';
 
 
-export const AppPostFilter = (props) => {
+const FilterSortButtons = (props) => {
 
-    const history = useHistory()
-    const postType = props.postType === undefined? "reviews" : props.postType.toLowerCase()
+    const {
+        handleSortChange,
+        activeSort
+    } = props
 
-    const handleSelectChange = (event) => {
-        const selectBox = event.target
-        const selectedOption = selectBox.options[selectBox.selectedIndex].id
-        if(selectBox.name === "type"){
-            history.push(props.urlBase + selectedOption)
+    // sort buttons
+    const buttons = [
+        {
+            'id': 'new',
+            'label': 'New'
+        },
+        {
+            'id': 'trending',
+            'label': 'Trending'
+        },
+        {
+            'id': 'top',
+            'label': 'Top'
         }
-    }
+    ]
 
-    const handleOnClick = (event) => {
-        let buttonDisplay = document.getElementById("filter_buttons");
-        let filterButtons = buttonDisplay.querySelectorAll(".filter-button")
-        filterButtons.forEach(button => {
-            if (button.classList.contains('active')) {
-                button.classList.remove('active');
+
+
+    return (
+        <div className="filter-buttons" id="filter_buttons">
+            {
+                // render sort buttons
+                buttons.map(b => {
+                    // check for active sort button to extend class
+                    const activeClass = activeSort === b.id? ' active' : ''
+                    return (
+                        <div
+                            className={"app-button filter-button" + activeClass}
+                            onClick={handleSortChange}
+                            id={b.id}>
+                            {b.label}
+                        </div>
+                    )
+                })
             }
-        });
-        event.target.classList.add('active')
-    }
-
-    let selectOptions = {
-        type: {
-            value: "reviews",
-            options: [{
-                    id: "reviews",
-                    label: "Reviews"
-                },
-                {
-                    id: "questions",
-                    label: "Questions"
-                },
-                {
-                    id: "threads",
-                    label: "Threads"
-                }
-            ],
-            onChange: handleSelectChange
-        }
-    }
-    if(postType === "reviews"){
-        selectOptions.rating = {
-            value: "5",
-            options: [{
-                id: "1",
-                label: "1 Star"
-                },
-                {
-                    id: "2",
-                    label: "2 Stars"
-                },
-                {
-                    id: "3",
-                    label: "3 Stars"
-                },
-                {
-                    id: "4",
-                    label: "4 Stars"
-                },
-                {
-                    id: "5",
-                    label: "5 Stars"
-                }
-            ],
-            onChange: handleSelectChange
-        }
-    }
-
-    let sortButtons = {
-        selected: "new",
-        buttons: {
-            new: {
-                label: "New",
-                onClick: handleOnClick
-            },
-            trending: {
-                label: "Trending",
-                onClick: handleOnClick
-            },
-            top: {
-                label: "Top",
-                onClick: handleOnClick
-            }
-        }
-    }
-
-    return <AppFilter
-        selectOptions={selectOptions}
-        sortButtons={sortButtons}
-    />
-
-
+        </div>
+    )
 }
+
+// mutltiple select options for filter button
+// used to display filter button along side multiple filter options to select
+const FilterMultiSelect = (props) => {
+
+    const dispatch = useDispatch()
+    const {
+        filterData,
+        handleApplyFilter
+    } = props
+
+    // tracks the selected filter option
+    // used to show filter options for specific filter
+    const [selectedFilter, setSelectedFilter] = useState() 
+
+    // tracks if the filter has changed
+    // used to determine if the results need to be updated or not
+    const [hasFilterChanged, setHasFilterChanged] = useState(false) 
+
+    // holds selected filter options
+    // used to track the selected filter options for each filter
+    const [selectedFilterOptions, setSelectedOptions] = useState({
+        'brands': [...filterData.brands],
+        'productType': [...filterData.productType],
+        'category': [...filterData.category],
+    })
+
+    // setup filter options
+    // used to populate the brands list and dynamic filter options
+    const brandsListInfo = useSelector(getBrandsListInfo)
+    const productFilterInfo = useSelector(getProductFilterInfo)
+    useEffect(() => {
+        if(brandsListInfo.status === "idle"){ // no brands loaded
+            dispatch(fetchBrands({})) // get all brands
+        }
+
+        if(productFilterInfo.status === "idle"){
+            dispatch(fetchProductFilters({})) // get all product filter options
+        }
+    }, [brandsListInfo, productFilterInfo, dispatch])
+
+    // handles select options toggle
+    // used to toggle on and off filter options
+    const handleToggleSelect = (selected) => {
+        if(selected === selectedFilter){ // same as selected filter
+            setSelectedFilter() // remove selected option
+        }else { // different filter options
+            setSelectedFilter(selected) // show options for that filter
+        }
+    }
+
+    // handles selecting filter options
+    // used to add id's to a list of selected filter options for later filtering
+    const handleSelectOption = (id) => {
+        let selectedOps = {...selectedFilterOptions} // copy options
+        selectedOps[selectedFilter] = selectedOps[selectedFilter].concat([id]) // add seleced option
+        setSelectedOptions(selectedOps) // update selected options
+        setHasFilterChanged(true) // update that the filter has changed
+    }
+
+    // handles deselecting filter options
+    // used to removed id's from a list of selected filter options
+    const handleDeselectOption = (index) => {
+        let selectedOps = {...selectedFilterOptions} // copy filters
+        let options = [...selectedOps[selectedFilter]] // copy options
+        options.splice(index, 1) // remove seleced option
+        selectedOps[selectedFilter] = options // update selected options
+        setSelectedOptions(selectedOps) // update selected options state state
+        setHasFilterChanged(true) // update that the filter has changed
+    }
+    
+    // render selected filter button options
+    // used to render filter options when switching between filters
+    const renderFilterOptions = () => {
+
+        const selectedOptions = selectedFilterOptions[selectedFilter] // list of all selected options
+
+        // selected brand filter
+        if(selectedFilter === 'brands'){ 
+            return brandsListInfo.items.map(f => { // display list of brand options
+                const index = selectedOptions.indexOf(f.brandId) // check if option is selected
+                if(index !== -1) // option is selected
+                {
+                    // return active button class with deselect option
+                    return <button key={f.brandId} 
+                            className="app-button filter-button active"
+                            onClick={() => handleDeselectOption(index)}>
+                        {f.name}
+                    </button>
+                }
+
+                // option not selected return normal
+                return <button key={f.brandId} 
+                        className="app-button filter-button"
+                        onClick={() => handleSelectOption(f.brandId)}>
+                    {f.name}
+                </button>
+            })
+        }
+
+        // other filter options
+        // find the product filter by id
+        const filter = productFilterInfo.filters
+            .find(f => f.id === selectedFilter)
+        return filter.options.map(f => { // return filter options
+            const index = selectedOptions.indexOf(f.id) // check if option is selected
+            if(index !== -1) // option is selected
+            {
+                 // return active button class with deselect option
+                 return <button key={f.id} 
+                        className="app-button filter-button active"
+                        onClick={() => handleDeselectOption(index)}>
+                    {f.label}
+                </button>
+            }
+
+            // option not selected return normal
+            return <button key={f.id} 
+                    className="app-button filter-button"
+                    onClick={() => handleSelectOption(f.id)}>
+                {f.label}
+            </button>
+        })
+    }
+
+    // list of filter buttons
+    const filterButtons = [
+        {
+            'id': 'brands',
+            'label': 'Brand +'
+        },
+        {
+            'id': 'productType',
+            'label': 'Product Type +'
+        },
+        {
+            'id': 'category',
+            'label': 'Product Category +'
+        },
+    ]
+    
+    return (
+        <div className="filter-multi-select">
+            <div className="multi-select-buttons">
+                <div className="select-filter-buttons">
+                    {
+                        // display filter buttons with its selected filter options
+                        filterButtons.map(f => 
+                            <button key={f.id} 
+                                className={selectedFilter === f.id? 'app-button filter-button active' : 'app-button filter-button'} 
+                                onClick={() => handleToggleSelect(f.id)}>
+                                {f.label}
+                                <div className="selected-options">
+                                    {selectedFilterOptions[f.id].map(p => <label>
+                                        {p}
+                                    </label>)}
+                                </div>
+                            </button>)
+                    }
+                </div>
+                {
+                    hasFilterChanged ? // filter has changed
+                        // show apply filter button
+                        <div className="apply-filter-button">
+                            <button className="button-blue filter-button"
+                                onClick={() => {
+                                    setSelectedFilter() // hide options box
+                                    setHasFilterChanged(false) // remove apply button
+                                    handleApplyFilter(selectedFilterOptions) // apply filters
+                                }}
+                            >
+                                Filter
+                            </button>
+                        </div>
+                        : // no filter change
+                        '' // hide apply button
+                }
+            </div>
+            {
+                // display filter options for any seleced filter
+                selectedFilter ? 
+                <div className="multi-select-content">
+                    {
+                        // display selected filter button options
+                        renderFilterOptions()
+                    }
+                </div>
+                :
+                ''
+            }
+        </div>
+    )
+}
+
+
 
 export const AppProductFilter = (props) => {
-
-    const handleOnClick = (event) => {
-
-    }
-
-    let selectOptions = {
-        brands: {
-            label: "Brands",
-            options: [
-                
-            ]
-        },
-        type: {
-            label: "Product Type",
-            options: [
-                
-            ]
-        }
-
-    }
-
-    let sortButtons = {
-        selected: "new",
-        buttons: {
-            new: {
-                label: "New",
-                onClick: handleOnClick
-            },
-            trending: {
-                label: "Trending",
-                onClick: handleOnClick
-            },
-            top: {
-                label: "Top",
-                onClick: handleOnClick
-            }
-        }
-
-    }
-
-    return <AppFilter
-        selectOptions={selectOptions}
-        sortButtons={sortButtons}
-    />
-}
-
-const AppFilter = (props) => {
-
-    const renderSelectBoxes = (selectData) => {
-        let selectBoxes = []
-        for (const [key, input] of Object.entries(selectData)) {
-            let options = input.options.map(option => {
-                return (<option key={option.id} id={option.id} >{option.label}</option>)
-            })
-
-            selectBoxes.push(
-                <select 
-                    key={key}
-                    defaultValue={input.value} 
-                    name={key} 
-                    onChange={(e) => {input.onChange(e)}}>
-                    {options}
-                </select>
-            )
-        }
-        return selectBoxes;
-    }
-
-    const renderButtons = (buttonData) => {
-        let buttons = []
-        for (const [key, input] of Object.entries(buttonData.buttons)) {
-            let className = "app-button filter-button"
-            if(key === buttonData.selected){
-                className += " active"
-            }
-            buttons.push(
-                <div
-                    key={input.label} 
-                    className={className}
-                    onClick={(e) => {input.onClick(e)}}>
-                    {input.label}
-                </div>
-            )
-        }
-        return buttons
-    }
+    
+    const {
+        sortBy,
+        filterData,
+        handleApplyFilter,
+        handleSortChange
+    } = props
 
     return (
         <AppCard>
             <div className="app-filter">
                 <div className="filter-content">
-                    <div className="filter-input">
-                        {renderSelectBoxes(props.selectOptions)}
+                    <div className="form-input-group">
+                        <FilterMultiSelect 
+                            filterData={filterData}
+                            handleApplyFilter={handleApplyFilter}
+                        />
                     </div> 
 
                     <div className="filter-view">
-                        <div className="filter-buttons" id="filter_buttons">
-                            {renderButtons(props.sortButtons)}
-                        </div>
+                        <FilterSortButtons 
+                            activeSort={sortBy}
+                            handleSortChange={handleSortChange}
+                        />
                     </div>
                 </div>
             </div>
         </AppCard>
-    );
+    )
+}
+
+export const AppThreadFilter = (props) => {
+    
+    const {
+        filterData,
+        handleSelectChange,
+        handleSortChange
+    } = props
+
+    return (
+        <AppCard>
+            <div className="app-filter">
+                <div className="filter-content">
+                    <div className="form-input-group">
+                        <AppSelect 
+                            name="type"
+                            label="Type"
+                            selectedValue={filterData.type}
+                            options={postOptions.type}
+                            handleOnChange={handleSelectChange}
+                        />
+                        {
+                            // show rating if type review
+                            filterData.type === "review"? <AppSelect 
+                                name="rating"
+                                label="Rating"
+                                selectedValue={filterData.rating}
+                                options={postOptions.rating}
+                                handleOnChange={handleSelectChange}
+                            /> : ''
+                        }
+                    </div> 
+
+                    <div className="filter-view">
+                        <FilterSortButtons 
+                            activeSort={filterData.sortBy}
+                            handleSortChange={handleSortChange}
+                        />
+                    </div>
+                </div>
+            </div>
+        </AppCard>
+    )
 }
