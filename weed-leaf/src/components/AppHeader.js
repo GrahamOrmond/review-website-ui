@@ -4,6 +4,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import { logoutUser } from '../pages/oauth/oauthSlice';
 import { useDispatch } from 'react-redux';
 import { clearPostParams } from '../pages/posts/postsSlice';
+import { clearProductParams } from '../pages/products/productsSlice';
 
 const AppSearch = (props) => {
 
@@ -44,6 +45,20 @@ const HeaderNav = (props) => {
 
     // used to handle nav button clicks
     const handleOnNavClick = (link) => {
+
+        // clear search params to reload data for links
+        switch(link){
+            case "/community":
+                dispatch(clearPostParams())
+                break
+            case "/products":
+                dispatch(clearProductParams())
+                break
+            default:
+                break;
+        }
+
+
         history.push(link) // change url to match nav link
     }
 

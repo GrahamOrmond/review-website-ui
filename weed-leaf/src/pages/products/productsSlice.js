@@ -139,6 +139,10 @@ export const productSlice = createSlice({
         },
         idleProductList(state, action) {
             state.list.status = 'idle'
+        },
+        clearProductParams(state, action) {
+            state.list.status = 'idle'
+            state.list.params = []
         }
     },
     extraReducers: {
@@ -204,7 +208,8 @@ export const productSlice = createSlice({
   export const { 
     clearProductView,
     setProductView,
-    idleProductList
+    idleProductList,
+    clearProductParams
   } = productSlice.actions
   
   export default productSlice.reducer
