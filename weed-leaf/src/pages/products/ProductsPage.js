@@ -43,9 +43,11 @@ export const ProductsPage = (props) => {
     }
     let urlString = queryString.parse(props.location.search);
     
+    // return products list with array of params from url
     return (<ProductsList 
-            brands={urlString.brands}
-            productType={urlString.productType}
-            category={urlString.category}
+            // split array of params from url if defined
+            brands={urlString.brands? urlString.brands.split(',') : [] } // brands string
+            productType={urlString.productType? urlString.productType.split(',') : []} // productType string
+            category={urlString.category? urlString.category.split(',') : []} // categorty string
         />)
 }

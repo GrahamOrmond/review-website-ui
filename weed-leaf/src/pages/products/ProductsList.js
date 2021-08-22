@@ -11,21 +11,21 @@ export const ProductsList = (props) => {
     const history = useHistory()
     const {
         sort,
-        // brands,
-        // productType,
-        // category,
+        brands,
+        productType,
+        category,
     } = props
-
+    
     // holds the current sort by state
     // used to track sortby seperate from filters
-    const [sortBy, setSortBy] = useState(sort)
+    const [sortBy, setSortBy] = useState(sort? sort : "new")
 
     // holds the current state of the products applied filter 
     // used to track and load product list results
     const [filterData, setFilterData] = useState({
-        brands: [],
-        productType: [],
-        category: [],
+        brands: brands,
+        productType: productType,
+        category: category,
     })
 
     // get product lists 
@@ -48,7 +48,14 @@ export const ProductsList = (props) => {
     // handle filter select box change
     // used to update the current filter state
     const handleApplyFilter = (newFilterData) => {
-        setFilterData(newFilterData)
+        setFilterData(newFilterData) // set filter data 
+
+        // update url to include params
+        let paramsData = {...newFilterData}
+        Object.keys(paramsData).forEach(k => paramsData[k].length === 0
+            && delete paramsData[k])
+        const params = new URLSearchParams(paramsData).toString()
+        history.push(`/products/${sortBy}?${params}`)
     }
     
     // handles filter sort button change

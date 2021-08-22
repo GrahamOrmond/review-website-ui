@@ -218,6 +218,7 @@ const FilterMultiSelect = (props) => {
                         <div className="apply-filter-button">
                             <button className="button-blue filter-button"
                                 onClick={() => {
+                                    setSelectedFilter() // hide options box
                                     setHasFilterChanged(false) // remove apply button
                                     handleApplyFilter(selectedFilterOptions) // apply filters
                                 }}
