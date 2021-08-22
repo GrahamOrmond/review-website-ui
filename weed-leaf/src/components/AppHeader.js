@@ -1,8 +1,9 @@
 import { AppDropdown } from './AppDropdown';
-import { Link, withRouter } from 'react-router-dom'
+import { Link, useHistory, withRouter } from 'react-router-dom'
 import MenuIcon from '@material-ui/icons/Menu';
 import { logoutUser } from '../pages/oauth/oauthSlice';
 import { useDispatch } from 'react-redux';
+import { clearPostParams } from '../pages/posts/postsSlice';
 
 const HeaderNavLinks = (props) => {
 
@@ -109,6 +110,8 @@ const HeaderNav = (props) => {
         ]
     }
 
+    
+
     let links = JSON.parse(JSON.stringify(linkData))
     if(props.isLoggedIn){
         links.linkSections.push(loggedInLinks)
@@ -137,9 +140,19 @@ const HeaderNav = (props) => {
 
 const HeaderLogo = (props) => {
 
+    const history = useHistory()
+    const dispatch = useDispatch()
+
+    // handles clicking on the header logo
+    // used to set redux store state to refresh info
+    const handleLogoClick = () => {
+        dispatch(clearPostParams()) // clear posts params to reload data
+        history.push("/") // go to home page
+    }
+
     return (
         <div className="header-logo">
-            <Link to="/">
+            <Link onClick={() => handleLogoClick()}>
                 WeedLeaf
             </Link>
         </div>
