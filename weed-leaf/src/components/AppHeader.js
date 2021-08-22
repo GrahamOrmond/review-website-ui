@@ -18,6 +18,7 @@ const AppSearch = (props) => {
 const HeaderNav = (props) => {
 
     const {
+        activeLink,
         isLoggedIn
     } = props
 
@@ -71,7 +72,7 @@ const HeaderNav = (props) => {
                             <Link 
                                 key={l.key}
                                 onClick={() => handleOnNavClick(l.link)}>
-                                <div className="header-link">
+                                <div className={activeLink == l.link? "header-link active" : "header-link"}>
                                     <p>{l.label}</p>
                                 </div>
                             </Link>
