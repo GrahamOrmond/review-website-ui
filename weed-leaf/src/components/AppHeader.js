@@ -1,51 +1,9 @@
-import { AppDropdown } from './AppDropdown';
+import { AppDropdown, DropdownNav } from './AppDropdown';
 import { Link, useHistory, withRouter } from 'react-router-dom'
 import MenuIcon from '@material-ui/icons/Menu';
 import { logoutUser } from '../pages/oauth/oauthSlice';
 import { useDispatch } from 'react-redux';
 import { clearPostParams } from '../pages/posts/postsSlice';
-
-const HeaderNavLinks = (props) => {
-
-    const links = [
-        {
-            'link': '/brands',
-            'label': 'Brands'
-        },
-        {
-            'link': '/products',
-            'label': 'Products'
-        },
-        {
-            'link': '/community',
-            'label': 'Community'
-        }
-    ]
-
-    const renderLinks = () => {
-        return links.map(link => {
-            let className = "header-link"
-            if(props.activeLink.includes(link.link))
-                className += " active"
-            return (
-                <Link 
-                    key={link.link}
-                    to={link.link} >
-                    <div className={className}>
-                        <p>{link.label}</p>
-                    </div>
-                </Link>
-            )
-        })
-    }
-
-    return (
-        <div className="header-nav-links">
-            {renderLinks()}
-        </div>
-    )
-}
-
 
 const AppSearch = (props) => {
 
@@ -57,81 +15,98 @@ const AppSearch = (props) => {
 }
 
 const HeaderNav = (props) => {
+
+    const {
+        isLoggedIn
+    } = props
+
     const dispatch = useDispatch()
-
-    const linkData = {
-        "linkSections": 
-        [
-            {
-                "title": "main",
-                "mobileOnly": true,
-                "links": [
-                    {
-                        'link': '/brands',
-                        'label': 'Brands'
-                    },
-                    {
-                        'link': '/products',
-                        'label': 'Products'
-                    },
-                    {
-                        'link': '/community',
-                        'label': 'Community'
-                    },
-                ]
-            },
-        ]
-    }
-
-    const loggedInLinks = 
-    {
-        "title": "account",
-        "links": [
-            {
-                'link': '/user/',
-                'label': 'Profile'
-            },
-            {
-                'onClick': () => dispatch(logoutUser()),
-                'link': '/logout',
-                'label': 'Log Out'
-            },
-        ]   
-    }
-
-    const loggedOutLinks = 
-    {
-        "title": "account",
-        "links": [
-            {
-                'link': '/login',
-                'label': 'Log In / Sign Up'
-            },
-        ]
-    }
-
+    const history = useHistory()
     
+    // main header links
+    const headerLinks = [
+        {
+            'key': 'brands',
+            'label': 'Brands',
+            'link': '/brands'
+        },
+        {
+            'key': 'products',
+            'label': 'Products',
+            'link': '/products'
+        },
+        {
+            'key': 'community',
+            'label': 'Community',
+            'link': '/community'
+        }
+    ]
 
-    let links = JSON.parse(JSON.stringify(linkData))
-    if(props.isLoggedIn){
-        links.linkSections.push(loggedInLinks)
-    }else{
-        links.linkSections.push(loggedOutLinks)
+    // used to handle nav button clicks
+    const handleOnNavClick = (link) => {
+        history.push(link) // change url to match nav link
     }
 
     return (
         <div className="header-nav">
             <div className="header-nav-buttons">
-                <HeaderNavLinks  
-                activeLink={props.activeLink}
-                linkData={links}/>
+                <div className="header-nav-links">
+                    {
+                        headerLinks.map(l => 
+                            <Link 
+                                key={l.key}
+                                onClick={() => handleOnNavClick(l.link)}>
+                                <div className="header-link">
+                                    <p>{l.label}</p>
+                                </div>
+                            </Link>
+                        )
+                    }
+                </div>
             </div>
             <div className="header-search">
                 <AppSearch />
             </div>
             <div className="header-dropdown">
-                <AppDropdown linkData={links}>
-                    <MenuIcon />
+                <AppDropdown icon={<MenuIcon />}>
+                    {
+                        // display default nav links
+                        headerLinks.map(l => 
+                            <DropdownNav 
+                                key={l.key}
+                                label={l.label}
+                                isMobileOnly={true} // set to only show in small screens
+                                handleOnClick={() => handleOnNavClick(l.link)}
+                            />
+                        )
+                    }
+
+                    {
+                        // check for logged in user to show rest of options
+                        isLoggedIn? 
+                            // load user logged in options
+                            <div>
+                                <DropdownNav 
+                                    key="user"
+                                    label="Profile"
+                                    handleOnClick={() => handleOnNavClick("/user")}
+                                />
+                                    <DropdownNav 
+                                    key="logout"
+                                    label="Log Out"
+                                    handleOnClick={() => dispatch(logoutUser())} // logout user function
+                                />
+                            </div>
+                        :
+                            // show login/register option
+                            <DropdownNav 
+                                key="login"
+                                label="Log In / Sign Up"
+                                handleOnClick={() => handleOnNavClick("/login")} // logout user function
+                            />
+                    }
+
+                    
                 </AppDropdown>
             </div>
         </div>
@@ -162,13 +137,14 @@ const HeaderLogo = (props) => {
 export const AppHeader = (props) => {
 
     const {
-        location,
+        location, // routing location info
         isLoggedIn
     } = props
 
-    let pathname = location.pathname;
-    if(pathname === "/")
-        pathname = "/community"
+    let pathname = location.pathname === '/'? // no path
+        '/community' // default community page
+        :
+        location.pathname;
 
     return (
         <div className="app-header">
