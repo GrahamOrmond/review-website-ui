@@ -18,6 +18,7 @@ const AppThreadDisplay = (props) => {
         productId,
         postType,
         sortBy,
+        urlBase
     } = props
 
     // set post filter data
@@ -81,7 +82,7 @@ const AppThreadDisplay = (props) => {
     // return posts thread with filter
     return (
         <div>
-            { isLoggedIn ? <AppPostCreate urlBase={props.urlBase} /> : '' }
+            { isLoggedIn ? <AppPostCreate urlBase={urlBase} /> : '' }
             <AppThreadFilter
                 filterData={filterData}
                 handleSelectChange={handleSelectChange}

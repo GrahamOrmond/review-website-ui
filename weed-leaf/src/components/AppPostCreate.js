@@ -3,10 +3,14 @@ import { AppCard } from "./AppCard"
 
 export const AppPostCreate = (props) =>
 {
+    const {
+        urlBase
+    } = props
+
     const history = useHistory()
 
     const loadPostForm = () => {
-        history.push(props.urlBase + "submit")
+        history.push(urlBase + "submit")
     }
 
     return (

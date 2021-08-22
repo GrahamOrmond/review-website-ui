@@ -855,7 +855,18 @@ button {
     11. PRODUCT DISPLAY
 */
 
+.product-list{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+}
+
 .app-product {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    
     background-color: #FFF;
     border: solid #b6b6b7 1px;
     border-radius: 5px;
@@ -868,6 +879,7 @@ button {
 }
 
 .product-header {
+    width: 100%;
 }
 
 .product-brand {
@@ -886,15 +898,20 @@ button {
 }
 
 .product-content {
+    width: 100%;
+}
+.product-image-placeholder {
+    width: 100%;
     display: flex;
-    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
 }
 
 .product-image{
+    display: flex;
+    justify-content: center;
+    height: 200px;
     background-color: #D6D6D7;
-    min-height: 200px;
-    height: 100%;
-    width: 50%;
 }
 
 .product-image img{
@@ -1338,8 +1355,7 @@ button {
 }
 
 .filter-button {
-    margin: 0px;
-    margin-right: 5px;
+    margin: 0px 5px 5px 0px;
     padding: 5px 10px;
     border: solid 1px #D6D6D7;
     border-radius: 25px;
@@ -1767,7 +1783,14 @@ button {
 
 /* phones or larger */
 @media (min-width: 576px) {
-    
+
+    /* 
+        11. PRODUCT DISPLAY
+    */
+    .app-product {
+        width: 45%;
+    }
+
 }
 
 /* tablets or larger */
@@ -1805,6 +1828,14 @@ button {
     .mobile-nav {
         display: none;
     }
+
+    /* 
+        11. PRODUCT DISPLAY
+    */
+    .app-product {
+        width: 30%;
+    }
+
 
     /* 
         13. PROFILE EDIT

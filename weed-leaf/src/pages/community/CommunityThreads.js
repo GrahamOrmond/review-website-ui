@@ -12,6 +12,7 @@ export const CommunityThreads = (props) =>  {
             <AppThreadDisplay
                 postType={postType}
                 sortBy={sortBy}
+                urlBase="/community/"
             />
         </div>
     );
