@@ -9,14 +9,13 @@ export const CommunityPage = props =>  {
         postLink,
         sort,
     } = props.match.params;
-    const postType = type === undefined? "review" : type.toLowerCase();
-    const sortBy = sort === undefined? "new" : sort.toLowerCase();
+    
     
     if(!postLink){
         return (
             <CommunityThreads
-                postType={postType}
-                sortBy={sortBy}
+                postType={type}
+                sortBy={sort}
             />
         )
     }

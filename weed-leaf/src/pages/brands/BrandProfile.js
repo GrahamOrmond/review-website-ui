@@ -12,6 +12,7 @@ export const BrandProfile = (props) => {
     const dispatch = useDispatch()
     const {
         postsType,
+        sortBy,
         brandId
     } = props
 
@@ -67,6 +68,7 @@ export const BrandProfile = (props) => {
             <AppThreadDisplay 
                 brandId={brand.brandId}
                 postType={postsType}
+                sortBy={sortBy}
                 urlBase={`/brands/${brand.brandId}/`}
             />
         </AppProfile>

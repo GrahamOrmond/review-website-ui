@@ -23,10 +23,10 @@ const AppThreadDisplay = (props) => {
 
     // set post filter data
     const [filterData, setFilterData] = useState({
-        type: postType,
         brandId: brandId,
         productId: productId,
-        sortBy: sortBy,
+        type: postType === undefined? "review" : postType.toLowerCase(), // default review
+        sortBy: sortBy === undefined? "new" : sortBy.toLowerCase(), // default new
     })
 
     

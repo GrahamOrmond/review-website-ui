@@ -13,16 +13,16 @@ export const BrandsPage = (props) => {
     const { 
         brandId, 
         displayName, 
-        postLink 
+        postLink,
+        sort,
+        type
     } = props.match.params;
-    const type = props.match.params.postsType
-    const postsType = type === undefined? "review" : type.toLowerCase();
     if(brandId){
         if(postLink){
             return (
                 <div className="app-content">
                     <PostDisplay
-                        displayName={displayName}
+                        displayName={sort}
                         urlId={postLink}
                     />
                 </div>
@@ -33,7 +33,8 @@ export const BrandsPage = (props) => {
                 <React.Fragment>
                     <BrandProfile
                         brandId={brandId}
-                        postsType={postsType}
+                        postsType={type}
+                        sortBy={sort}
                         displayName={displayName}
                     />
                 </React.Fragment>
