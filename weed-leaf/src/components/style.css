@@ -1355,8 +1355,7 @@ button {
 }
 
 .filter-button {
-    margin: 0px;
-    margin-right: 5px;
+    margin: 0px 5px 5px 0px;
     padding: 5px 10px;
     border: solid 1px #D6D6D7;
     border-radius: 25px;
