@@ -23,10 +23,10 @@ const AppThreadDisplay = (props) => {
 
     // set post filter data
     const [filterData, setFilterData] = useState({
-        type: postType,
         brandId: brandId,
         productId: productId,
-        sortBy: sortBy,
+        type: postType === undefined? "review" : postType.toLowerCase(), // default review
+        sortBy: sortBy === undefined? "new" : sortBy.toLowerCase(), // default new
     })
 
     
@@ -76,7 +76,7 @@ const AppThreadDisplay = (props) => {
 
     // handle url changes
     const handleHistoryChange = (newState) => {
-        history.push(`/community/${newState.type}/${newState.sortBy}`)
+        history.push(`${urlBase}${newState.type}/${newState.sortBy}`)
     }
 
     // return posts thread with filter

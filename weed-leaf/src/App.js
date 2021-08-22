@@ -66,9 +66,9 @@ function App() {
       <div className="app">
         <Switch>
         <Route exact path="/:location?/:brandId?/:productUrl?/submit/:postType?/" component={PostsPage} />
-          <Route exact path="/brands/:brandId?/:postsType?/:displayName?/:postLink?"
+          <Route exact path="/brands/:brandId?/:postsType?/:sort?/:postLink?"
             component={BrandsPage} />
-          <Route exact path="/products/:brandId?/:productUrlId?/:postsType?/:displayName?/:postLink?" 
+          <Route exact path="/products/:brandId?/:productUrlId?/:postsType?/:sort?/:postLink?" 
             component={ProductsPage} />
           <Route exact path="/community/:type?/:sort?/:postLink?" component={CommunityPage} />
           <Route exact path="/account/" component={UserPage} />

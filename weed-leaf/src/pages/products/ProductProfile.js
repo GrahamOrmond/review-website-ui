@@ -10,6 +10,7 @@ export const ProductProfile = (props) => {
     const dispatch = useDispatch() 
     const {
         postsType,
+        sortBy,
         productUrlId,
         brandId,
     } = props
@@ -50,9 +51,11 @@ export const ProductProfile = (props) => {
             description={product.description}
         >
         <AppThreadDisplay 
+            brandId={product.brandId}
+            productId={product.productId}
             postType={postsType}
+            sortBy={sortBy}
             urlBase={`/products/${product.brandId}/${product.urlId}/`}
-            posts={[]}
         />
         </AppProfile>
     )
