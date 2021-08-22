@@ -98,8 +98,9 @@ export const getPostByFilter = (state, filter) => {
     // return list using filter
     return state.posts.list.items
         .filter((p) => {
-            return (!filter.brandId || filter.brandId === p.brand.brandId)
-            && (!filter.type || filter.type.toUpperCase() === p.type)
+            return (!filter.brandId || filter.brandId === p.brand.brandId) // brand
+            && (!filter.productId || filter.productId === p.product.productId) // product
+            && (!filter.type || filter.type.toUpperCase() === p.type) // post type
         })
 }
 

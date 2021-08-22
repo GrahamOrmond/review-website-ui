@@ -50,9 +50,10 @@ export const ProductProfile = (props) => {
             description={product.description}
         >
         <AppThreadDisplay 
+            brandId={product.brandId}
+            productId={product.productId}
             postType={postsType}
             urlBase={`/products/${product.brandId}/${product.urlId}/`}
-            posts={[]}
         />
         </AppProfile>
     )
