@@ -119,6 +119,7 @@ const CommentRepliesList = (props) => {
         handleShowCommentBox,
         handleShowEdit,
         handleSubmitReply,
+        handleSubmitEdit,
         currentProfileId,
     } = props
 
@@ -159,6 +160,7 @@ const CommentRepliesList = (props) => {
                 replies.map(c => <AppComment 
                     key={c.commentId}
                     handleSubmitReply={handleSubmitReply}
+                    handleSubmitEdit={handleSubmitEdit}
                     handleShowCommentBox={handleShowCommentBox}
                     handleShowEdit={handleShowEdit}
                     comment={c}
@@ -184,6 +186,7 @@ const CommentContent = (props) => {
         handleShowCommentBox,
         handleShowEdit,
         handleSubmitReply,
+        handleSubmitEdit,
         handleRatingUp,
         handleRatingDown,
         currentProfileId,
@@ -196,7 +199,7 @@ const CommentContent = (props) => {
             {
                 commentBox.isEdit && showCommentBox? // comment box active and set to edit
                 <CommentBox 
-                    handleSubmit={handleSubmitReply}
+                    handleSubmit={handleSubmitEdit}
                     commentId={comment.commentId}
                     content={comment.content}
                     placeHolder="Edit Message"
@@ -209,7 +212,7 @@ const CommentContent = (props) => {
             }
                 <CommentActions // show comment button actions
                     isActiveEdit={commentBox.isEdit}
-                    canEdit={currentProfileId == comment.user.profileId}
+                    canEdit={currentProfileId === comment.user.profileId}
                     rating={comment.upCount - comment.downCount}
                     handleRatingDown={handleRatingDown}
                     handleRatingUp={handleRatingUp}
@@ -236,6 +239,7 @@ const CommentContent = (props) => {
                         handleShowCommentBox={handleShowCommentBox}
                         handleShowEdit={handleShowEdit}
                         handleSubmitReply={handleSubmitReply}
+                        handleSubmitEdit={handleSubmitEdit}
                         currentProfileId={currentProfileId}
                     /> : ''
             }
@@ -290,6 +294,7 @@ export const AppComment = (props) => {
         handleShowCommentBox,
         handleShowEdit,
         handleSubmitReply,
+        handleSubmitEdit,
         currentProfileId
     } = props;
 
@@ -328,6 +333,7 @@ export const AppComment = (props) => {
                 handleShowCommentBox={handleShowCommentBox}
                 handleShowEdit={handleShowEdit}
                 handleSubmitReply={handleSubmitReply}
+                handleSubmitEdit={handleSubmitEdit}
                 currentProfileId={currentProfileId}
                 handleRatingDown={handleRatingDown}
                 handleRatingUp={handleRatingUp}

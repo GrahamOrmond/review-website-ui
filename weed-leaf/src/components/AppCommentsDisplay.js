@@ -2,7 +2,7 @@ import { AppCard } from "./AppCard"
 import { AppTextEditor } from "./AppTextEditor";
 import { AppComment } from "./AppComment";
 import { useDispatch } from "react-redux";
-import { createComment } from "../pages/comments/commentsSlice";
+import { createComment, updateComment } from "../pages/comments/commentsSlice";
 import { addToPostCommentCount } from "../pages/posts/postsSlice";
 import { useState } from "react";
 
@@ -45,7 +45,7 @@ export const AppCommentList = (props) => {
     const handleShowCommentBox = (commentId) => {
         let replyBox = {...commentBox}
         replyBox.commentId = replyBox.commentId === commentId  // matching comment
-            && replyBox.isEdit == false?  // matching edit type
+            && replyBox.isEdit === false?  // matching edit type
              null : commentId // remove comment
         replyBox.isEdit = false
         setCommentBox(replyBox)
@@ -56,7 +56,7 @@ export const AppCommentList = (props) => {
     const handleShowEdit = (commentId) => {
         let editBox = {...commentBox}
         editBox.commentId = editBox.commentId === commentId // matching comment
-        && editBox.isEdit == true?  // matching edit type
+        && editBox.isEdit === true?  // matching edit type
             null : commentId // remove comment
         editBox.isEdit = true
         setCommentBox(editBox)  
@@ -83,6 +83,27 @@ export const AppCommentList = (props) => {
         })
     }
 
+    // handles sumbitting comment edit
+    // used to send despatch updating comment
+    const handleSubmitEdit = (e, commentId) => {
+        e.preventDefault()
+        let textEditor = document.getElementById(commentId);
+        const postParams = {
+            commentId: commentId,
+            content: textEditor.innerText
+        }
+        dispatch(updateComment(postParams))
+        .then(res => {
+            if(res.meta.requestStatus === "fulfilled"){
+                textEditor.innerText = ""
+                setCommentBox({
+                    commentId: null,
+                    isEdit: false
+                })
+            }
+        })
+    }
+
     
     // sort the comments from latest date posted
     comments.sort(function(a,b){
@@ -99,6 +120,7 @@ export const AppCommentList = (props) => {
                 comments.map(c => <AppComment 
                     key={c.commentId}
                     handleSubmitReply={handleSubmitReply}
+                    handleSubmitEdit={handleSubmitEdit}
                     handleShowCommentBox={handleShowCommentBox}
                     handleShowEdit={handleShowEdit}
                     commentBox={commentBox}
