@@ -164,7 +164,7 @@ const PostBody = (props) => {
     }
 
     let mediaFileContent;
-    if(mediaFiles.length > 1){
+    if(mediaFiles.length > 0){
         mediaFileContent = <AppFilesDisplay 
             altTag={altTag}
             mediaFiles={mediaFiles}

@@ -29,13 +29,12 @@ export const createPost = createAsyncThunk('posts/createPosts', async (formData,
     customConfig.headers = {
         'Authorization': `Bearer ${token}`
     }
-
     // create form data
     let body = new FormData()
-    formData.mediaFiles.forEach(file => {
+    formData.files.forEach(file => {
         body.append('PostFiles', file, file.name)
     });
-    delete formData.mediaFiles
+    delete formData.files
     body.append('PostData', JSON.stringify(formData))
 
     const response = await client
@@ -53,10 +52,10 @@ export const updatePost = createAsyncThunk('posts/updatePost', async (formData, 
 
     // create form data
     let body = new FormData()
-    formData.mediaFiles.forEach(file => {
-        body.append('PostFiles', file, file.name? file.name : file.originalFileName )
+    formData.files.forEach(file => {
+        body.append('PostFiles', file, file.name)
     });
-    delete formData.mediaFiles
+    delete formData.files
     body.append('PostData', JSON.stringify(formData))
     return await client.update(`/api/posts/${formData.postId}`, rejectWithValue, body, customConfig)
 })

@@ -32,7 +32,8 @@ export const SubmitPostForm = (props) => {
         "status": "private",
         "brandId": brandId,
         "productUrlId": productUrl,
-        "files": mediaFiles,
+        "oldFiles": mediaFiles,
+        "files": [],
         "title": title,
         "content": content,
     })
@@ -124,15 +125,29 @@ export const SubmitPostForm = (props) => {
 
     // handle file input box change
     const handleFileChange = (file, removeFile = false) => {
+        // copy state
         let newState = {...formData};
-        let fileState = [...newState.files]
-        if(removeFile){
-            const fileIndex = newState.files.indexOf(file);
-            fileState.splice(fileIndex, 1);
-        }else{
-            fileState.push(file)
+        let oldFiles = [...formData.oldFiles]
+        let newFiles = [...formData.files]
+
+        // determine new state
+        if(removeFile){ // remove file from list
+            
+            const index = oldFiles.indexOf(file); // find index of old file
+            if(index !== -1){ // index found
+                oldFiles.splice(index, 1);  // remove file
+            }else{ // old file not found
+                const index = newFiles.indexOf(file); // find new file index
+                newFiles.splice(index, 1); // remove file
+            }
+            
+        }else{ // add file to list
+            newFiles.push(file)
         }
-        newState.files = fileState
+
+        // set state
+        newState.oldFiles = oldFiles
+        newState.files = newFiles
         setFormData(newState)
     }
 
@@ -140,11 +155,11 @@ export const SubmitPostForm = (props) => {
     const getPostData = () => {
         // get post params from data
         const postDto = ["type", "status", "content", "title",
-            "productUrlId", "brandId", "rating", "mediaFiles"];
+            "productUrlId", "brandId", "rating", "oldFiles", "files"];
         let postData = { // post data with list delaired by default
             properties: [],
             productEffects: [],
-            mediaFiles: [],
+            files: [],
         }
         for (const [key, param] of Object.entries(formData)) {
             if(postDto.includes(key)){ // post data
@@ -156,7 +171,7 @@ export const SubmitPostForm = (props) => {
                 })
             }
         }
-
+        
         postData.content = document.getElementById("content").innerText;
         return postData;
     }
@@ -287,7 +302,8 @@ export const SubmitPostForm = (props) => {
                             name="mediaFiles" 
                             label="Media"
                             handleOnChange={handleFileChange}
-                            files={formData.files}
+                            oldFiles={formData.oldFiles}
+                            newFiles={formData.files}
                         />
                     </div>
 
