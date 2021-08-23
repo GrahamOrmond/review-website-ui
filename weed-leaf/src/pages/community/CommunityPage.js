@@ -6,9 +6,9 @@ export const CommunityPage = props =>  {
 
     const { 
         type,
-        displayName,
         postLink,
         sort,
+        action
     } = props.match.params;
     
     
@@ -28,8 +28,9 @@ export const CommunityPage = props =>  {
     return (
         <div className="app-content">
             <PostDisplay
-                displayName={displayName}
+                displayName={sort}
                 urlId={postLink}
+                action={action}
             />
         </div>
     )

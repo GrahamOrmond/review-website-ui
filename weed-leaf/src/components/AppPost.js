@@ -4,7 +4,7 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ChatIcon from '@material-ui/icons/Chat';
 
-import { AppDropdown } from './AppDropdown';
+import { AppDropdown, DropdownNav } from './AppDropdown';
 import { AppCard } from './AppCard';
 import { AppFilesDisplay } from './AppFilesDisplay';
 
@@ -15,6 +15,12 @@ import { ratePost } from '../pages/posts/postsSlice';
 import { AppButton } from './AppButton';
 
 const PostUserInfo = (props) => {
+
+    const {
+        displayName,
+        date,
+        canEdit
+    } = props
 
     const linkData = {
         "linkSections": 
@@ -35,22 +41,36 @@ const PostUserInfo = (props) => {
         <div className="post-info">
             <div className="user-info">
                 <div>
-                    <Link to={`/user/${props.displayName}`}>
+                    <Link to={`/user/${displayName}`}>
                         <h2>
-                            {props.displayName}
+                            {displayName}
                         </h2>
                     </Link>
                 </div>
                 <div>
                     <p>
-                        {determineTimePosted(props.date)}
+                        {determineTimePosted(date)}
                     </p>
                 </div>
             </div>
             <div className="actions">
                 <div className="post-button">
-                    <AppDropdown linkData={linkData}>
-                        <MoreHorizIcon />
+                    <AppDropdown icon={<MoreHorizIcon />}>
+                        {
+                            canEdit?
+                                <DropdownNav 
+                                    key="edit"
+                                    label="Edit"
+                                    handleOnClick={() => {}}
+                                />
+                            :
+                                <DropdownNav 
+                                    key="report"
+                                    label="Report"
+                                    handleOnClick={() => {}}
+                                />
+                        }
+                            
                     </AppDropdown>
                 </div>
             </div>
@@ -65,6 +85,7 @@ const PostHeader = (props) => {
     const {
         brand,
         product,
+        canEdit,
     } = props
 
     let navLinks = []
@@ -104,6 +125,7 @@ const PostHeader = (props) => {
             <PostUserInfo 
                 displayName={props.displayName}
                 date={props.date}
+                canEdit={canEdit}
             />
             <div className="post-content-info">
                 <div className="post-reference">
@@ -142,7 +164,7 @@ const PostBody = (props) => {
     }
 
     let mediaFileContent;
-    if(mediaFiles.length > 1){
+    if(mediaFiles.length > 0){
         mediaFileContent = <AppFilesDisplay 
             altTag={altTag}
             mediaFiles={mediaFiles}
@@ -231,6 +253,7 @@ export const AppPost = (props) => {
     const {
         preview,
         post,
+        canEdit
     } = props
 
     const displayName = post.displayName.toLowerCase()
@@ -280,6 +303,7 @@ export const AppPost = (props) => {
                     date={post.dateUpdated}
                     brand={post.brand}
                     product={post.product}
+                    canEdit={canEdit}
                     />
                 <PostBody 
                     mediaFiles={post.mediaFiles}

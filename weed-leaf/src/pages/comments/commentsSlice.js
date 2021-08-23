@@ -21,7 +21,7 @@ const initialState = {
   }
 }
 
-// fetch list of brands
+// create comment
 export const createComment = createAsyncThunk('comments/createComment',
  async (data, { getState, rejectWithValue }) => {
     const token = getAccessToken(getState())
@@ -31,6 +31,19 @@ export const createComment = createAsyncThunk('comments/createComment',
     }
     const response = await client
         .post('/api/comments/', rejectWithValue, data, customConfig)
+    return response
+})
+
+// update comment by Id
+export const updateComment = createAsyncThunk('comments/updateComment',
+ async (data, { getState, rejectWithValue }) => {
+    const token = getAccessToken(getState())
+    let customConfig = {}
+    customConfig.headers = {
+        'Authorization': `Bearer ${token}`
+    }
+    const response = await client
+        .update(`/api/comments/${data.commentId}`, rejectWithValue, data, customConfig)
     return response
 })
 
@@ -126,6 +139,28 @@ export const commentsSlice = createSlice({
         state.list.status = 'failed'
         state.list.error = action.error.message
     },
+
+    // UPDATE COMMENT
+    [updateComment.pending]: (state, action) => {
+    },
+    [updateComment.fulfilled]: (state, action) => {
+      const updatedComment = action.payload
+      // check for update comment in state
+      let commentsList = [...state.list.items]
+      let index = commentsList
+          .findIndex(c => c.commentId === updatedComment.commentId);
+
+      // update state
+      if(index !== -1){ // comment found
+        state.list.items[index].content = updatedComment.content
+        state.list.items[index].dateUpdated = updatedComment.dateUpdated
+      }
+      
+    },
+    [updateComment.rejected]: (state, action) => {
+    },
+
+    
 
     // FETCH COMMENTS
     [fetchComments.pending]: (state, action) => {

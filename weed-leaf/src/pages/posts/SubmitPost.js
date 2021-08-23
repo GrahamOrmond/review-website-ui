@@ -4,7 +4,7 @@ import { AppDynamicSelect, AppFileInput, AppInput, AppSelect } from "../../compo
 import { postOptions } from './submitPostOptions';
 import { AppMarkupEditor } from '../../components/AppTextEditor';
 import { useDispatch, useSelector } from 'react-redux';
-import { createPost } from './postsSlice';
+import { createPost, updatePost } from './postsSlice';
 import { useHistory } from 'react-router-dom';
 import { sortListByName } from '../../helpers/generalHelper'
 import { fetchBrands, getBrandsListInfo } from '../brands/brandsSlice'
@@ -17,9 +17,13 @@ export const SubmitPostForm = (props) => {
     const history = useHistory()
     
     const {
+        postId,
         brandId,
         productUrl,
         postType,
+        mediaFiles,
+        title,
+        content,
     } = props // get urls params to declare default values
 
     // delare form data with default values (grows as data is inputted into form)
@@ -27,7 +31,11 @@ export const SubmitPostForm = (props) => {
         "type": postType,
         "status": "private",
         "brandId": brandId,
-        "productUrlId": productUrl
+        "productUrlId": productUrl,
+        "oldFiles": mediaFiles,
+        "files": [],
+        "title": title,
+        "content": content,
     })
 
     // load brand and product options
@@ -94,7 +102,8 @@ export const SubmitPostForm = (props) => {
         // return if form matches url
         if(newState.type === postType 
             && newState.brandId === brandId
-            && newState.productUrlId === productUrl){
+            && newState.productUrlId === productUrl
+            || postId){ // edit post
                 return
         }
 
@@ -116,14 +125,30 @@ export const SubmitPostForm = (props) => {
     }
 
     // handle file input box change
-    const handleFileChange = (fileList, file, removeFile = false) => {
+    const handleFileChange = (file, removeFile = false) => {
+        // copy state
         let newState = {...formData};
-        if(removeFile){
-            const fileIndex = newState[fileList].files.indexOf(file);
-            newState[fileList].files.splice(fileIndex, 1);
-        }else{
-            newState[fileList].files.push(file)
+        let oldFiles = [...formData.oldFiles]
+        let newFiles = [...formData.files]
+
+        // determine new state
+        if(removeFile){ // remove file from list
+            
+            const index = oldFiles.indexOf(file); // find index of old file
+            if(index !== -1){ // index found
+                oldFiles.splice(index, 1);  // remove file
+            }else{ // old file not found
+                const index = newFiles.indexOf(file); // find new file index
+                newFiles.splice(index, 1); // remove file
+            }
+            
+        }else{ // add file to list
+            newFiles.push(file)
         }
+
+        // set state
+        newState.oldFiles = oldFiles
+        newState.files = newFiles
         setFormData(newState)
     }
 
@@ -131,11 +156,11 @@ export const SubmitPostForm = (props) => {
     const getPostData = () => {
         // get post params from data
         const postDto = ["type", "status", "content", "title",
-            "productUrlId", "brandId", "rating", "mediaFiles"];
+            "productUrlId", "brandId", "rating", "oldFiles", "files"];
         let postData = { // post data with list delaired by default
             properties: [],
             productEffects: [],
-            mediaFiles: [],
+            files: [],
         }
         for (const [key, param] of Object.entries(formData)) {
             if(postDto.includes(key)){ // post data
@@ -147,7 +172,7 @@ export const SubmitPostForm = (props) => {
                 })
             }
         }
-
+        
         postData.content = document.getElementById("content").innerText;
         return postData;
     }
@@ -180,6 +205,17 @@ export const SubmitPostForm = (props) => {
         postData.status = "Draft" // set status to draft for easy acces
         // save the draft
         dispatch(createPost(postData))
+        .then(res => {
+            if(res.meta.requestStatus === "fulfilled")
+            history.push(determineBaseUrl(postData.brandId, postData.productUrlId))
+        })
+    }
+
+    // handle saving post draft
+    const handleUpdatePost = () => {
+        let postData = getPostData() // get post data from the form
+        // update the post
+        dispatch(updatePost({...postData, ...{'postId': postId}}, ))
         .then(res => {
             if(res.meta.requestStatus === "fulfilled")
             history.push(determineBaseUrl(postData.brandId, postData.productUrlId))
@@ -245,7 +281,7 @@ export const SubmitPostForm = (props) => {
                         <AppSelect 
                             name="productUrlId"
                             label="Product"
-                            selectedValue={formData.productId}
+                            selectedValue={formData.productUrlId}
                             options={generateProductOptions()}
                             handleOnChange={handleSelectChange}
                         />
@@ -267,7 +303,8 @@ export const SubmitPostForm = (props) => {
                             name="mediaFiles" 
                             label="Media"
                             handleOnChange={handleFileChange}
-                            files={formData.files}
+                            oldFiles={formData.oldFiles}
+                            newFiles={formData.files}
                         />
                     </div>
 
@@ -285,18 +322,31 @@ export const SubmitPostForm = (props) => {
  
                 </div>
 
-                <div className="form-footer">
-                    <button type="submit" 
-                        className="button-blue" 
-                        onClick={handleSavePost}>
-                        Save Draft
-                    </button>
-                    <button type="submit" 
-                        className="button-blue" 
-                        onClick={handleSubmitPost}>
-                        Post
-                    </button>
-                </div>
+                {
+                    postId?
+                        <div className="form-footer">
+                            <button type="submit" 
+                                className="button-blue" 
+                                onClick={handleUpdatePost}>
+                                Save Changes
+                            </button>
+                        </div>
+                        :
+                        <div className="form-footer">
+                            <button type="submit" 
+                                className="button-blue" 
+                                onClick={handleSavePost}>
+                                Save Draft
+                            </button>
+                            <button type="submit" 
+                                className="button-blue" 
+                                onClick={handleSubmitPost}>
+                                Post
+                            </button>
+                        </div>
+                }
+
+               
             </AppCard>
         </div>
     )

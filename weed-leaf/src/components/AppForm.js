@@ -8,7 +8,8 @@ export const AppFileInput = (props) => {
         label,
         name,
         error,
-        files,
+        oldFiles,
+        newFiles,
         handleOnChange,
     } = props
 
@@ -37,34 +38,34 @@ export const AppFileInput = (props) => {
         if(!isFileValid){
             return
         }
-        handleOnChange(e.target.name, selectedFile)
+        handleOnChange(selectedFile)
     }
 
     const handleRemoveFile = (e, file) => {
         const fileInput = e.target.closest('.form-input').querySelector("input")
         e.target.value = ''
-        handleOnChange(fileInput.name, file, true)
+        handleOnChange(file, true)
     }
 
     const handleViewImage = (file) => {
         window.open(URL.createObjectURL(file),'Image','');
     }
 
-    const renderFiles = () => {
-        return files.map(file => {
-            return (
-                <div className="form-file">
-                    <div className="name">
-                        <p onClick={(e) => handleViewImage(e, file)}>{file.name}</p>
-                    </div>
-                    <div className="action">
-                        <AppButton handleOnClick={(e) => handleRemoveFile(e, file)}>
-                            <CloseIcon />
-                        </AppButton>
-                    </div>
-                </div>
-            )
-        })
+    const renderFiles = (files) => {
+        return files.map(file => <div className="form-file">
+            <div className="name">
+                <p onClick={(e) => handleViewImage(e, file)}>
+                    {file.originalFileName}
+                    {file.name}
+                </p>
+            </div>
+            <div className="action">
+                <AppButton handleOnClick={(e) => handleRemoveFile(e, file)}>
+                    <CloseIcon />
+                </AppButton>
+            </div>
+        </div>
+        )
     }
 
     return (
@@ -77,7 +78,8 @@ export const AppFileInput = (props) => {
             />
             <label className="input-error">{error}</label>
             <div className="form-files-list">
-                { files? renderFiles() : "" }
+                { oldFiles? renderFiles(oldFiles) : "" }
+                { newFiles? renderFiles(newFiles) : "" }
             </div>
         </div>
     );

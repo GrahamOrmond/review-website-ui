@@ -29,18 +29,35 @@ export const createPost = createAsyncThunk('posts/createPosts', async (formData,
     customConfig.headers = {
         'Authorization': `Bearer ${token}`
     }
-
     // create form data
     let body = new FormData()
-    formData.mediaFiles.forEach(file => {
+    formData.files.forEach(file => {
         body.append('PostFiles', file, file.name)
     });
-    delete formData.mediaFiles
+    delete formData.files
     body.append('PostData', JSON.stringify(formData))
 
     const response = await client
         .post('/api/posts/', rejectWithValue, body, customConfig)
     return response
+})
+
+// update post
+export const updatePost = createAsyncThunk('posts/updatePost', async (formData, { getState, rejectWithValue }) => {
+    const token = getAccessToken(getState())
+    let customConfig = {}
+    customConfig.headers = {
+        'Authorization': `Bearer ${token}`
+    }
+
+    // create form data
+    let body = new FormData()
+    formData.files.forEach(file => {
+        body.append('PostFiles', file, file.name)
+    });
+    delete formData.files
+    body.append('PostData', JSON.stringify(formData))
+    return await client.update(`/api/posts/${formData.postId}`, rejectWithValue, body, customConfig)
 })
 
 // fetch post
@@ -101,6 +118,7 @@ export const getPostByFilter = (state, filter) => {
             return (!filter.brandId || filter.brandId === p.brand.brandId) // brand
             && (!filter.productId || filter.productId === p.product.productId) // product
             && (!filter.type || filter.type.toUpperCase() === p.type) // post type
+            && (!filter.search || (p.title + p.brand.name + p.product.name).toLowerCase().includes(filter.search.toLowerCase()))
         })
 }
 
@@ -206,6 +224,32 @@ export const postsSlice = createSlice({
         },
         [createPost.rejected]: (state, action) => {
         },
+
+        // UPDATE POST
+        [updatePost.pending]: (state, action) => {
+        },
+        [updatePost.fulfilled]: (state, action) => {
+            const updatedPost =  action.payload
+            // update post list
+            let index = state.list.items
+                .findIndex(p => p.postId === updatedPost.postId) // find index of post
+            if(index !== -1){ // index found 
+                let post = {...state.list.items[index]} // copy post
+                // update post data
+                post.brand = updatedPost.brand
+                post.product = updatedPost.product
+                post.title = updatedPost.title
+                post.content = updatedPost.content
+                post.type = updatedPost.type
+                post.status = updatedPost.status
+                post.dateupdated = updatedPost.dateupdated
+                // update state
+                state.list.items[index] = post
+            }
+        },
+        [updatePost.rejected]: (state, action) => {
+        },
+        
 
         // RATE POST
         [ratePost.pending]: (state, action) => {

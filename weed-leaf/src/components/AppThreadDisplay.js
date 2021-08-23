@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { isUserLoggedIn } from '../pages/oauth/oauthSlice';
+import { getCurrentUser, isUserLoggedIn } from '../pages/oauth/oauthSlice';
 import { AppThreadFilter } from './AppFilter';
 import { AppPost } from './AppPost';
 import { AppPostCreate } from './AppPostCreate';
@@ -39,6 +39,7 @@ const AppThreadDisplay = (props) => {
     // get posts by filter data
     const postsList = useSelector(getPostsList)
     const posts = useSelector(s => getPostByFilter(s, searchParams))
+    const currentUser = useSelector(s => getCurrentUser(s))
     const existingParams = useSelector(s => getPostsSearchParams(s, searchParams));
     useEffect(() => {
         if(postsList.status === 'idle'){ // list waiting to load
@@ -57,9 +58,10 @@ const AppThreadDisplay = (props) => {
         return posts.map(post => {
             return (
                 <AppPost 
-                key={post.postId}
-                preview={true}
-                post={post} 
+                    key={post.postId}
+                    preview={true}
+                    post={post} 
+                    canEdit={currentUser && post.profileId === currentUser.profileId}
             />)
         })
     }

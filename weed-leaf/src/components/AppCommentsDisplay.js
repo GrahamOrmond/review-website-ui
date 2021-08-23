@@ -2,7 +2,7 @@ import { AppCard } from "./AppCard"
 import { AppTextEditor } from "./AppTextEditor";
 import { AppComment } from "./AppComment";
 import { useDispatch } from "react-redux";
-import { createComment } from "../pages/comments/commentsSlice";
+import { createComment, updateComment } from "../pages/comments/commentsSlice";
 import { addToPostCommentCount } from "../pages/posts/postsSlice";
 import { useState } from "react";
 
@@ -29,17 +29,37 @@ export const AppCommentListFilter = (props) => {
 
 export const AppCommentList = (props) => {
     const dispatch = useDispatch()
-    const [replyBox, setReplyBox] = useState({commentId: null})
+    const [commentBox, setCommentBox] = useState({
+        commentId: null,
+        isEdit: false
+    })
 
     const {
         postId,
-        comments
+        comments,
+        currentUser
     } = props
 
+    // handle showing reply box
+    // used to show reply box to comments
     const handleShowCommentBox = (commentId) => {
-        let reply = {...replyBox}
-        reply.commentId = reply.commentId === commentId? null : commentId
-        setReplyBox(reply)
+        let replyBox = {...commentBox}
+        replyBox.commentId = replyBox.commentId === commentId  // matching comment
+            && replyBox.isEdit === false?  // matching edit type
+             null : commentId // remove comment
+        replyBox.isEdit = false
+        setCommentBox(replyBox)
+    }
+
+    // handles showing the edit box
+    // used to display edit box to edit comments
+    const handleShowEdit = (commentId) => {
+        let editBox = {...commentBox}
+        editBox.commentId = editBox.commentId === commentId // matching comment
+        && editBox.isEdit === true?  // matching edit type
+            null : commentId // remove comment
+        editBox.isEdit = true
+        setCommentBox(editBox)  
     }
 
     const handleSubmitReply = (e, commentId) => {
@@ -55,35 +75,59 @@ export const AppCommentList = (props) => {
             if(res.meta.requestStatus === "fulfilled"){
                 textEditor.innerText = ""
                 dispatch(addToPostCommentCount({postId: postId}))
-                setReplyBox({commentId: null})
+                setCommentBox({
+                    commentId: null,
+                    isEdit: false
+                })
             }
         })
     }
 
-    const renderComments = () => {
-        comments.sort(function(a,b){
-            return  new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime();
-        });
-
-        return comments.map(c => {
-            let showReplyBox = c.commentId === replyBox.commentId? true : false
-            return<AppComment 
-                key={c.commentId}
-                handleSubmitReply={handleSubmitReply}
-                handleShowCommentBox={handleShowCommentBox}
-                replyBoxId={replyBox.commentId}
-                showReplyBox={showReplyBox}
-                comment={c}
-            />
+    // handles sumbitting comment edit
+    // used to send despatch updating comment
+    const handleSubmitEdit = (e, commentId) => {
+        e.preventDefault()
+        let textEditor = document.getElementById(commentId);
+        const postParams = {
+            commentId: commentId,
+            content: textEditor.innerText
+        }
+        dispatch(updateComment(postParams))
+        .then(res => {
+            if(res.meta.requestStatus === "fulfilled"){
+                textEditor.innerText = ""
+                setCommentBox({
+                    commentId: null,
+                    isEdit: false
+                })
+            }
         })
     }
+
+    
+    // sort the comments from latest date posted
+    comments.sort(function(a,b){
+        return  new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime();
+    });
 
     return (
         <div className="">
             <AppCommentListFilter />
             <div className="content-seperator">
             </div>
-            { renderComments() }
+            {
+                // return list of comments
+                comments.map(c => <AppComment 
+                    key={c.commentId}
+                    handleSubmitReply={handleSubmitReply}
+                    handleSubmitEdit={handleSubmitEdit}
+                    handleShowCommentBox={handleShowCommentBox}
+                    handleShowEdit={handleShowEdit}
+                    commentBox={commentBox}
+                    comment={c}
+                    currentProfileId={currentUser?.profileId}
+                />)
+            }
         </div>
     )
 }
@@ -141,7 +185,8 @@ export const AppCommentsDisplay = (props) => {
 
     const {
         postId,
-        comments
+        comments,
+        currentUser
     } = props
 
 
@@ -154,6 +199,7 @@ export const AppCommentsDisplay = (props) => {
                 <AppCommentList 
                     postId={postId}
                     comments={comments}
+                    currentUser={currentUser}
                 />
             </div>
             

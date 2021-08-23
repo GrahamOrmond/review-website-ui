@@ -55,7 +55,9 @@ export const AppDropdown = (props) => {
                 { icon }
             </AppButton>
             <div className="dropdown-content">
-                { children }
+                <div className="content-area">
+                    { children }
+                </div>
             </div>
         </div>
     );
