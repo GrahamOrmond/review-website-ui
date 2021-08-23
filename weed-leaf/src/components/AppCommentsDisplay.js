@@ -29,7 +29,10 @@ export const AppCommentListFilter = (props) => {
 
 export const AppCommentList = (props) => {
     const dispatch = useDispatch()
-    const [replyBox, setReplyBox] = useState({commentId: null})
+    const [commentBox, setCommentBox] = useState({
+        commentId: null,
+        isEdit: false
+    })
 
     const {
         postId,
@@ -37,10 +40,26 @@ export const AppCommentList = (props) => {
         currentUser
     } = props
 
+    // handle showing reply box
+    // used to show reply box to comments
     const handleShowCommentBox = (commentId) => {
-        let reply = {...replyBox}
-        reply.commentId = reply.commentId === commentId? null : commentId
-        setReplyBox(reply)
+        let replyBox = {...commentBox}
+        replyBox.commentId = replyBox.commentId === commentId  // matching comment
+            && replyBox.isEdit == false?  // matching edit type
+             null : commentId // remove comment
+        replyBox.isEdit = false
+        setCommentBox(replyBox)
+    }
+
+    // handles showing the edit box
+    // used to display edit box to edit comments
+    const handleShowEdit = (commentId) => {
+        let editBox = {...commentBox}
+        editBox.commentId = editBox.commentId === commentId // matching comment
+        && editBox.isEdit == true?  // matching edit type
+            null : commentId // remove comment
+        editBox.isEdit = true
+        setCommentBox(editBox)  
     }
 
     const handleSubmitReply = (e, commentId) => {
@@ -56,10 +75,14 @@ export const AppCommentList = (props) => {
             if(res.meta.requestStatus === "fulfilled"){
                 textEditor.innerText = ""
                 dispatch(addToPostCommentCount({postId: postId}))
-                setReplyBox({commentId: null})
+                setCommentBox({
+                    commentId: null,
+                    isEdit: false
+                })
             }
         })
     }
+
     
     // sort the comments from latest date posted
     comments.sort(function(a,b){
@@ -77,8 +100,8 @@ export const AppCommentList = (props) => {
                     key={c.commentId}
                     handleSubmitReply={handleSubmitReply}
                     handleShowCommentBox={handleShowCommentBox}
-                    replyBoxId={replyBox.commentId}
-                    showReplyBox={c.commentId === replyBox.commentId? true : false}
+                    handleShowEdit={handleShowEdit}
+                    commentBox={commentBox}
                     comment={c}
                     currentProfileId={currentUser?.profileId}
                 />)
