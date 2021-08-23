@@ -1133,6 +1133,13 @@ button {
     flex-wrap: wrap;
 }
 
+
+.showcase-display-item {
+    display: flex;
+    width: 100%;
+    bordeR: solid;
+}
+
 .showcase-action {
     border: solid 1px #D6D6D7;
     border-bottom: none;

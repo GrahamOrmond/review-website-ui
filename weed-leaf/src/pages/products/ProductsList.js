@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchProducts, getProductsByFilter, getProductSearchParams, getProductsListInfo, idleProductList } from './productsSlice';
 import { AppProduct } from '../../components/AppProduct'
@@ -11,6 +11,7 @@ export const ProductsList = (props) => {
     const history = useHistory()
     const {
         sort,
+        searchValue,
         brands,
         productType,
         category,
@@ -28,14 +29,20 @@ export const ProductsList = (props) => {
         category: category,
     })
 
+    // create search params for filtering
+    // used to filter posts by adding url params that dont need to be stored in state
+    let searchParams = useMemo(() => {
+        return {...filterData, ...{'search': searchValue}} // add search to data
+    }, [filterData, searchValue])
+
     // get product lists 
     // used to fetch products by the given filter
     const productsListInfo = useSelector(getProductsListInfo);
-    const productsList = useSelector(s => getProductsByFilter(s, filterData));
-    const existingParams = useSelector(s => getProductSearchParams(s, filterData));
+    const productsList = useSelector(s => getProductsByFilter(s, searchParams));
+    const existingParams = useSelector(s => getProductSearchParams(s, searchParams));
     useEffect(() => {
         if(productsListInfo.status === 'idle'){
-            dispatch(fetchProducts(filterData))
+            dispatch(fetchProducts(searchParams))
             return
         }
 
@@ -43,7 +50,7 @@ export const ProductsList = (props) => {
             && !existingParams){
             dispatch(idleProductList())
         }
-    }, [productsListInfo, filterData, existingParams, dispatch])
+    }, [productsListInfo, searchParams, existingParams, dispatch])
 
     // handle filter select box change
     // used to update the current filter state
@@ -67,7 +74,8 @@ export const ProductsList = (props) => {
 
     // handle url changes
     const handleHistoryChange = (newState, sort) => {
-        history.push(`/products/${sort}`)
+        let search = searchValue? `?search=${searchValue}` : ''
+        history.push(`/products/${sort}${search}`)
     }
 
     return (
