@@ -43,6 +43,24 @@ export const createPost = createAsyncThunk('posts/createPosts', async (formData,
     return response
 })
 
+// update post
+export const updatePost = createAsyncThunk('posts/updatePost', async (formData, { getState, rejectWithValue }) => {
+    const token = getAccessToken(getState())
+    let customConfig = {}
+    customConfig.headers = {
+        'Authorization': `Bearer ${token}`
+    }
+
+    // create form data
+    let body = new FormData()
+    formData.mediaFiles.forEach(file => {
+        body.append('PostFiles', file, file.name? file.name : file.originalFileName )
+    });
+    delete formData.mediaFiles
+    body.append('PostData', JSON.stringify(formData))
+    return await client.update(`/api/posts/${formData.postId}`, rejectWithValue, body, customConfig)
+})
+
 // fetch post
 export const fetchPosts = createAsyncThunk('posts/fetchPosts', 
 async (formData, { getState, rejectWithValue }) => {
@@ -207,6 +225,32 @@ export const postsSlice = createSlice({
         },
         [createPost.rejected]: (state, action) => {
         },
+
+        // UPDATE POST
+        [updatePost.pending]: (state, action) => {
+        },
+        [updatePost.fulfilled]: (state, action) => {
+            const updatedPost =  action.payload
+            // update post list
+            let index = state.list.items
+                .findIndex(p => p.postId === updatedPost.postId) // find index of post
+            if(index !== -1){ // index found 
+                let post = {...state.list.items[index]} // copy post
+                // update post data
+                post.brand = updatedPost.brand
+                post.product = updatedPost.product
+                post.title = updatedPost.title
+                post.content = updatedPost.content
+                post.type = updatedPost.type
+                post.status = updatedPost.status
+                post.dateupdated = updatedPost.dateupdated
+                // update state
+                state.list.items[index] = post
+            }
+        },
+        [updatePost.rejected]: (state, action) => {
+        },
+        
 
         // RATE POST
         [ratePost.pending]: (state, action) => {

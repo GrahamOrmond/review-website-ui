@@ -4,7 +4,7 @@ import { AppDynamicSelect, AppFileInput, AppInput, AppSelect } from "../../compo
 import { postOptions } from './submitPostOptions';
 import { AppMarkupEditor } from '../../components/AppTextEditor';
 import { useDispatch, useSelector } from 'react-redux';
-import { createPost } from './postsSlice';
+import { createPost, updatePost } from './postsSlice';
 import { useHistory } from 'react-router-dom';
 import { sortListByName } from '../../helpers/generalHelper'
 import { fetchBrands, getBrandsListInfo } from '../brands/brandsSlice'
@@ -197,6 +197,13 @@ export const SubmitPostForm = (props) => {
 
     // handle saving post draft
     const handleUpdatePost = () => {
+        let postData = getPostData() // get post data from the form
+        // update the post
+        dispatch(updatePost({...postData, ...{'postId': postId}}, ))
+        .then(res => {
+            if(res.meta.requestStatus === "fulfilled")
+            history.push(determineBaseUrl(postData.brandId, postData.productUrlId))
+        })
     }
 
     // add review inputs to the form
