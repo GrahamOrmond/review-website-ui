@@ -5,13 +5,54 @@ import { logoutUser } from '../pages/oauth/oauthSlice';
 import { useDispatch } from 'react-redux';
 import { clearPostParams } from '../pages/posts/postsSlice';
 import { clearProductParams } from '../pages/products/productsSlice';
+import { useState } from 'react';
+import queryString from 'query-string';
 
+// Header nav search bar
+// used to handle any search bar actions
 const AppSearch = (props) => {
+    
+    const history = useHistory()
+    const {
+        activeLink,
+        search
+    } = props
+
+    // display search value 
+    // used to track  the display value of the search input
+    const [searchValue, setSearchValue] = useState(search)
+
+    // handles search form action
+    // used to push the search parm onto the url for routing
+    const handleSearchAction = (e) => {
+        e.preventDefault(); // prevent form submit
+        if(activeLink === "/products"){ // search products
+            history.push(`/products?search=${searchValue}`)
+        }else{ // search posts
+            history.push(`/community?search=${searchValue}`)
+        }
+    }
+
+    // handles search input change
+    // used to update search value state on input change
+    const handleSearchChange = (e) => {
+        setSearchValue(e.target.value)
+    }
 
     return (
-        <div className="app-search">
-            <input placeholder="Search..."></input>
-        </div>
+        <form onSubmit={(e) => handleSearchAction(e)}>
+            <div className="app-search">
+                <input 
+                    onChange={(e) => handleSearchChange(e)}
+                    placeholder={activeLink === "/products"? 
+                            "Search Products..." 
+                        : 
+                            "Search Posts..."  
+                    }
+                    value={searchValue}
+                />
+            </div>
+        </form>
     );
 }
 
@@ -19,7 +60,8 @@ const HeaderNav = (props) => {
 
     const {
         activeLink,
-        isLoggedIn
+        searchValue,
+        isLoggedIn,
     } = props
 
     const dispatch = useDispatch()
@@ -81,7 +123,10 @@ const HeaderNav = (props) => {
                 </div>
             </div>
             <div className="header-search">
-                <AppSearch />
+                <AppSearch 
+                    activeLink={activeLink}
+                    searchValue={searchValue}
+                />
             </div>
             <div className="header-dropdown">
                 <AppDropdown icon={<MenuIcon />}>
@@ -157,6 +202,12 @@ export const AppHeader = (props) => {
         isLoggedIn
     } = props
 
+    // get search value from url
+    const {
+        search
+    } = queryString.parse(location.search);
+
+    // determine the active location 
     let pathname = location.pathname === '/'? // no path
         '/community' // default community page
         :
@@ -168,6 +219,7 @@ export const AppHeader = (props) => {
             <HeaderNav 
                 activeLink={pathname}
                 isLoggedIn={isLoggedIn}
+                searchValue={search}
             />
         </div>
     );
