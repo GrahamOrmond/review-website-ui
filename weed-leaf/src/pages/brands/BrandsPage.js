@@ -15,7 +15,8 @@ export const BrandsPage = (props) => {
         displayName, 
         postLink,
         sort,
-        type
+        type,
+        action
     } = props.match.params;
     if(brandId){
         if(postLink){
@@ -24,6 +25,7 @@ export const BrandsPage = (props) => {
                     <PostDisplay
                         displayName={sort}
                         urlId={postLink}
+                        action={action}
                     />
                 </div>
             )

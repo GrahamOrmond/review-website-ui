@@ -37,13 +37,13 @@ export const AppFileInput = (props) => {
         if(!isFileValid){
             return
         }
-        handleOnChange(e.target.name, selectedFile)
+        handleOnChange(selectedFile)
     }
 
     const handleRemoveFile = (e, file) => {
         const fileInput = e.target.closest('.form-input').querySelector("input")
         e.target.value = ''
-        handleOnChange(fileInput.name, file, true)
+        handleOnChange(file, true)
     }
 
     const handleViewImage = (file) => {
@@ -55,7 +55,10 @@ export const AppFileInput = (props) => {
             return (
                 <div className="form-file">
                     <div className="name">
-                        <p onClick={(e) => handleViewImage(e, file)}>{file.name}</p>
+                        <p onClick={(e) => handleViewImage(e, file)}>
+                            {file.originalFileName}
+                            {file.name}
+                        </p>
                     </div>
                     <div className="action">
                         <AppButton handleOnClick={(e) => handleRemoveFile(e, file)}>

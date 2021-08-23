@@ -17,9 +17,13 @@ export const SubmitPostForm = (props) => {
     const history = useHistory()
     
     const {
+        postId,
         brandId,
         productUrl,
         postType,
+        mediaFiles,
+        title,
+        content,
     } = props // get urls params to declare default values
 
     // delare form data with default values (grows as data is inputted into form)
@@ -27,7 +31,10 @@ export const SubmitPostForm = (props) => {
         "type": postType,
         "status": "private",
         "brandId": brandId,
-        "productUrlId": productUrl
+        "productUrlId": productUrl,
+        "files": mediaFiles,
+        "title": title,
+        "content": content,
     })
 
     // load brand and product options
@@ -116,14 +123,16 @@ export const SubmitPostForm = (props) => {
     }
 
     // handle file input box change
-    const handleFileChange = (fileList, file, removeFile = false) => {
+    const handleFileChange = (file, removeFile = false) => {
         let newState = {...formData};
+        let fileState = [...newState.files]
         if(removeFile){
-            const fileIndex = newState[fileList].files.indexOf(file);
-            newState[fileList].files.splice(fileIndex, 1);
+            const fileIndex = newState.files.indexOf(file);
+            fileState.splice(fileIndex, 1);
         }else{
-            newState[fileList].files.push(file)
+            fileState.push(file)
         }
+        newState.files = fileState
         setFormData(newState)
     }
 
@@ -186,6 +195,10 @@ export const SubmitPostForm = (props) => {
         })
     }
 
+    // handle saving post draft
+    const handleUpdatePost = () => {
+    }
+
     // add review inputs to the form
     let reviewContent;
     if(formData.type === "review"){
@@ -245,7 +258,7 @@ export const SubmitPostForm = (props) => {
                         <AppSelect 
                             name="productUrlId"
                             label="Product"
-                            selectedValue={formData.productId}
+                            selectedValue={formData.productUrlId}
                             options={generateProductOptions()}
                             handleOnChange={handleSelectChange}
                         />
@@ -285,18 +298,31 @@ export const SubmitPostForm = (props) => {
  
                 </div>
 
-                <div className="form-footer">
-                    <button type="submit" 
-                        className="button-blue" 
-                        onClick={handleSavePost}>
-                        Save Draft
-                    </button>
-                    <button type="submit" 
-                        className="button-blue" 
-                        onClick={handleSubmitPost}>
-                        Post
-                    </button>
-                </div>
+                {
+                    postId?
+                        <div className="form-footer">
+                            <button type="submit" 
+                                className="button-blue" 
+                                onClick={handleUpdatePost}>
+                                Save Changes
+                            </button>
+                        </div>
+                        :
+                        <div className="form-footer">
+                            <button type="submit" 
+                                className="button-blue" 
+                                onClick={handleSavePost}>
+                                Save Draft
+                            </button>
+                            <button type="submit" 
+                                className="button-blue" 
+                                onClick={handleSubmitPost}>
+                                Post
+                            </button>
+                        </div>
+                }
+
+               
             </AppCard>
         </div>
     )

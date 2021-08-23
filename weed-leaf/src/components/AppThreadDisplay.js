@@ -61,7 +61,7 @@ const AppThreadDisplay = (props) => {
                     key={post.postId}
                     preview={true}
                     post={post} 
-                    canEdit={post.profileId === currentUser.profileId}
+                    canEdit={currentUser && post.profileId === currentUser.profileId}
             />)
         })
     }
