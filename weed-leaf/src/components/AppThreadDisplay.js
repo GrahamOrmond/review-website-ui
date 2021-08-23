@@ -4,7 +4,7 @@ import { AppThreadFilter } from './AppFilter';
 import { AppPost } from './AppPost';
 import { AppPostCreate } from './AppPostCreate';
 import { fetchPosts, getPostByFilter, getPostsList, getPostsSearchParams, idlePostList } from "../pages/posts/postsSlice";
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 
@@ -18,6 +18,7 @@ const AppThreadDisplay = (props) => {
         productId,
         postType,
         sortBy,
+        searchValue,
         urlBase
     } = props
 
@@ -28,15 +29,20 @@ const AppThreadDisplay = (props) => {
         type: postType === undefined? "review" : postType.toLowerCase(), // default review
         sortBy: sortBy === undefined? "new" : sortBy.toLowerCase(), // default new
     })
-
     
+    // create search params for filtering
+    // used to filter posts by adding url params that dont need to be stored in state
+    let searchParams = useMemo(() => {
+        return {...filterData, ...{'search': searchValue}} // add search to data
+    }, [filterData, searchValue])
+
     // get posts by filter data
     const postsList = useSelector(getPostsList)
-    const posts = useSelector(s => getPostByFilter(s, filterData))
-    const existingParams = useSelector(s => getPostsSearchParams(s, filterData));
+    const posts = useSelector(s => getPostByFilter(s, searchParams))
+    const existingParams = useSelector(s => getPostsSearchParams(s, searchParams));
     useEffect(() => {
         if(postsList.status === 'idle'){ // list waiting to load
-            dispatch(fetchPosts(filterData)) // fetch by filter data
+            dispatch(fetchPosts(searchParams)) // fetch by filter data
             return
         }
 
@@ -44,7 +50,7 @@ const AppThreadDisplay = (props) => {
             && !existingParams){ // user hasnt searched by params yet
             dispatch(idlePostList()) // idle the post to change view state
         }
-    }, [postsList, filterData, existingParams, dispatch])
+    }, [postsList, searchParams, existingParams, dispatch])
 
     // render all posts
     const renderPosts = () => {
@@ -76,7 +82,8 @@ const AppThreadDisplay = (props) => {
 
     // handle url changes
     const handleHistoryChange = (newState) => {
-        history.push(`${urlBase}${newState.type}/${newState.sortBy}`)
+        let search = searchValue? `?search=${searchValue}` : ''
+        history.push(`${urlBase}${newState.type}/${newState.sortBy}${search}`)
     }
 
     // return posts thread with filter

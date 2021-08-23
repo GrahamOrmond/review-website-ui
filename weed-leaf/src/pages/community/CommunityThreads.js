@@ -4,7 +4,8 @@ export const CommunityThreads = (props) =>  {
 
     const {
         postType,
-        sortBy
+        sortBy,
+        searchValue
     } = props
 
     return (
@@ -12,6 +13,7 @@ export const CommunityThreads = (props) =>  {
             <AppThreadDisplay
                 postType={postType}
                 sortBy={sortBy}
+                searchValue={searchValue}
                 urlBase="/community/"
             />
         </div>
