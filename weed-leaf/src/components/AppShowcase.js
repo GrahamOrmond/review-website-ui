@@ -352,21 +352,7 @@ const MultipleItemShowcase = (props) => {
     );
 }
 
-const ShowcaseAction = (props) => {
 
-    const {
-        actionLink,
-        actionTitle
-    } = props
-
-    return (
-        <Link to={actionLink}>
-            <div className="showcase-action">
-                {actionTitle}
-            </div>
-        </Link>
-    )
-}
 
 export const AppShowcase = (props) => {
 
@@ -449,6 +435,57 @@ export const AppShowcase = (props) => {
              <div className="app-showcase">
                 { showcaseContent }
                 { action }
+            </div>
+        </AppCard>
+    )
+}
+
+
+export const ShowcaseContent = (props) => {
+
+    const {
+        children
+    } = props
+
+    return (
+        <div className="showcase-content">
+            <div className="showcase-title">
+                <h4>Product Showcase</h4>
+            </div>
+            <div className="showcase-display">
+                { children }
+            </div>
+        </div>
+    )
+}
+
+export const ShowcaseAction = (props) => {
+
+    const {
+        actionLink,
+        actionTitle
+    } = props
+
+    return (
+        <Link to={actionLink}>
+            <div className="showcase-action">
+                {actionTitle}
+            </div>
+        </Link>
+    )
+}
+
+
+export const AppProductShowcase = (props) => {
+
+    const {
+        children
+    } = props
+
+    return (
+        <AppCard>
+            <div className="app-showcase">
+                { children }
             </div>
         </AppCard>
     )

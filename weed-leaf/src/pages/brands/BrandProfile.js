@@ -4,9 +4,10 @@ import React, { useEffect } from 'react'
 
 import { getBrandView, fetchBrand, clearBrandView, getBrandById, setBrandView } from './brandsSlice'
 import AppThreadDisplay from '../../components/AppThreadDisplay';
-import { AppShowcase } from '../../components/AppShowcase';
-import { getPostsByBrand } from '../posts/postsSlice';
-  
+import { AppProductShowcase, AppShowcase, ShowcaseAction, ShowcaseContent } from '../../components/AppShowcase';
+import { fetchProducts, getProductsByBrandId, getProductSearchParams, getProductsListInfo } from '../products/productsSlice';
+import { AppProduct } from '../../components/AppProduct'
+
 export const BrandProfile = (props) => {
 
     const dispatch = useDispatch()
@@ -16,12 +17,11 @@ export const BrandProfile = (props) => {
         brandId
     } = props
 
-    useEffect(() => {
-        window.scrollTo(0, 0)
-    }, [])
-
     const view = useSelector(getBrandView);
     const brand = useSelector(s => getBrandById(s, brandId))
+    const productsListInfo = useSelector(getProductsListInfo)
+    const brandProducts = useSelector(s => getProductsByBrandId(s, brandId))
+    const existingParams = useSelector(s => getProductSearchParams(s, {'brands': [brandId]}));
     useEffect(() => {
         if(view.status === 'idle'){
             if(!brand){ // no brand found
@@ -37,18 +37,16 @@ export const BrandProfile = (props) => {
             !== brandId.toLowerCase()){
             dispatch(clearBrandView())
         }
+
+        // check for existing brand products
+        if(productsListInfo.status !== 'loading'
+            && !existingParams){ // user hasnt searched by params yet
+            dispatch(fetchProducts({"brands": [brandId]})) // search for products
+        }
     }, [brand, postsType, brandId, view, dispatch])
     
     if(!brand)
         return (<div></div>)
-
-    let showcaseData = {
-        type: "MULTIPLE",
-        data: {
-            type: "PRODUCTS",
-            items: []
-        }
-    }
 
     return (
             <AppProfile
@@ -58,13 +56,22 @@ export const BrandProfile = (props) => {
             rating={brand.rating}
             description={brand.description}
             >
-            <AppShowcase
-                title="Products"
-                type={showcaseData.type}
-                data={showcaseData.data}
-                actionTitle="View"
-                actionLink={"/products?brands=" + brand.name}
+            <AppProductShowcase>
+                <ShowcaseContent>
+                    {
+                        brandProducts.map(p => 
+                            <AppProduct 
+                                key={p.brandId + '-' + p.urlId}
+                                product={p}>
+                            </AppProduct>
+                        )
+                    }
+                </ShowcaseContent>
+                <ShowcaseAction 
+                    actionLink={`/products?brands=${brand.brandId}`}
+                    actionTitle="View More"
                 />
+            </AppProductShowcase>
             <AppThreadDisplay 
                 brandId={brand.brandId}
                 postType={postsType}
