@@ -101,6 +101,7 @@ export const getPostByFilter = (state, filter) => {
             return (!filter.brandId || filter.brandId === p.brand.brandId) // brand
             && (!filter.productId || filter.productId === p.product.productId) // product
             && (!filter.type || filter.type.toUpperCase() === p.type) // post type
+            && (!filter.search || (p.title + p.brand.name + p.product.name).toLowerCase().includes(filter.search.toLowerCase()))
         })
 }
 

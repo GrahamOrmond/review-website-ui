@@ -94,20 +94,13 @@ export const getProductSearchParams = (state, params) => {
 // get a list of products by filter
 // used to return a list of products filtered by product filter
 export const getProductsByFilter = (state, filter) => {
-    let items = state.products.list.items;
-    
-    if(filter.brands.length > 0 ){ // filter by brands
-        items = items.filter(p => filter.brands.includes(p.brandId))
-    }
-
-    if(filter.productType.length > 0 ){ // filter by type
-        items = items.filter(p => filter.productType.includes(p.type))
-    }
-
-    if(filter.category.length > 0 ){ // filter by category
-        items = items.filter(p => filter.category.includes(p.category))
-    }
-    return items
+    // return sorted product list by given filter
+    return state.products.list.items.filter((p) => {
+            return (filter.brands.length === 0 || filter.brands.includes(p.brandId)) // brand
+            && (filter.productType.length === 0  || filter.productType.includes(p.type)) // product type
+            && (filter.category.length === 0  || filter.category.includes(p.category)) // category
+            && (!filter.search || (p.name + p.brandName).toLowerCase().includes(filter.search.toLowerCase())) // search bar
+        })
 }
 
 // get loaded product filter option info
