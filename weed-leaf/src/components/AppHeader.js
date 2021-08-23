@@ -5,7 +5,6 @@ import { logoutUser } from '../pages/oauth/oauthSlice';
 import { useDispatch } from 'react-redux';
 import { clearPostParams } from '../pages/posts/postsSlice';
 import { clearProductParams } from '../pages/products/productsSlice';
-import { useState } from 'react';
 import queryString from 'query-string';
 
 // Header nav search bar
@@ -18,38 +17,31 @@ const AppSearch = (props) => {
         search
     } = props
 
-    // display search value 
-    // used to track  the display value of the search input
-    const [searchValue, setSearchValue] = useState(search)
-
     // handles search form action
     // used to push the search parm onto the url for routing
     const handleSearchAction = (e) => {
         e.preventDefault(); // prevent form submit
-        if(activeLink === "/products"){ // search products
-            history.push(`/products?search=${searchValue}`)
-        }else{ // search posts
-            history.push(`/community?search=${searchValue}`)
-        }
-    }
+        let searchValue = e.target.elements[0].value
+        const searchParam = searchValue? `?search=${searchValue}` : '' // determine url extension
 
-    // handles search input change
-    // used to update search value state on input change
-    const handleSearchChange = (e) => {
-        setSearchValue(e.target.value)
+        if(activeLink === "/products"){ // search products
+            history.push(`/products${searchParam}`)
+        }else{ // search posts
+            history.push(`/community${searchParam}`)
+        }
     }
 
     return (
         <form onSubmit={(e) => handleSearchAction(e)}>
             <div className="app-search">
                 <input 
-                    onChange={(e) => handleSearchChange(e)}
+                    key={activeLink}
                     placeholder={activeLink === "/products"? 
                             "Search Products..." 
                         : 
                             "Search Posts..."  
                     }
-                    value={searchValue}
+                    defaultValue={search}
                 />
             </div>
         </form>
@@ -60,7 +52,7 @@ const HeaderNav = (props) => {
 
     const {
         activeLink,
-        searchValue,
+        search,
         isLoggedIn,
     } = props
 
@@ -114,7 +106,7 @@ const HeaderNav = (props) => {
                             <Link 
                                 key={l.key}
                                 onClick={() => handleOnNavClick(l.link)}>
-                                <div className={activeLink == l.link? "header-link active" : "header-link"}>
+                                <div className={activeLink === l.link? "header-link active" : "header-link"}>
                                     <p>{l.label}</p>
                                 </div>
                             </Link>
@@ -125,7 +117,7 @@ const HeaderNav = (props) => {
             <div className="header-search">
                 <AppSearch 
                     activeLink={activeLink}
-                    searchValue={searchValue}
+                    search={search}
                 />
             </div>
             <div className="header-dropdown">
@@ -219,7 +211,7 @@ export const AppHeader = (props) => {
             <HeaderNav 
                 activeLink={pathname}
                 isLoggedIn={isLoggedIn}
-                searchValue={search}
+                search={search}
             />
         </div>
     );
