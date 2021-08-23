@@ -102,7 +102,8 @@ export const SubmitPostForm = (props) => {
         // return if form matches url
         if(newState.type === postType 
             && newState.brandId === brandId
-            && newState.productUrlId === productUrl){
+            && newState.productUrlId === productUrl
+            || postId){ // edit post
                 return
         }
 

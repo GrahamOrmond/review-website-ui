@@ -50,7 +50,8 @@ const CommentActions = (props) => {
         handleShowCommentBox,
         handleRatingUp,
         handleRatingDown,
-        rating
+        rating,
+        canEdit
     } = props
 
     return (
@@ -69,9 +70,21 @@ const CommentActions = (props) => {
             <div className="comment-action" onClick={handleShowCommentBox} >
                 Reply
             </div>
-            <div className="comment-action">
-                Report
-            </div>
+            {
+                canEdit? 
+                    [
+                        <div className="comment-action">
+                            Edit
+                        </div>,
+                        <div className="comment-action">
+                            Delete
+                        </div>
+                    ]
+                :
+                    <div className="comment-action">
+                        Report
+                    </div>
+            }
         </div>
     )
 }
@@ -97,6 +110,7 @@ const CommentRepliesList = (props) => {
         handleShowCommentBox,
         replyBoxId,
         handleSubmitReply,
+        currentProfileId,
     } = props
 
     const loadCommentReplies = () => {
@@ -124,24 +138,19 @@ const CommentRepliesList = (props) => {
         )
     }
 
-    const renderReplyComments = () => {
-        return replies.map(c => {
-            
-            let showReplyBox = c.commentId === replyBoxId? true : false
-            return <AppComment 
-                key={c.commentId}
-                handleSubmitReply={handleSubmitReply}
-                handleShowCommentBox={handleShowCommentBox}
-                replyBoxId={replyBoxId}
-                showReplyBox={showReplyBox}
-                comment={c}
-            />
-        })
-    }
-
     return (
         <div className="comment-replies-list">
-            {renderReplyComments()}
+            {
+                replies.map(c => <AppComment 
+                    key={c.commentId}
+                    handleSubmitReply={handleSubmitReply}
+                    handleShowCommentBox={handleShowCommentBox}
+                    replyBoxId={replyBoxId}
+                    showReplyBox={c.commentId === replyBoxId? true : false}
+                    comment={c}
+                    currentProfileId={currentProfileId}
+                />)
+            }
             {replyActions}
         </div>
     )
@@ -157,30 +166,8 @@ const CommentContent = (props) => {
         handleSubmitReply,
         handleRatingUp,
         handleRatingDown,
+        currentProfileId,
     } = props
-
-    
-
-    let replyContent;
-    if(showReplyBox){
-        replyContent = <CommentReply 
-            handleSubmitReply={handleSubmitReply}
-            postId={comment.postId}
-            commentId={comment.commentId}
-        />
-    }
-
-    let replyComments;
-    if(comment.replyCount > 0){
-        replyComments = <CommentRepliesList
-            commentId={comment.commentId}
-            count={comment.replyCount}
-            handleShowCommentBox={handleShowCommentBox}
-            showReplyBox={showReplyBox}
-            handleSubmitReply={handleSubmitReply}
-            replyBoxId={replyBoxId}
-        />
-    }
     
     const rating = comment.upCount - comment.downCount
     return (
@@ -189,13 +176,32 @@ const CommentContent = (props) => {
                 message={comment.content}
             />
             <CommentActions 
+                canEdit={currentProfileId == comment.user.profileId}
                 rating={rating}
                 handleRatingDown={handleRatingDown}
                 handleRatingUp={handleRatingUp}
                 handleShowCommentBox={() => handleShowCommentBox(comment.commentId)}
             />
-            {replyContent}
-            {replyComments}
+            {
+                showReplyBox? // reply box enabled
+                <CommentReply 
+                    handleSubmitReply={handleSubmitReply}
+                    postId={comment.postId}
+                    commentId={comment.commentId}
+                /> : ''
+            }
+            {
+                comment.replyCount > 0? // comment has replies
+                    <CommentRepliesList
+                        commentId={comment.commentId}
+                        count={comment.replyCount}
+                        handleShowCommentBox={handleShowCommentBox}
+                        showReplyBox={showReplyBox}
+                        handleSubmitReply={handleSubmitReply}
+                        replyBoxId={replyBoxId}
+                        currentProfileId={currentProfileId}
+                    /> : ''
+            }
         </div>
     )
 }
@@ -241,6 +247,7 @@ export const AppComment = (props) => {
         showReplyBox,
         handleSubmitReply,
         replyBoxId,
+        currentProfileId
     } = props;
 
     const handleRatingUp = (e) => {
@@ -277,6 +284,7 @@ export const AppComment = (props) => {
                 handleSubmitReply={handleSubmitReply}
                 handleRatingDown={handleRatingDown}
                 handleRatingUp={handleRatingUp}
+                currentProfileId={currentProfileId}
             /> 
         </div>
     )

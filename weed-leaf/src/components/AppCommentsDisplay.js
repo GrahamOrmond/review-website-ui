@@ -33,7 +33,8 @@ export const AppCommentList = (props) => {
 
     const {
         postId,
-        comments
+        comments,
+        currentUser
     } = props
 
     const handleShowCommentBox = (commentId) => {
@@ -59,31 +60,29 @@ export const AppCommentList = (props) => {
             }
         })
     }
-
-    const renderComments = () => {
-        comments.sort(function(a,b){
-            return  new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime();
-        });
-
-        return comments.map(c => {
-            let showReplyBox = c.commentId === replyBox.commentId? true : false
-            return<AppComment 
-                key={c.commentId}
-                handleSubmitReply={handleSubmitReply}
-                handleShowCommentBox={handleShowCommentBox}
-                replyBoxId={replyBox.commentId}
-                showReplyBox={showReplyBox}
-                comment={c}
-            />
-        })
-    }
+    
+    // sort the comments from latest date posted
+    comments.sort(function(a,b){
+        return  new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime();
+    });
 
     return (
         <div className="">
             <AppCommentListFilter />
             <div className="content-seperator">
             </div>
-            { renderComments() }
+            {
+                // return list of comments
+                comments.map(c => <AppComment 
+                    key={c.commentId}
+                    handleSubmitReply={handleSubmitReply}
+                    handleShowCommentBox={handleShowCommentBox}
+                    replyBoxId={replyBox.commentId}
+                    showReplyBox={c.commentId === replyBox.commentId? true : false}
+                    comment={c}
+                    currentProfileId={currentUser?.profileId}
+                />)
+            }
         </div>
     )
 }
@@ -141,7 +140,8 @@ export const AppCommentsDisplay = (props) => {
 
     const {
         postId,
-        comments
+        comments,
+        currentUser
     } = props
 
 
@@ -154,6 +154,7 @@ export const AppCommentsDisplay = (props) => {
                 <AppCommentList 
                     postId={postId}
                     comments={comments}
+                    currentUser={currentUser}
                 />
             </div>
             

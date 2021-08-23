@@ -80,6 +80,7 @@ export const PostDisplay = (props) => {
             <AppCommentsDisplay 
                 postId={post.postId}
                 comments={comments}
+                currentUser={currentUser}
             />
         </div>
         
