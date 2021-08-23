@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { AppCommentsDisplay } from "../../components/AppCommentsDisplay"
 import { AppPost }  from "../../components/AppPost"
 import { fetchComments, getCommentsByPost, getCommentsSearchParams } from "../comments/commentsSlice"
+import { getCurrentUser } from "../oauth/oauthSlice"
 import { clearPostView, fetchPost, getPostById, getPostView, setPostView } from "./postsSlice"
 
 
@@ -20,6 +21,7 @@ export const PostDisplay = (props) => {
         postId: post?.postId,
     }))
     const comments = useSelector(s => getCommentsByPost(s, post))
+    const currentUser = useSelector(s => getCurrentUser(s))
     useEffect(() => {
         if(view.status === 'idle'){ // view not loaded
             if(!post){ // no post found
@@ -57,7 +59,8 @@ export const PostDisplay = (props) => {
         <div className="post-display">
             <AppPost 
                 display="full"
-                post={post}>
+                post={post}
+                canEdit={currentUser.profileId === post.profileId}>
             </AppPost>
             <AppCommentsDisplay 
                 postId={post.postId}

@@ -234,14 +234,17 @@ button {
 }
 
 .dropdown-content{
+    position: relative;
     display: none;
+}
+
+.dropdown-content .content-area {
     position: absolute;
     text-align: left;
-    min-width: 200px;
     background-color: white;
     border: solid 1px #D6D6D7; 
     right: 0px;
-    border-right: none; 
+    top: 5px;
 }
 
 .dropdown-content.active{
@@ -261,7 +264,11 @@ button {
     }
 
 .dropdown-nav {
+    min-width: 100px;
     padding: 0px 10px;
+    font-size: 16px;
+    line-height: 40px;
+    white-space: nowrap;
     cursor: pointer;
 }
 
