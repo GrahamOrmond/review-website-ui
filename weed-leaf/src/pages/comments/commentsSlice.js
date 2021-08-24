@@ -47,6 +47,19 @@ export const updateComment = createAsyncThunk('comments/updateComment',
     return response
 })
 
+// delete comment by Id
+export const deleteComment = createAsyncThunk('comments/deleteComment',
+ async (commentId, { getState, rejectWithValue }) => {
+    const token = getAccessToken(getState())
+    let customConfig = {}
+    customConfig.headers = {
+        'Authorization': `Bearer ${token}`
+    }
+    const response = await client
+        .delete(`/api/comments/${commentId}`, rejectWithValue, customConfig)
+    return response
+})
+
 // fetch post
 export const fetchComments = createAsyncThunk('comments/fetchComments',
  async (fetchData, { getState, rejectWithValue }) => {
@@ -159,6 +172,23 @@ export const commentsSlice = createSlice({
     },
     [updateComment.rejected]: (state, action) => {
     },
+
+    // UPDATE COMMENT
+    [deleteComment.pending]: (state, action) => {
+    },
+    [deleteComment.fulfilled]: (state, action) => {
+      // check for update comment in state
+      let index = state.list.items
+          .findIndex(c => c.commentId === action.meta.arg);
+      // update state
+      if(index !== -1){ // comment found
+        state.list.items[index].content = ''
+        state.list.items[index].status = 'DELETED'
+      }
+    },
+    [deleteComment.rejected]: (state, action) => {
+    },
+
 
     
 

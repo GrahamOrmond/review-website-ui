@@ -2,7 +2,7 @@ import { AppCard } from "./AppCard"
 import { AppTextEditor } from "./AppTextEditor";
 import { AppComment } from "./AppComment";
 import { useDispatch } from "react-redux";
-import { createComment, updateComment } from "../pages/comments/commentsSlice";
+import { createComment, deleteComment, updateComment } from "../pages/comments/commentsSlice";
 import { addToPostCommentCount } from "../pages/posts/postsSlice";
 import { useState } from "react";
 
@@ -82,7 +82,14 @@ export const AppCommentList = (props) => {
     // handles deleting a comment
     // used to send post request to delete a comment by ID
     const handleDeleteComment = (commentId) => {
-        console.log(commentId)
+        dispatch(deleteComment(commentId)).then(res => {
+            if(res.meta.requestStatus === "fulfilled"){
+                setCommentBox({ // remove comment state
+                    commentId: null,
+                    action: null
+                })
+            }
+        })
     }
 
     // handles sumbitting comment edit
