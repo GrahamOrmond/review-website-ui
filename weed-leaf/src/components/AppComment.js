@@ -100,12 +100,24 @@ const CommentActions = (props) => {
 const CommentMessage = (props) => {
 
     const {
-        message
+        message,
+        isDeleted,
     } = props
 
+    if(isDeleted){ // comment was deleted
+        return (
+            <div className="comment-body comment-deleted">
+                <p>message deleted</p>
+            </div>
+        )
+    }
+
+    // return normal 
     return (
         <div className="comment-body">
-            <p>{message}</p>
+            <p>
+                {message}
+            </p>
         </div>
     )
 }
@@ -191,6 +203,30 @@ const CommentContent = (props) => {
         handleRatingDown,
         currentProfileId,
     } = props
+
+    // check if comment is deleted
+    if(comment.status === "DELETED"){ // deleted comment
+        return ( // return comment without actions
+            <div className="comment-content">
+                <CommentMessage
+                    isDeleted={true}
+                />
+                {
+                // show replies 
+                comment.replyCount > 0? // comment has replies
+                    <CommentRepliesList
+                        commentId={comment.commentId}
+                        commentBox={commentBox}
+                        count={comment.replyCount}
+                        handleShowCommentBox={handleShowCommentBox}
+                        handleSubmitReply={handleSubmitReply}
+                        handleSubmitEdit={handleSubmitEdit}
+                        currentProfileId={currentProfileId}
+                    /> : ''
+            }
+            </div>
+        )
+    }
 
     // check active comment box is set to this comment
     const showCommentBox = commentBox.commentId === comment.commentId? true : false

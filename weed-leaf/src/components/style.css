@@ -1709,6 +1709,11 @@ button {
     padding-bottom: 5px;
 }
 
+.comment-content .comment-deleted{
+    color: #474a4d;
+    font-size: 12px;
+}
+
 .comment-rating {
     display: flex;
     flex-wrap: nowrap;
