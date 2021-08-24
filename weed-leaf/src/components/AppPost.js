@@ -13,7 +13,7 @@ import { determineTimePosted } from '../helpers/generalHelper';
 import { useDispatch } from 'react-redux';
 import { deletePost, ratePost } from '../pages/posts/postsSlice';
 import { AppButton } from './AppButton';
-import { AppModal } from './AppModal';
+import { AppDeleteModal } from './AppModal';
 
 const PostUserInfo = (props) => {
     const {
@@ -339,29 +339,13 @@ export const AppPost = (props) => {
            
             {
                 showDelete? 
-                    <AppModal>
-                        <div class="post-delete">
-                            <div className="delete-header">
-                                <h4>Delete Post?</h4>
-                            </div>
-                            <div className="delete-content">
-                                Are you sure you want to delete the is post? This cannot be undone.
-                            </div>
-                            <div className="delete-actions">
-                                <button className="button-blue"
-                                    onClick={() => {
-                                        history.push(postUrl)
-                                    }}>
-                                    Cancel
-                                </button>
-                                <button className="button-blue"
-                                onClick={handleDeletePost}
-                                >
-                                    Delete
-                                </button>
-                            </div>
-                        </div>
-                    </AppModal> 
+                    <AppDeleteModal 
+                        resource="post"
+                        handleCancel={() => {
+                            history.push(postUrl)
+                        }}
+                        handleDeletePost={handleDeletePost}
+                    />
                 : ''
             }
         </AppCard>
