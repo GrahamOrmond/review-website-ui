@@ -57,8 +57,7 @@ export const PostDisplay = (props) => {
     }, [view, post, displayName, urlId, existingParam,  dispatch])
 
     if(!post) return (<div></div>)
-
-    if(action == "edit"){
+    if(action === "edit"){ // edit post
         return <SubmitPostForm
             postId={post.postId}
             productUrl={post.product.urlId}
@@ -75,7 +74,8 @@ export const PostDisplay = (props) => {
             <AppPost 
                 display="full"
                 post={post}
-                canEdit={currentUser && currentUser.profileId === post.profileId}>
+                canEdit={currentUser && currentUser.profileId === post.profileId}
+                showDelete={action === "delete"}>
             </AppPost>
             <AppCommentsDisplay 
                 postId={post.postId}

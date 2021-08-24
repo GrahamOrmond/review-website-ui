@@ -692,10 +692,41 @@ button {
 
 .modal-content {
     position: block;
-    width: 100%;
     max-width: 1000px;
     overflow: auto;
 }
+
+
+.post-delete {
+    width: 400px;
+}
+
+
+    .post-delete .delete-header  {
+        text-align: center;
+        margin: 5px;
+    }
+
+        .post-delete .delete-header h4 {
+            padding: 0px;
+            margin: 0px;
+        }
+
+    .post-delete .delete-content {
+        padding: 5px;
+        margin: 5px;
+        text-align: center;
+    }
+
+    .post-delete .delete-actions {
+        display: flex;
+    }
+
+    .post-delete .delete-actions button {
+        width: 100%;
+        padding: 5px;
+        margin: 5px;
+    }
 
 /* width */
 .modal-content::-webkit-scrollbar {

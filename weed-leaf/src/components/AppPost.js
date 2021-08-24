@@ -8,34 +8,21 @@ import { AppDropdown, DropdownNav } from './AppDropdown';
 import { AppCard } from './AppCard';
 import { AppFilesDisplay } from './AppFilesDisplay';
 
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { determineTimePosted } from '../helpers/generalHelper';
 import { useDispatch } from 'react-redux';
-import { ratePost } from '../pages/posts/postsSlice';
+import { deletePost, ratePost } from '../pages/posts/postsSlice';
 import { AppButton } from './AppButton';
+import { AppModal } from './AppModal';
 
 const PostUserInfo = (props) => {
-
     const {
         displayName,
         date,
-        canEdit
+        canEdit,
+        handleShowEdit,
+        handleShowDelete,
     } = props
-
-    const linkData = {
-        "linkSections": 
-        [
-            {
-                "title": "main",
-                "links": [
-                    {
-                        'link': '/post/report',
-                        'label': 'Report'
-                    },
-                ]
-            },
-        ]
-    }
 
     return (
         <div className="post-info">
@@ -58,11 +45,18 @@ const PostUserInfo = (props) => {
                     <AppDropdown icon={<MoreHorizIcon />}>
                         {
                             canEdit?
-                                <DropdownNav 
-                                    key="edit"
-                                    label="Edit"
-                                    handleOnClick={() => {}}
-                                />
+                                [
+                                    <DropdownNav 
+                                        key="edit"
+                                        label="Edit"
+                                        handleOnClick={handleShowEdit}
+                                    />,
+                                    <DropdownNav 
+                                        key="delete"
+                                        label="Delete"
+                                        handleOnClick={handleShowDelete}
+                                    />
+                                ]
                             :
                                 <DropdownNav 
                                     key="report"
@@ -70,7 +64,6 @@ const PostUserInfo = (props) => {
                                     handleOnClick={() => {}}
                                 />
                         }
-                            
                     </AppDropdown>
                 </div>
             </div>
@@ -86,6 +79,8 @@ const PostHeader = (props) => {
         brand,
         product,
         canEdit,
+        handleShowEdit,
+        handleShowDelete,
     } = props
 
     let navLinks = []
@@ -126,6 +121,8 @@ const PostHeader = (props) => {
                 displayName={props.displayName}
                 date={props.date}
                 canEdit={canEdit}
+                handleShowEdit={handleShowEdit}
+                handleShowDelete={handleShowDelete}
             />
             <div className="post-content-info">
                 <div className="post-reference">
@@ -250,15 +247,24 @@ const PostProperties = (props) => {
 
 export const AppPost = (props) => {
     const dispatch = useDispatch()
+    const history = useHistory()
     const {
         preview,
         post,
-        canEdit
+        canEdit,
+        showDelete,
     } = props
 
     const displayName = post.displayName.toLowerCase()
     const postUrlId = post.urlId.toLowerCase()
     const postType = post.type.toLowerCase()
+
+    // setup post url
+    let postUrl = `/community/user/${displayName}/${postUrlId}`;
+    if(post.product.productId != null)
+        postUrl = `/products/${post.brand.brandId}/${post.product.urlId}/${postType}s/${displayName}/${postUrlId}`
+    else if (post.brand.brandId != null)
+        postUrl = `/brands/${post.brand.brandId}/${postType}s/${displayName}/${postUrlId}`
     
     const handleRatingDown = (e) => {
         e.preventDefault();
@@ -278,14 +284,23 @@ export const AppPost = (props) => {
         dispatch(ratePost(formData))
     }
 
-    // setup post url
-    let postUrl;
-    if(props.display !== "full"){ // partial view
-        postUrl = `/community/user/${displayName}/${postUrlId}`;
-        if(post.product.productId != null)
-            postUrl = `/products/${post.brand.brandId}/${post.product.urlId}/${postType}s/${displayName}/${postUrlId}`
-        else if (post.brand.brandId != null)
-            postUrl = `/brands/${post.brand.brandId}/${postType}s/${displayName}/${postUrlId}`
+    // handles switching to edit page
+    const handleShowEdit = () => {
+        history.push(`${postUrl}/edit`)
+    }
+
+    // handles showing delete info 
+    const handleShowDelete = () => {
+        history.push(`${postUrl}/delete`)
+    }
+
+    const handleDeletePost = () => {
+        dispatch(deletePost(post.postId))
+        .then(res => {
+            if(res.meta.requestStatus === "fulfilled"){
+                history.push("..")
+            }
+        })
     }
     
     let className = "app-post"
@@ -294,7 +309,7 @@ export const AppPost = (props) => {
     }
 
     return (
-        <AppCard url={postUrl}>
+        <AppCard url={props.display !== "full" ? postUrl : ''}>
             <div className={className}>
                 <PostHeader 
                     title={post.title}
@@ -304,6 +319,8 @@ export const AppPost = (props) => {
                     brand={post.brand}
                     product={post.product}
                     canEdit={canEdit}
+                    handleShowEdit={handleShowEdit}
+                    handleShowDelete={handleShowDelete}
                     />
                 <PostBody 
                     mediaFiles={post.mediaFiles}
@@ -319,6 +336,34 @@ export const AppPost = (props) => {
                     handleRatingDown={handleRatingDown}
                 />
             </div>
+           
+            {
+                showDelete? 
+                    <AppModal>
+                        <div class="post-delete">
+                            <div className="delete-header">
+                                <h4>Delete Post?</h4>
+                            </div>
+                            <div className="delete-content">
+                                Are you sure you want to delete the is post? This cannot be undone.
+                            </div>
+                            <div className="delete-actions">
+                                <button className="button-blue"
+                                    onClick={() => {
+                                        history.push(postUrl)
+                                    }}>
+                                    Cancel
+                                </button>
+                                <button className="button-blue"
+                                onClick={handleDeletePost}
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </AppModal> 
+                : ''
+            }
         </AppCard>
     )
 }
