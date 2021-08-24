@@ -6,6 +6,7 @@ import { AppTextEditor } from './AppTextEditor'
 
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import { AppDeleteModal } from './AppModal'
 
 const CommentProfileImage = (props) => {
 
@@ -49,8 +50,9 @@ const CommentProfile = (props) => {
 const CommentActions = (props) => {
     
     const {
-        handleShowCommentBox,
+        handleShowReply,
         handleShowEdit,
+        handleShowDelete,
         handleRatingUp,
         handleRatingDown,
         rating,
@@ -71,7 +73,7 @@ const CommentActions = (props) => {
                     <ArrowDownwardIcon />
                 </div>
             </div>
-            <div className="comment-action" onClick={handleShowCommentBox} >
+            <div className="comment-action" onClick={handleShowReply} >
                 Reply
             </div>
             {
@@ -80,7 +82,7 @@ const CommentActions = (props) => {
                         <div className="comment-action" onClick={handleShowEdit}>
                             Edit
                         </div>,
-                        <div className="comment-action">
+                        <div className="comment-action" onClick={handleShowDelete}>
                             Delete
                         </div>
                     ]
@@ -98,12 +100,24 @@ const CommentActions = (props) => {
 const CommentMessage = (props) => {
 
     const {
-        message
+        message,
+        isDeleted,
     } = props
 
+    if(isDeleted){ // comment was deleted
+        return (
+            <div className="comment-body comment-deleted">
+                <p>message deleted</p>
+            </div>
+        )
+    }
+
+    // return normal 
     return (
         <div className="comment-body">
-            <p>{message}</p>
+            <p>
+                {message}
+            </p>
         </div>
     )
 }
@@ -117,7 +131,6 @@ const CommentRepliesList = (props) => {
         commentBox,
         count,
         handleShowCommentBox,
-        handleShowEdit,
         handleSubmitReply,
         handleSubmitEdit,
         currentProfileId,
@@ -162,7 +175,6 @@ const CommentRepliesList = (props) => {
                     handleSubmitReply={handleSubmitReply}
                     handleSubmitEdit={handleSubmitEdit}
                     handleShowCommentBox={handleShowCommentBox}
-                    handleShowEdit={handleShowEdit}
                     comment={c}
                     commentBox={commentBox}
                     currentProfileId={currentProfileId}
@@ -184,20 +196,45 @@ const CommentContent = (props) => {
         comment,
         commentBox,
         handleShowCommentBox,
-        handleShowEdit,
         handleSubmitReply,
         handleSubmitEdit,
+        handleDeleteComment,
         handleRatingUp,
         handleRatingDown,
         currentProfileId,
     } = props
+
+    // check if comment is deleted
+    if(comment.status === "DELETED"){ // deleted comment
+        return ( // return comment without actions
+            <div className="comment-content">
+                <CommentMessage
+                    isDeleted={true}
+                />
+                {
+                // show replies 
+                comment.replyCount > 0? // comment has replies
+                    <CommentRepliesList
+                        commentId={comment.commentId}
+                        commentBox={commentBox}
+                        count={comment.replyCount}
+                        handleShowCommentBox={handleShowCommentBox}
+                        handleSubmitReply={handleSubmitReply}
+                        handleSubmitEdit={handleSubmitEdit}
+                        currentProfileId={currentProfileId}
+                    /> : ''
+            }
+            </div>
+        )
+    }
 
     // check active comment box is set to this comment
     const showCommentBox = commentBox.commentId === comment.commentId? true : false
     return (
         <div className="comment-content">
             {
-                commentBox.isEdit && showCommentBox? // comment box active and set to edit
+                // comment info
+                commentBox.action === "EDIT" && showCommentBox? // comment box active and set to edit
                 <CommentBox 
                     handleSubmit={handleSubmitEdit}
                     commentId={comment.commentId}
@@ -216,12 +253,13 @@ const CommentContent = (props) => {
                     rating={comment.upCount - comment.downCount}
                     handleRatingDown={handleRatingDown}
                     handleRatingUp={handleRatingUp}
-                    handleShowCommentBox={() => handleShowCommentBox(comment.commentId)}
-                    handleShowEdit={() => handleShowEdit(comment.commentId)}
+                    handleShowReply={() => handleShowCommentBox(comment.commentId, "REPLY")}
+                    handleShowEdit={() => handleShowCommentBox(comment.commentId, "EDIT")}
+                    handleShowDelete={() => handleShowCommentBox(comment.commentId, "DELETE")}
                 />
             {
                 // show reply box
-                showCommentBox && !commentBox.isEdit? // reply box enabled
+                showCommentBox && commentBox.action === "REPLY"? // reply box enabled
                 <CommentBox 
                     handleSubmit={handleSubmitReply}
                     commentId={comment.commentId}
@@ -237,11 +275,20 @@ const CommentContent = (props) => {
                         commentBox={commentBox}
                         count={comment.replyCount}
                         handleShowCommentBox={handleShowCommentBox}
-                        handleShowEdit={handleShowEdit}
                         handleSubmitReply={handleSubmitReply}
                         handleSubmitEdit={handleSubmitEdit}
                         currentProfileId={currentProfileId}
                     /> : ''
+            }
+            {
+                // show delete modal
+                showCommentBox && commentBox.action === "DELETE"?
+                <AppDeleteModal 
+                    resource="comment"
+                    handleCancel={() => handleShowCommentBox(comment.commentId, "DELETE") }
+                    handleDeletePost={() => handleDeleteComment(comment.commentId)}
+                />
+                : ''
             }
         </div>
     )
@@ -292,9 +339,9 @@ export const AppComment = (props) => {
         comment,
         commentBox,
         handleShowCommentBox,
-        handleShowEdit,
         handleSubmitReply,
         handleSubmitEdit,
+        handleDeleteComment,
         currentProfileId
     } = props;
 
@@ -331,9 +378,9 @@ export const AppComment = (props) => {
                 comment={comment}
                 commentBox={commentBox}
                 handleShowCommentBox={handleShowCommentBox}
-                handleShowEdit={handleShowEdit}
                 handleSubmitReply={handleSubmitReply}
                 handleSubmitEdit={handleSubmitEdit}
+                handleDeleteComment={handleDeleteComment}
                 currentProfileId={currentProfileId}
                 handleRatingDown={handleRatingDown}
                 handleRatingUp={handleRatingUp}

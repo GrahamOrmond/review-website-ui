@@ -60,6 +60,18 @@ export const updatePost = createAsyncThunk('posts/updatePost', async (formData, 
     return await client.update(`/api/posts/${formData.postId}`, rejectWithValue, body, customConfig)
 })
 
+// update post
+export const deletePost = createAsyncThunk('posts/deletePost', async (postId, { getState, rejectWithValue }) => {
+    const token = getAccessToken(getState())
+    let customConfig = {}
+    customConfig.headers = {
+        'Authorization': `Bearer ${token}`
+    }
+
+    return await client.delete(`/api/posts/${postId}`, rejectWithValue, customConfig)
+})
+
+
 // fetch post
 export const fetchPosts = createAsyncThunk('posts/fetchPosts', 
 async (formData, { getState, rejectWithValue }) => {
@@ -248,6 +260,22 @@ export const postsSlice = createSlice({
             }
         },
         [updatePost.rejected]: (state, action) => {
+        },
+
+        // DELETE POST
+        [deletePost.pending]: (state, action) => {
+        },
+        [deletePost.fulfilled]: (state, action) => {
+            let postsList = [...state.list.items] // copy list
+            let index = postsList // find index
+                .findIndex(p => p.postId === action.meta.arg) // find index of post
+            if(index !== -1){ // index found
+                // remove from list and set state
+                postsList.splice(index, 1)
+                state.list.items = postsList
+            }
+        },
+        [deletePost.rejected]: (state, action) => {
         },
         
 

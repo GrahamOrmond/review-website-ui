@@ -11,14 +11,16 @@ export const DropdownNav = (props) => {
 
     // handles clicking the drop down nav button
     // used to close the drop down menu before handling the buttons action
-    const handleOnNavClick = (e) => {
+    const handleCloseDropdown = (e) => {
         let dropdown = e.target.closest('.dropdown-content');;
         dropdown.classList.remove("active");
-        handleOnClick() // run buttons action
     }
 
     return (
-        <Link onClick={(e) => handleOnNavClick(e)}>
+        <Link onClick={(e) => {
+            handleCloseDropdown(e) // close dropdown
+            handleOnClick() // main button action
+        }}>
             <div className={isMobileOnly? "dropdown-nav mobile-nav" : "dropdown-nav" }>
                 {label}
             </div>
