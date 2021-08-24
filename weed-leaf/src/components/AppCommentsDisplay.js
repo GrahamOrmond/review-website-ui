@@ -31,7 +31,7 @@ export const AppCommentList = (props) => {
     const dispatch = useDispatch()
     const [commentBox, setCommentBox] = useState({
         commentId: null,
-        isEdit: false
+        action: null
     })
 
     const {
@@ -42,24 +42,20 @@ export const AppCommentList = (props) => {
 
     // handle showing reply box
     // used to show reply box to comments
-    const handleShowCommentBox = (commentId) => {
-        let replyBox = {...commentBox}
-        replyBox.commentId = replyBox.commentId === commentId  // matching comment
-            && replyBox.isEdit === false?  // matching edit type
-             null : commentId // remove comment
-        replyBox.isEdit = false
-        setCommentBox(replyBox)
-    }
+    const handleShowCommentBox = (commentId, action) => {
+        if(commentBox.commentId === commentId  // matching comment
+            && commentBox.action === action){
+            setCommentBox({ // remove set state
+                commentId: null,
+                action: null
+            })
+            return
+        }
 
-    // handles showing the edit box
-    // used to display edit box to edit comments
-    const handleShowEdit = (commentId) => {
-        let editBox = {...commentBox}
-        editBox.commentId = editBox.commentId === commentId // matching comment
-        && editBox.isEdit === true?  // matching edit type
-            null : commentId // remove comment
-        editBox.isEdit = true
-        setCommentBox(editBox)  
+        setCommentBox({ // set state
+            commentId: commentId,
+            action: action
+        })
     }
 
     const handleSubmitReply = (e, commentId) => {
@@ -77,10 +73,16 @@ export const AppCommentList = (props) => {
                 dispatch(addToPostCommentCount({postId: postId}))
                 setCommentBox({
                     commentId: null,
-                    isEdit: false
+                    action: null
                 })
             }
         })
+    }
+
+    // handles deleting a comment
+    // used to send post request to delete a comment by ID
+    const handleDeleteComment = (commentId) => {
+        console.log(commentId)
     }
 
     // handles sumbitting comment edit
@@ -98,7 +100,7 @@ export const AppCommentList = (props) => {
                 textEditor.innerText = ""
                 setCommentBox({
                     commentId: null,
-                    isEdit: false
+                    action: null
                 })
             }
         })
@@ -121,8 +123,8 @@ export const AppCommentList = (props) => {
                     key={c.commentId}
                     handleSubmitReply={handleSubmitReply}
                     handleSubmitEdit={handleSubmitEdit}
+                    handleDeleteComment={handleDeleteComment}
                     handleShowCommentBox={handleShowCommentBox}
-                    handleShowEdit={handleShowEdit}
                     commentBox={commentBox}
                     comment={c}
                     currentProfileId={currentUser?.profileId}
