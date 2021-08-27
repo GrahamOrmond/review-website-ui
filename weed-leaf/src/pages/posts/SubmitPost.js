@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { AppCard } from "../../components/AppCard"
-import { AppDynamicSelect, AppFileInput, AppInput, AppSelect } from "../../components/AppForm"
+import { AppDynamicSelect, AppFileInput, AppInput, AppMultiSelect, AppSelect } from "../../components/AppForm"
 import { postOptions } from './submitPostOptions';
 import { AppMarkupEditor } from '../../components/AppTextEditor';
 import { useDispatch, useSelector } from 'react-redux';
@@ -36,6 +36,7 @@ export const SubmitPostForm = (props) => {
         "files": [],
         "title": title,
         "content": content,
+        "effects": []
     })
 
     // load brand and product options
@@ -95,6 +96,21 @@ export const SubmitPostForm = (props) => {
 
         setFormData(newState) // set form data
         handleHistoryChange(newState) // change url
+    }
+
+    // handle multiple select options change
+    // used to update state when multiple select options are used for product effects
+    const handleMultiSelectChange = (option) => {
+        let newState = {...formData}
+
+        let index = newState.effects.findIndex(s => s.id === option.id)
+        if(index !== -1){
+            newState.effects.splice(index,1)
+        }else{
+            newState.effects.push(option)
+        }
+
+        setFormData(newState) // set form data
     }
 
     // handle history change
@@ -224,7 +240,34 @@ export const SubmitPostForm = (props) => {
 
     // add review inputs to the form
     let reviewContent;
-    if(formData.type === "review"){
+    if(formData.type === "review" && formData.productUrlId){ // type review and product selected
+        
+        const effectOptions = [
+            {
+                "id": "feelings",
+                'label': "Feelings",
+                'options': [{
+                    'id': "test",
+                    'label': "test"
+                }]
+            },
+            {
+                "id": "negatives",
+                'label': "Negatives",
+                'options': []
+            },
+            {
+                "id": "smell",
+                'label': "Smell",
+                'options': []
+            },
+            {
+                "id": "helps",
+                'label': "Helps With",
+                'options': []
+            },
+        ]
+        
         reviewContent = [
             <div className="form-input-group">
                 <AppSelect 
@@ -233,6 +276,14 @@ export const SubmitPostForm = (props) => {
                     selectedValue={formData.rating}
                     options={postOptions.rating}
                     handleOnChange={handleSelectChange}
+                />
+            </div>,
+            <div>
+                <AppMultiSelect 
+                    label="Effects"
+                    handleMultiSelectChange={handleMultiSelectChange}
+                    data={effectOptions}
+                    selectedOptions={formData.effects}
                 />
             </div>,
             <div className="form-input-group">
