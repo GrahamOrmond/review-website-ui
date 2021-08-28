@@ -15,6 +15,9 @@ export const ProductsList = (props) => {
         brands,
         productType,
         category,
+        feelings,
+        helps,
+        smell,
     } = props
     
     // holds the current sort by state
@@ -27,12 +30,21 @@ export const ProductsList = (props) => {
         brands: brands,
         productType: productType,
         category: category,
+        feelings: feelings,
+        helps: helps,
+        smell: smell,
     })
 
     // create search params for filtering
     // used to filter posts by adding url params that dont need to be stored in state
     let searchParams = useMemo(() => {
-        return {...filterData, ...{'search': searchValue}} // add search to data
+        const params = {
+            brands: filterData.brands,
+            productType: filterData.productType,
+            category: filterData.category,
+            effects: [...filterData.feelings, ...filterData.helps, ...filterData.smell],
+        }
+        return {...params, ...{'search': searchValue}} // add search to data
     }, [filterData, searchValue])
 
     // get product lists 

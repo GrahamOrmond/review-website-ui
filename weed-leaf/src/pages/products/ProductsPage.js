@@ -53,5 +53,8 @@ export const ProductsPage = (props) => {
             brands={urlString.brands? urlString.brands.split(',') : [] } // brands string
             productType={urlString.productType? urlString.productType.split(',') : []} // productType string
             category={urlString.category? urlString.category.split(',') : []} // categorty string
+            feelings={urlString.feelings? urlString.feelings.split(',') : []} // effects string
+            helps={urlString.helps? urlString.helps.split(',') : []} // effects string
+            smell={urlString.smell? urlString.smell.split(',') : []} // effects string
         />)
 }

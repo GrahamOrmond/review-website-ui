@@ -77,6 +77,9 @@ const FilterMultiSelect = (props) => {
         'brands': [...filterData.brands],
         'productType': [...filterData.productType],
         'category': [...filterData.category],
+        'feelings': [...filterData.feelings],
+        'helps': [...filterData.helps],
+        'smell': [...filterData.smell],
     })
 
     // setup filter options
@@ -93,13 +96,27 @@ const FilterMultiSelect = (props) => {
         }
     }, [brandsListInfo, productFilterInfo, dispatch])
 
+    // create usable data for filter options 
+    let productFilters = [...productFilterInfo.filters]
+    for (let [k, v] of Object.entries(postOptions.effects)) {
+        productFilters.push({
+            id: k,
+            options: v.map(p => {
+                return {
+                    id: p,
+                    label: p
+                }
+            })
+        })
+    }
+
     // handles select options toggle
     // used to toggle on and off filter options
-    const handleToggleSelect = (selected) => {
-        if(selected === selectedFilter){ // same as selected filter
+    const handleToggleSelect = (selectedOption) => {
+        if(selectedOption === selectedFilter){ // same as selected filter
             setSelectedFilter() // remove selected option
         }else { // different filter options
-            setSelectedFilter(selected) // show options for that filter
+            setSelectedFilter(selectedOption) // show options for that filter
         }
     }
 
@@ -152,9 +169,9 @@ const FilterMultiSelect = (props) => {
             })
         }
 
-        // other filter options
+        // other dynamic filter options
         // find the product filter by id
-        const filter = productFilterInfo.filters
+        const filter = productFilters
             .find(f => f.id === selectedFilter)
         return filter.options.map(f => { // return filter options
             const index = selectedOptions.indexOf(f.id) // check if option is selected
@@ -191,6 +208,18 @@ const FilterMultiSelect = (props) => {
             'id': 'category',
             'label': 'Product Category +'
         },
+        {
+            'id': 'feelings',
+            'label': 'Feeling +'
+        },
+        {
+            'id': 'helps',
+            'label': 'Helps With +'
+        },
+        {
+            'id': 'smell',
+            'label': 'Smell / Taste +'
+        },
     ]
     
     return (
@@ -202,7 +231,7 @@ const FilterMultiSelect = (props) => {
                         filterButtons.map(f => 
                             <button key={f.id} 
                                 className={selectedFilter === f.id? 'app-button filter-button active' : 'app-button filter-button'} 
-                                onClick={() => handleToggleSelect(f.id)}>
+                                onClick={() => handleToggleSelect(f.id, f.dataId)}>
                                 {f.label}
                                 <div className="selected-options">
                                     {selectedFilterOptions[f.id].map(p => <label>
