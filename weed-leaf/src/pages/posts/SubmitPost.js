@@ -36,7 +36,7 @@ export const SubmitPostForm = (props) => {
         "files": [],
         "title": title,
         "content": content,
-        "effects": []
+        "productEffects": []
     })
 
     // load brand and product options
@@ -103,11 +103,12 @@ export const SubmitPostForm = (props) => {
     const handleMultiSelectChange = (option) => {
         let newState = {...formData}
 
-        let index = newState.effects.findIndex(s => s.id === option.id)
-        if(index !== -1){
-            newState.effects.splice(index,1)
-        }else{
-            newState.effects.push(option)
+        // check for existing instance=
+        let index = newState.productEffects.findIndex(s => s === option)
+        if(index !== -1){ // instance found
+            newState.productEffects.splice(index,1) // remove option from list
+        }else{ // hasnt been added
+            newState.productEffects.push(option) // add option to list
         }
 
         setFormData(newState) // set form data
@@ -171,11 +172,11 @@ export const SubmitPostForm = (props) => {
     // returns post data from the form
     const getPostData = () => {
         // get post params from data
-        const postDto = ["type", "status", "content", "title",
-            "productUrlId", "brandId", "rating", "oldFiles", "files"];
+        const postDto = ["type", "status", "content", "title", 
+            "productUrlId", "brandId", "productEffects", 
+            "rating", "oldFiles", "files"];
         let postData = { // post data with list delaired by default
             properties: [],
-            productEffects: [],
             files: [],
         }
         for (const [key, param] of Object.entries(formData)) {
@@ -246,25 +247,22 @@ export const SubmitPostForm = (props) => {
             {
                 "id": "feelings",
                 'label': "Feelings",
-                'options': [{
-                    'id': "test",
-                    'label': "test"
-                }]
+                'options': postOptions.effects.feelings
             },
             {
                 "id": "negatives",
                 'label': "Negatives",
-                'options': []
+                'options': postOptions.effects.negatives
             },
             {
                 "id": "smell",
                 'label': "Smell",
-                'options': []
+                'options': postOptions.effects.smell
             },
             {
                 "id": "helps",
                 'label': "Helps With",
-                'options': []
+                'options': postOptions.effects.helps
             },
         ]
         
@@ -283,7 +281,7 @@ export const SubmitPostForm = (props) => {
                     label="Effects"
                     handleMultiSelectChange={handleMultiSelectChange}
                     data={effectOptions}
-                    selectedOptions={formData.effects}
+                    selectedOptions={formData.productEffects}
                 />
             </div>,
             <div className="form-input-group">

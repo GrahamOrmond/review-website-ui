@@ -261,14 +261,14 @@ const AppListSelect = (props) => {
             {
                 // return list of buttons to select
                 options.map(p => {
-                    let index = selectedOptions.findIndex(s => s.id === p.id) // check selected data
-                    return <button key={p.id} 
+                    let index = selectedOptions.findIndex(s => s === p) // check selected data
+                    return <button key={p} 
                             className={index !== -1? // change style if index found
                                 "app-button filter-button active" 
                                 : 
                                 "app-button filter-button"}
-                            onClick={() => handleSelectOptions("", p)}>
-                        {p.label}
+                            onClick={() => handleSelectOptions(p)}>
+                        {p}
                     </button>
                 })
             }
@@ -310,7 +310,10 @@ export const AppMultiSelect = (props) => {
                 {
                     // return list of buttons from given data
                     data.map(d => <button key={d.id}
-                        className="app-button filter-button"
+                        className={selectedButton === d.id?
+                            "app-button filter-button active"
+                        :
+                            "app-button filter-button"}
                         onClick={() => handleViewOptions(d.id)}>
                             {d.label}
                     </button>)
