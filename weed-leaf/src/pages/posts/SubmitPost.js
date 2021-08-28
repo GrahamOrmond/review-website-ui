@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { AppCard } from "../../components/AppCard"
-import { AppDynamicSelect, AppFileInput, AppInput, AppSelect } from "../../components/AppForm"
+import { AppDynamicSelect, AppFileInput, AppInput, AppMultiSelect, AppSelect } from "../../components/AppForm"
 import { postOptions } from './submitPostOptions';
 import { AppMarkupEditor } from '../../components/AppTextEditor';
 import { useDispatch, useSelector } from 'react-redux';
@@ -36,6 +36,7 @@ export const SubmitPostForm = (props) => {
         "files": [],
         "title": title,
         "content": content,
+        "productEffects": []
     })
 
     // load brand and product options
@@ -97,6 +98,22 @@ export const SubmitPostForm = (props) => {
         handleHistoryChange(newState) // change url
     }
 
+    // handle multiple select options change
+    // used to update state when multiple select options are used for product effects
+    const handleMultiSelectChange = (option) => {
+        let newState = {...formData}
+
+        // check for existing instance=
+        let index = newState.productEffects.findIndex(s => s === option)
+        if(index !== -1){ // instance found
+            newState.productEffects.splice(index,1) // remove option from list
+        }else{ // hasnt been added
+            newState.productEffects.push(option) // add option to list
+        }
+
+        setFormData(newState) // set form data
+    }
+
     // handle history change
     const handleHistoryChange = (newState) => {
         // return if form matches url
@@ -155,11 +172,11 @@ export const SubmitPostForm = (props) => {
     // returns post data from the form
     const getPostData = () => {
         // get post params from data
-        const postDto = ["type", "status", "content", "title",
-            "productUrlId", "brandId", "rating", "oldFiles", "files"];
+        const postDto = ["type", "status", "content", "title", 
+            "productUrlId", "brandId", "productEffects", 
+            "rating", "oldFiles", "files"];
         let postData = { // post data with list delaired by default
             properties: [],
-            productEffects: [],
             files: [],
         }
         for (const [key, param] of Object.entries(formData)) {
@@ -224,7 +241,31 @@ export const SubmitPostForm = (props) => {
 
     // add review inputs to the form
     let reviewContent;
-    if(formData.type === "review"){
+    if(formData.type === "review" && formData.productUrlId){ // type review and product selected
+        
+        const effectOptions = [
+            {
+                "id": "feelings",
+                'label': "Feelings",
+                'options': postOptions.effects.feelings
+            },
+            {
+                "id": "negatives",
+                'label': "Negatives",
+                'options': postOptions.effects.negatives
+            },
+            {
+                "id": "smell",
+                'label': "Smell",
+                'options': postOptions.effects.smell
+            },
+            {
+                "id": "helps",
+                'label': "Helps With",
+                'options': postOptions.effects.helps
+            },
+        ]
+        
         reviewContent = [
             <div className="form-input-group">
                 <AppSelect 
@@ -233,6 +274,14 @@ export const SubmitPostForm = (props) => {
                     selectedValue={formData.rating}
                     options={postOptions.rating}
                     handleOnChange={handleSelectChange}
+                />
+            </div>,
+            <div>
+                <AppMultiSelect 
+                    label="Effects"
+                    handleMultiSelectChange={handleMultiSelectChange}
+                    data={effectOptions}
+                    selectedOptions={formData.productEffects}
                 />
             </div>,
             <div className="form-input-group">

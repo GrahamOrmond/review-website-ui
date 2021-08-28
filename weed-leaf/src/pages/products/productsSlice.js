@@ -99,6 +99,7 @@ export const getProductsByFilter = (state, filter) => {
             return (filter.brands.length === 0 || filter.brands.includes(p.brandId)) // brand
             && (filter.productType.length === 0  || filter.productType.includes(p.type)) // product type
             && (filter.category.length === 0  || filter.category.includes(p.category)) // category
+            && (filter.effects.length === 0  || p.effects.some(pe => filter.effects.includes(pe))) // category
             && (!filter.search || (p.name + p.brandName).toLowerCase().includes(filter.search.toLowerCase())) // search bar
         })
 }

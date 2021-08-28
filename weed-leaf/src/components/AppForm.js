@@ -245,6 +245,99 @@ export const AppDynamicSelect = (props) => {
     );
 }
 
+
+// Select list button options
+// used to display a list of select options
+const AppListSelect = (props) => {
+
+    const {
+        options,
+        selectedOptions,
+        handleSelectOptions
+    } = props
+
+    return (
+        <div>
+            {
+                // return list of buttons to select
+                options.map(p => {
+                    let index = selectedOptions.findIndex(s => s === p) // check selected data
+                    return <button key={p} 
+                            className={index !== -1? // change style if index found
+                                "app-button filter-button active" 
+                                : 
+                                "app-button filter-button"}
+                            onClick={() => handleSelectOptions(p)}>
+                        {p}
+                    </button>
+                })
+            }
+        </div>
+    )
+}
+
+// select multiple list options
+// used to select multiple options from a list
+export const AppMultiSelect = (props) => {
+
+    const {
+        label,
+        data,
+        selectedOptions,
+        handleMultiSelectChange
+    } = props 
+
+    // tracks the current selected button
+    // used to switch bettween multiple select buttons
+    const [selectedButton, setSelectedButton] = useState()
+
+    // handle view options
+    // used to display options for a given button
+    const handleViewOptions = (buttonId) => {
+        if(selectedButton === buttonId){ // id same as state
+            setSelectedButton() // hide options 
+        }else{
+            setSelectedButton(buttonId) // show options
+        }
+    }
+
+    return (
+        <div className="form-input">
+            <div className="title">
+                <label>{label}</label>
+            </div>
+            <div className="buttons">
+                {
+                    // return list of buttons from given data
+                    data.map(d => <button key={d.id}
+                        className={selectedButton === d.id?
+                            "app-button filter-button active"
+                        :
+                            "app-button filter-button"}
+                        onClick={() => handleViewOptions(d.id)}>
+                            {d.label}
+                    </button>)
+                }
+            </div>
+            <div className="options">
+                {
+                    // return selected button options
+                    selectedButton ?
+                    <AppListSelect 
+                        selectedOptions={selectedOptions}
+                        options={
+                            // find the select buttons options
+                            data.find(d => d.id === selectedButton).options
+                        }
+                        handleSelectOptions={handleMultiSelectChange}
+                    /> : ''
+                }
+            </div>
+        </div>
+    )
+}
+
+
 export const AppDynamicInput = (props) => {
     
     return (
